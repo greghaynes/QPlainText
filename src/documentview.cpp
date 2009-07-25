@@ -17,47 +17,54 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "abstractsourcedocument.h"
+#include "documentview.h"
+#include "numberedlistwidget.h"
 
-#include <QString>
+#include <QHBoxLayout>
+#include <QTextEdit>
 
-#include "abstractsourcedocument.moc"
+#include "documentview.moc"
 
 namespace QSourceView
 {
 
-class AbstractSourceDocumentPrivate
+class DocumentViewPrivate
 {
+
 	public:
-		QString encoding;
+		QTextEdit *textEdit;
+		NumberedListWidget *horiz_numbers;
+		NumberedListWidget *vert_numbers;
+
 };
 
-AbstractSourceDocument::AbstractSourceDocument(QObject *parent)
-	: QObject(parent)
-	, d(new AbstractSourceDocumentPrivate)
+DocumentView::DocumentView(QTextDocument &document)
+	: QWidget(0)
+	, d(new DocumentViewPrivate)
 {
+	d->textEdit = new QTextEdit();
+	d->textEdit->setDocument(&document);
+	setupUi();
 }
 
-AbstractSourceDocument::AbstractSourceDocument(const QString &text,
-	QObject *parent)
-	: QObject(parent)
-	, d(new AbstractSourceDocumentPrivate)
-{
-}
-
-AbstractSourceDocument::~AbstractSourceDocument()
+DocumentView::~DocumentView()
 {
 	delete d;
 }
 
-QString AbstractSourceDocument::encoding() const
+void DocumentView::setupUi()
 {
-	return d->encoding;
+	QHBoxLayout *hlayout = new QHBoxLayout(this);
+	hlayout->addWidget(d->textEdit);
+	setLayout(hlayout);
 }
 
-void AbstractSourceDocument::setEncoding(const QString &encoding)
+void DocumentView::enableHorizontalNumberWidget()
 {
-	d->encoding = encoding;
+}
+
+void DocumentView::enableVerticalNumberWidget()
+{
 }
 
 }

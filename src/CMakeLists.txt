@@ -7,10 +7,12 @@ find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
 
 set(QSOURCEVIEW_HDRS
-	abstractsourcedocument.h)
+	documentview.h
+	numberedlistwidget.h)
 
 set(QSOURCEVIEW_SRCS
-	abstractsourcedocument.cpp)
+	documentview.cpp
+	numberedlistwidget.cpp)
 
 QT4_AUTOMOC(${QSOURCEVIEW_SRCS})
 

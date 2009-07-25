@@ -17,47 +17,41 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef QSOURCEVIEW_ABSTRACT_SOURCE_DOCUMENT_H
-#define QSOURCEVIEW_ABSTRACT_SOURCE_DOCUMENT_H
+#ifndef QSOURCEVIEW_SOURCE_DOCUMENT_VIEW_H
+#define QSOURCEVIEW_SOURCE_DOCUMENT_VIEW_H
 
-#include <QObject>
+#include <QWidget>
 
-class QString;
+class QTextDocument;
 
-namespace QSourceView
+namespace QSourceView 
 {
 
-class DocumentPosition;
-class DocumentRange;
-class AbstractSourceDocumentPrivate;
+class AbstractSourceDocument;
+class DocumentViewPrivate;
 
-class AbstractSourceDocument
-	: public QObject
+class DocumentView
+	: public QWidget
 {
 	Q_OBJECT
 
 	public:
-		AbstractSourceDocument(QObject *parent = 0);
-		AbstractSourceDocument(const QString &text,
-			QObject *parent = 0);
-		virtual ~AbstractSourceDocument();
-	
-		QString encoding() const;
-		void setEncoding(const QString &encoding);
+		DocumentView(QTextDocument &document);
+		virtual ~DocumentView();
 		
-		virtual void insertText(const DocumentPosition &pos,
-			const QString &text) = 0;
-		virtual void removeText(const DocumentRange &pos) = 0;
+		QTextDocument &document() const;
 	
-	Q_SIGNALS:
-		void textInserted(const DocumentPosition &position,
-			const QString &text);
+	public Q_SLOTS:
+		void enableHorizontalNumberWidget();
+		void enableVerticalNumberWidget();
 	
 	private:
-		AbstractSourceDocumentPrivate *d;
+		void setupUi();
 	
-}; // AbstractSourceDocument
+		DocumentViewPrivate *d;
 
-} // QSourceView
+};
+
+}
 
 #endif
