@@ -17,5 +17,47 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "abstractdocument.h"
+#include "abstractsourcedocument.h"
 
+#include <QString>
+
+#include "abstractsourcedocument.moc"
+
+namespace QSourceView
+{
+
+class AbstractSourceDocumentPrivate
+{
+	public:
+		QString encoding;
+};
+
+AbstractSourceDocument::AbstractSourceDocument(QObject *parent)
+	: QObject(parent)
+	, d(new AbstractSourceDocumentPrivate)
+{
+}
+
+AbstractSourceDocument::AbstractSourceDocument(const QString &text,
+	QObject *parent)
+	: QObject(parent)
+	, d(new AbstractSourceDocumentPrivate)
+{
+}
+
+AbstractSourceDocument::~AbstractSourceDocument()
+{
+	delete d;
+}
+
+QString AbstractSourceDocument::encoding() const
+{
+	return d->encoding;
+}
+
+void AbstractSourceDocument::setEncoding(const QString &encoding)
+{
+	d->encoding = encoding;
+}
+
+}
