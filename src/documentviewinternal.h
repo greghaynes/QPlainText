@@ -42,6 +42,11 @@ class DocumentViewInternal
 		DocumentViewInternal(DocumentView &parentView,
 			Renderer &renderer);
 		
+		unsigned int currentCenterLine(unsigned int line);
+	
+	public Q_SLOTS:
+		void setCenterLine(unsigned int line);
+		
 	protected:
 		void paintEvent(QPaintEvent *event);
 		void mousePressEvent(QMouseEvent *event);
