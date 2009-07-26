@@ -34,6 +34,7 @@
 DocumentWidget::DocumentWidget(QWidget *parent)
 	: QWidget(parent)
 {
+	setWindowTitle("Untitled");
 	setupActions();
 	setupUi();
 }
@@ -41,6 +42,7 @@ DocumentWidget::DocumentWidget(QWidget *parent)
 void DocumentWidget::slotOpen()
 {
 	QString path = QFileDialog::getOpenFileName(this, tr("Open File"));
+	setWindowTitle(path.split('/').last());
 	if(!path.isEmpty())
 	{
 		QFile file(path);

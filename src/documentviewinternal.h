@@ -17,19 +17,25 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#ifndef QSOUCEVIEW_DOCUMENT_VIEW_INTERNAL_H
+#define QSOUCEVIEW_DOCUMENT_VIEW_INTERNAL_H
+
 #include <QWidget>
 
 class QPaintEvent;
+class QPainter;
 
 namespace QSourceView
 {
 
 class DocumentView;
+class TextCursor;
 class Renderer;
 
 class DocumentViewInternal
 	: public QWidget
 {
+	Q_OBJECT
 
 	public:
 		DocumentViewInternal(DocumentView &parentView,
@@ -38,7 +44,11 @@ class DocumentViewInternal
 	protected:
 		void paintEvent(QPaintEvent *event);
 	
+	private Q_SLOTS:
+		void toggleCaretVisibility();
+	
 	private:
+		void paintCaret(QPainter &paint);
 		int startX() { return m_startX; }
 		Renderer &renderer() { return *m_renderer; }
 	
@@ -46,7 +56,10 @@ class DocumentViewInternal
 		DocumentView *m_view;
 		Renderer *m_renderer;
 		int m_startX;
+		TextCursor *m_caret;
 
 };
 
 }
+
+#endif

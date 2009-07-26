@@ -82,15 +82,32 @@ DocumentPosition StandardDocument::end() const
 }
 
 void StandardDocument::onInsertText(const DocumentPosition &position,
-	const QString &text)
+	const QString &insText)
 {
-	QStringList list = text.split('\n');
-	d->lines.last().append(list[0]);
-	if(list.size() > 1)
+	// Make sure the position is valid
+	if((lineCount()-1) < position.line()
+	   || (text(position.line()).size()-1) < position.column())
+		return;
+	
+	QStringList insList = insText.split('\n');
+	// Append first line to position line
+	d->lines[position.line()].append(insList[0]);
+
+	// Append bulk of lines after position line
+	if(insList.size() > 1)
 	{
-		int i;
-		for(i = 1;i < list.size(); i++)
-			d->lines.append(list[i]);
+		if(insList.size() > 2)
+		{
+			int i;
+			for(i = 1;i < insList.size()-1; i++)
+				d->lines.insert(position.line() + i, insList[i]);
+		}
+		// We want any text after insert to be appended on that line
+		unsigned int endLine = position.line() + insList.size();
+		if((lineCount()-1) < endLine)
+			d->lines.append(insList.last());
+		else
+			d->lines[position.line()+insList.size()].prepend(insList.last());
 	}
 }
 

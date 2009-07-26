@@ -47,10 +47,16 @@ class Document
 		virtual unsigned int lineSize(unsigned int line) const = 0;
 		virtual void clear() = 0;
 		virtual DocumentPosition end() const = 0;
+		/**
+		 * @brief Calls onInsertText and emits textInserted signal.
+		 */
 		void insertText(const DocumentPosition &position,
 			const QString &text);
+		/**
+		 * @brief Calls onRemoveText and emits textRemoved signal.
+		 */
 		void removeText(const DocumentRange &range);
-		void appendText(const QString &text);
+		virtual void appendText(const QString &text);
 	
 	Q_SIGNALS:
 		void textInserted(const DocumentPosition &pos,

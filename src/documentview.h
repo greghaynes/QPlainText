@@ -41,8 +41,6 @@ class DocumentView
 		~DocumentView();
 		
 		Document &document();
-		const QFont &font();
-		void setFont(const QFont &font);
 	
 	public Q_SLOTS:
 		void enableHorizontalNumberWidget();

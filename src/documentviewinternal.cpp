@@ -25,9 +25,30 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QFontMetrics>
+#include <QTimer>
+#include <QCursor>
+
+#include "documentviewinternal.moc"
 
 namespace QSourceView
 {
+
+class TextCursor
+	: public DocumentPosition
+{
+
+	public:
+		TextCursor();
+		
+		bool is_visible;
+
+};
+
+TextCursor::TextCursor()
+	: DocumentPosition(0, 0)
+	, is_visible(false)
+{
+}
 
 DocumentViewInternal::DocumentViewInternal(DocumentView &parentView,
 	Renderer &renderer)
@@ -35,8 +56,15 @@ DocumentViewInternal::DocumentViewInternal(DocumentView &parentView,
 	, m_view(&parentView)
 	, m_renderer(&renderer)
 	, m_startX(0)
+	, m_caret(new TextCursor)
 {
 	setAttribute(Qt::WA_OpaquePaintEvent);
+	setCursor(Qt::IBeamCursor);
+	QTimer *caretTimer = new QTimer(this);
+	caretTimer->setSingleShot(false);
+	connect(caretTimer, SIGNAL(timeout()),
+		this, SLOT(toggleCaretVisibility()));
+	caretTimer->start(500);
 }
 
 void DocumentViewInternal::paintEvent(QPaintEvent *event)
@@ -45,7 +73,6 @@ void DocumentViewInternal::paintEvent(QPaintEvent *event)
 	QPainter paint(this);
 	
 	int xStart = startX() + rect.x();
-	int xEnd = xStart + rect.width();
 	unsigned int fontHeight = fontMetrics().height();
 	int lineCount = rect.height() / fontHeight;
 	int lineStart = rect.y() / fontHeight;
@@ -62,12 +89,39 @@ void DocumentViewInternal::paintEvent(QPaintEvent *event)
 	int line;
 	for(line = lineStart; line < lineEnd; line++)
 	{
-		bound = QRect(0, (line+1)*fontHeight, rect.width(), fontHeight);
+		bound = QRect(xStart, (line+1)*fontHeight, rect.width(), fontHeight);
 		text = m_view->document().text(line+1);
 		paint.fillRect(bound, Qt::white);
 		paint.drawText(bound, text);
 	}
+	
+	paintCaret(paint);
+}
 
+void DocumentViewInternal::paintCaret(QPainter &paint)
+{
+	// Text printed infront of cursor
+	QString prevline = m_view->document().text(m_caret->line()).left(m_caret->column());
+	int xStart = fontMetrics().width(prevline);
+	QRect bound = QRect(xStart, fontMetrics().height()*m_caret->line(), 1, fontMetrics().height());
+	
+	if(m_caret->is_visible)
+	{
+		if(m_caret->column() >= m_view->document().text(m_caret->line()).size())
+			paint.fillRect(bound, Qt::white);
+		else
+			paint.drawText(bound, QString(m_view->document().text(m_caret->line())[m_caret->column()]));
+	}
+	else
+	{
+		paint.fillRect(bound, Qt::black);
+	}
+}
+
+void DocumentViewInternal::toggleCaretVisibility()
+{
+	m_caret->is_visible = !m_caret->is_visible;
+	update();
 }
 
 }
