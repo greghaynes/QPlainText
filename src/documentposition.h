@@ -44,7 +44,9 @@ class DocumentPosition
 		
 		unsigned int line() const;
 		unsigned int column() const;
-	
+		void setLine(unsigned int line);
+		void setColumn(unsigned int column);
+		
 	private:
 		unsigned int m_line;
 		unsigned int m_column;

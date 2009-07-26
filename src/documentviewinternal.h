@@ -23,6 +23,7 @@
 #include <QWidget>
 
 class QPaintEvent;
+class QMouseEvent;
 class QPainter;
 
 namespace QSourceView
@@ -43,6 +44,7 @@ class DocumentViewInternal
 		
 	protected:
 		void paintEvent(QPaintEvent *event);
+		void mousePressEvent(QMouseEvent *event);
 	
 	private Q_SLOTS:
 		void toggleCaretVisibility();

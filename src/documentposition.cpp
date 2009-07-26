@@ -89,4 +89,14 @@ unsigned int DocumentPosition::column() const
 	return m_column;
 }
 
+void DocumentPosition::setLine(unsigned int line)
+{
+	m_line = line;
+}
+
+void DocumentPosition::setColumn(unsigned int column)
+{
+	m_column = column;
+}
+
 }

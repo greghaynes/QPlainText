@@ -27,6 +27,7 @@
 #include <QFontMetrics>
 #include <QTimer>
 #include <QCursor>
+#include <QMouseEvent>
 
 #include "documentviewinternal.moc"
 
@@ -96,6 +97,30 @@ void DocumentViewInternal::paintEvent(QPaintEvent *event)
 	}
 	
 	paintCaret(paint);
+}
+
+void DocumentViewInternal::mousePressEvent(QMouseEvent *event)
+{
+	unsigned int pressLine = event->y() / fontMetrics().height();
+	unsigned int pressColumn;
+	if(pressLine >= m_view->document().lineCount())
+	{
+		pressLine = m_view->document().lineCount()-1;
+	}
+	
+	QString line = m_view->document().text(pressLine);
+	// Find the column were at
+	int i;
+	for(i = 0;i < line.size();i++)
+	{
+		if(event->x() <= fontMetrics().width(line.left(i+1)))
+			break;
+	}
+	pressColumn = i;
+	m_caret->setLine(pressLine);
+	m_caret->setColumn(pressColumn);
+	m_caret->is_visible = true;
+	update();
 }
 
 void DocumentViewInternal::paintCaret(QPainter &paint)
