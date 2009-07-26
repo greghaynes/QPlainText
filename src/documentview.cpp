@@ -18,10 +18,14 @@
  */
 
 #include "documentview.h"
+#include "documentviewinternal.h"
+#include "renderer.h"
+#include "document.h"
 #include "numberedlistwidget.h"
 
 #include <QHBoxLayout>
 #include <QTextEdit>
+#include <QFont>
 
 #include "documentview.moc"
 
@@ -32,18 +36,21 @@ class DocumentViewPrivate
 {
 
 	public:
-		QTextEdit *textEdit;
+		Document *document;
+		Renderer *renderer;
+		DocumentViewInternal *internalView;
 		NumberedListWidget *horiz_numbers;
 		NumberedListWidget *vert_numbers;
 
 };
 
-DocumentView::DocumentView(QTextDocument &document)
+DocumentView::DocumentView(Document &document)
 	: QWidget(0)
 	, d(new DocumentViewPrivate)
 {
-	d->textEdit = new QTextEdit();
-	d->textEdit->setDocument(&document);
+	d->document = &document;
+	d->renderer = new Renderer(this);
+	d->internalView = new DocumentViewInternal(*this, *d->renderer);
 	setupUi();
 }
 
@@ -52,11 +59,9 @@ DocumentView::~DocumentView()
 	delete d;
 }
 
-void DocumentView::setupUi()
+Document &DocumentView::document()
 {
-	QHBoxLayout *hlayout = new QHBoxLayout(this);
-	hlayout->addWidget(d->textEdit);
-	setLayout(hlayout);
+	return *d->document;
 }
 
 void DocumentView::enableHorizontalNumberWidget()
@@ -65,6 +70,19 @@ void DocumentView::enableHorizontalNumberWidget()
 
 void DocumentView::enableVerticalNumberWidget()
 {
+}
+
+void DocumentView::setupUi()
+{
+	QHBoxLayout *hlayout = new QHBoxLayout(this);
+	hlayout->setContentsMargins(0, 0, 0, 0);
+	hlayout->addWidget(d->internalView);
+	setLayout(hlayout);
+}
+
+Renderer &DocumentView::renderer()
+{
+	return *d->renderer;
 }
 
 }

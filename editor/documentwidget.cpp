@@ -18,12 +18,15 @@
  */
 
 #include "documentwidget.h"
+#include "standarddocument.h"
 
 #include <QToolBar>
 #include <QAction>
+#include <QIcon>
 #include <QFileDialog>
 #include <QVBoxLayout>
 #include <QTextDocument>
+#include <QFile>
 
 #include "documentwidget.moc"
 
@@ -36,19 +39,32 @@ DocumentWidget::DocumentWidget(QWidget *parent)
 
 void DocumentWidget::slotOpen()
 {
+	QString path = QFileDialog::getOpenFileName(this, tr("Open File"));
+	if(!path.isEmpty())
+	{
+		QFile file(path);
+		docView->document().appendText(file.readAll());
+	}
 }
 
 void DocumentWidget::setupActions()
 {
-	openAction = new QAction("Open", this);
+	openAction = new QAction(QIcon(":data/icons/open.png"), tr("Open"), this);
 	connect(openAction, SIGNAL(triggered(bool)),
 		this, SLOT(slotOpen()));
 }
 
 void DocumentWidget::setupUi()
 {
+	QToolBar *toolBar = new QToolBar(this);
+	toolBar->addAction(openAction);
+	
+	QSourceView::Document *doc = new QSourceView::StandardDocument(this);
+	docView = new QSourceView::DocumentView(*doc);
+	
 	QVBoxLayout *vlayout = new QVBoxLayout(this);
-	QTextDocument *doc = new QTextDocument();
-	vlayout->addWidget(new QSourceView::DocumentView(*doc));
+	vlayout->setContentsMargins(2, 2, 2, 2);
+	vlayout->addWidget(toolBar);
+	vlayout->addWidget(docView);
 	setLayout(vlayout);
 }

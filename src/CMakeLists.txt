@@ -7,11 +7,25 @@ find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
 
 set(QSOURCEVIEW_HDRS
+	document.h
+	documentposition.h
+	documentrange.h
+	standarddocument.h
+	documentviewfactory.h
 	documentview.h
+	documentviewinternal.h
+	renderer.h
 	numberedlistwidget.h)
 
 set(QSOURCEVIEW_SRCS
+	document.cpp
+	documentposition.cpp
+	documentrange.cpp
+	standarddocument.cpp
+	documentviewfactory.cpp
 	documentview.cpp
+	documentviewinternal.cpp
+	renderer.cpp
 	numberedlistwidget.cpp)
 
 QT4_AUTOMOC(${QSOURCEVIEW_SRCS})

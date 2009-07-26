@@ -22,12 +22,13 @@
 
 #include <QWidget>
 
-class QTextDocument;
+class QFont;
 
 namespace QSourceView 
 {
 
-class AbstractSourceDocument;
+class Document;
+class Renderer;
 class DocumentViewPrivate;
 
 class DocumentView
@@ -36,10 +37,12 @@ class DocumentView
 	Q_OBJECT
 
 	public:
-		DocumentView(QTextDocument &document);
-		virtual ~DocumentView();
+		DocumentView(Document &document);
+		~DocumentView();
 		
-		QTextDocument &document() const;
+		Document &document();
+		const QFont &font();
+		void setFont(const QFont &font);
 	
 	public Q_SLOTS:
 		void enableHorizontalNumberWidget();
@@ -47,6 +50,7 @@ class DocumentView
 	
 	private:
 		void setupUi();
+		Renderer &renderer();
 	
 		DocumentViewPrivate *d;
 

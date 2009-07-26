@@ -17,23 +17,36 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef QSOURCEVIEW_DOCUMENT_RANGE_H
-#define QSOURCEVIEW_DOCUMENT_RANGE_H
+#include <QWidget>
 
-#include "documentposition.h"
+class QPaintEvent;
 
 namespace QSourceView
 {
 
-class DocumentRange
+class DocumentView;
+class Renderer;
+
+class DocumentViewInternal
+	: public QWidget
 {
 
 	public:
-		DocumentRange(const DocumentPosition &start,
-			const DocumentPosition &end);
+		DocumentViewInternal(DocumentView &parentView,
+			Renderer &renderer);
+		
+	protected:
+		void paintEvent(QPaintEvent *event);
+	
+	private:
+		int startX() { return m_startX; }
+		Renderer &renderer() { return *m_renderer; }
+	
+		// This is a hidden class so private members are ok
+		DocumentView *m_view;
+		Renderer *m_renderer;
+		int m_startX;
 
 };
 
 }
-
-#endif

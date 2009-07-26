@@ -17,20 +17,40 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef QSOURCEVIEW_DOCUMENT_RANGE_H
-#define QSOURCEVIEW_DOCUMENT_RANGE_H
+#ifndef QSOURCEVIEW_STANDARD_DOCUMENT_H
+#define QSOURCEVIEW_STANDARD_DOCUMENT_H
 
-#include "documentposition.h"
+#include "document.h"
+
+class QString;
 
 namespace QSourceView
 {
 
-class DocumentRange
+class DocumentRange;
+class StandardDocumentPrivate;
+
+class StandardDocument
+	: public Document
 {
 
 	public:
-		DocumentRange(const DocumentPosition &start,
-			const DocumentPosition &end);
+		StandardDocument(QObject *parent = 0);
+		~StandardDocument();
+		
+		QString text(unsigned int line) const;
+		unsigned int lineCount() const;
+		unsigned int lineSize(unsigned int line) const; 
+		void clear();
+		DocumentPosition end() const;
+	
+	protected:
+		void onInsertText(const DocumentPosition &position,
+			const QString &text);
+		void onRemoveText(const DocumentRange &range);
+	
+	private:
+		StandardDocumentPrivate *d;
 
 };
 

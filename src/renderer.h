@@ -17,23 +17,27 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef QSOURCEVIEW_DOCUMENT_RANGE_H
-#define QSOURCEVIEW_DOCUMENT_RANGE_H
-
-#include "documentposition.h"
+#include <QFont>
 
 namespace QSourceView
 {
 
-class DocumentRange
+class DocumentView;
+
+class Renderer
 {
 
 	public:
-		DocumentRange(const DocumentPosition &start,
-			const DocumentPosition &end);
+		Renderer(DocumentView *view);
+		
+		const QFont &font() { return m_font; }
+		void setFont(const QFont &font);
+		int fontHeight();
+	
+	private:
+		QFont m_font;
 
 };
 
 }
 
-#endif

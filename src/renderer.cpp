@@ -17,23 +17,13 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef QSOURCEVIEW_DOCUMENT_RANGE_H
-#define QSOURCEVIEW_DOCUMENT_RANGE_H
-
-#include "documentposition.h"
+#include "renderer.h"
 
 namespace QSourceView
 {
 
-class DocumentRange
+Renderer::Renderer(DocumentView *view)
 {
-
-	public:
-		DocumentRange(const DocumentPosition &start,
-			const DocumentPosition &end);
-
-};
-
 }
 
-#endif
+}

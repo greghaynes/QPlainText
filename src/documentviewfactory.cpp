@@ -17,23 +17,56 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef QSOURCEVIEW_DOCUMENT_RANGE_H
-#define QSOURCEVIEW_DOCUMENT_RANGE_H
+#include "documentviewfactory.h"
+#include "documentview.h"
 
-#include "documentposition.h"
+#include <QPointer>
+#include <QList>
+
+#include "documentviewfactory.moc"
 
 namespace QSourceView
 {
 
-class DocumentRange
+class DocumentViewFactoryPrivate
 {
 
 	public:
-		DocumentRange(const DocumentPosition &start,
-			const DocumentPosition &end);
+		QList<DocumentView*> views;
 
 };
 
+DocumentViewFactory::DocumentViewFactory(QObject *parent)
+	: QObject(parent)
+	, d(new DocumentViewFactoryPrivate)
+{
 }
 
-#endif
+DocumentViewFactory::~DocumentViewFactory()
+{
+	delete d;
+}
+
+const QList<DocumentView*> DocumentViewFactory::views() const
+{
+	return d->views;
+}
+
+DocumentView *DocumentViewFactory::createView(Document &document) const
+{
+	return new DocumentView(document);
+}
+
+void DocumentViewFactory::insertView(DocumentView &view)
+{
+	connect(&view, SIGNAL(destroyed(QObject*)),
+		this, SLOT(documentViewDestroyed(QObject*)));
+	d->views.append(&view);
+}
+
+void DocumentViewFactory::documentViewDestroyed(QObject *obj)
+{
+	d->views.removeAll((DocumentView*)(obj));
+}
+
+}

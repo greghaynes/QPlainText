@@ -17,20 +17,43 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef QSOURCEVIEW_DOCUMENT_RANGE_H
-#define QSOURCEVIEW_DOCUMENT_RANGE_H
+#ifndef QSOURCEVIEW_DOCUMENT_VIEW_FACTORY_H
+#define QSOURCEVIEW_DOCUMENT_VIEW_FACTORY_H
 
-#include "documentposition.h"
+#include <QTextDocument>
 
 namespace QSourceView
 {
 
-class DocumentRange
+class Document;
+class DocumentView;
+class DocumentViewFactoryPrivate;
+
+class DocumentViewFactory
+	: public QObject
 {
+	Q_OBJECT
 
 	public:
-		DocumentRange(const DocumentPosition &start,
-			const DocumentPosition &end);
+		DocumentViewFactory(QObject *parent = 0);
+		virtual ~DocumentViewFactory();
+
+		const QList<DocumentView*> views() const;
+		virtual DocumentView *createView(Document &document) const;
+		
+		/**
+		 * @brief Inserts view into view list
+		 *
+		 * Does not manage the inserted view, only appends it to
+		 * the views() list.
+		 */
+		void insertView(DocumentView &view);
+	
+	private Q_SLOTS:
+		void documentViewDestroyed(QObject *obj);
+		
+	private:
+		DocumentViewFactoryPrivate *d;
 
 };
 
