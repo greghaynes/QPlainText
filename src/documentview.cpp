@@ -18,6 +18,7 @@
  */
 
 #include "documentview.h"
+#include "documentviewfactory.h"
 #include "documentviewinternal.h"
 #include "renderer.h"
 #include "document.h"
@@ -48,6 +49,7 @@ DocumentView::DocumentView(Document &document)
 	: QWidget(0)
 	, d(new DocumentViewPrivate)
 {
+	document.viewFactory().insertView(*this);
 	d->document = &document;
 	d->renderer = new Renderer(this);
 	d->internalView = new DocumentViewInternal(*this, *d->renderer);

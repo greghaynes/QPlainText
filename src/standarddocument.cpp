@@ -48,7 +48,7 @@ StandardDocument::~StandardDocument()
 
 QString StandardDocument::text(unsigned int line) const
 {
-	if( line < d->lines.size() )
+	if( line < (unsigned int)d->lines.size() )
 	{
 		return d->lines.at(line);
 	}
@@ -71,19 +71,27 @@ unsigned int StandardDocument::lineSize(unsigned int line) const
 void StandardDocument::clear()
 {
 	d->lines.clear();
+	d->lines.append("");
 }
 
 DocumentPosition StandardDocument::end() const
 {
-	if(d->lines.size() > 0)
-		return DocumentPosition(d->lines.size()-1, d->lines[d->lines.size()-1].size());
-	else
-		return DocumentPosition(0, 0);
+	unsigned int line = d->lines.size() - 1;
+	unsigned int column = d->lines.last().size()-1;
+	return DocumentPosition(line, column);
 }
 
 void StandardDocument::onInsertText(const DocumentPosition &position,
 	const QString &text)
 {
+	QStringList list = text.split('\n');
+	d->lines.last().append(list[0]);
+	if(list.size() > 1)
+	{
+		int i;
+		for(i = 1;i < list.size(); i++)
+			d->lines.append(list[i]);
+	}
 }
 
 void StandardDocument::onRemoveText(const DocumentRange &range)

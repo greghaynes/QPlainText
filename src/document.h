@@ -40,7 +40,7 @@ class Document
 		Document(QObject *parent = 0);
 		virtual ~Document();
 		
-		const DocumentViewFactory &viewFactory() const;
+		DocumentViewFactory &viewFactory();
 		void setViewFactory(DocumentViewFactory &factory);
 		virtual QString text(unsigned int line) const = 0;
 		virtual unsigned int lineCount() const = 0;

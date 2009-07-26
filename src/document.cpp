@@ -22,6 +22,7 @@
 #include "documentposition.h"
 
 #include <QList>
+#include <QDebug>
 
 #include "document.moc"
 
@@ -48,7 +49,7 @@ Document::~Document()
 	delete d;
 }
 
-const DocumentViewFactory &Document::viewFactory() const
+DocumentViewFactory &Document::viewFactory()
 {
 	return *d->viewFactory;
 }

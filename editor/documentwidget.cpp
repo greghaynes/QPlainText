@@ -27,6 +27,7 @@
 #include <QVBoxLayout>
 #include <QTextDocument>
 #include <QFile>
+#include <QDebug>
 
 #include "documentwidget.moc"
 
@@ -43,7 +44,9 @@ void DocumentWidget::slotOpen()
 	if(!path.isEmpty())
 	{
 		QFile file(path);
-		docView->document().appendText(file.readAll());
+		file.open(QIODevice::ReadOnly | QIODevice::Text);
+		while(!file.atEnd())
+			docView->document().appendText(file.read(1024));
 	}
 }
 
