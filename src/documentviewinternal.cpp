@@ -68,6 +68,10 @@ DocumentViewInternal::DocumentViewInternal(DocumentView &parentView,
 	caretTimer->start(500);
 }
 
+void DocumentViewInternal::setCenterLine(unsigned int line)
+{
+}
+
 void DocumentViewInternal::paintEvent(QPaintEvent *event)
 {
 	QRect rect = event->rect();
@@ -132,7 +136,7 @@ void DocumentViewInternal::paintCaret(QPainter &paint)
 	
 	if(m_caret->is_visible)
 	{
-		if(m_caret->column() >= m_view->document().text(m_caret->line()).size())
+		if(m_caret->column() >= (unsigned int)m_view->document().text(m_caret->line()).size())
 			paint.fillRect(bound, Qt::white);
 		else
 			paint.drawText(bound, QString(m_view->document().text(m_caret->line())[m_caret->column()]));

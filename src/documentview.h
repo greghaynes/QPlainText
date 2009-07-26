@@ -47,6 +47,7 @@ class DocumentView
 		void enableVerticalNumberWidget();
 	
 	private:
+		unsigned int longestLine();
 		void setupUi();
 		Renderer &renderer();
 	

@@ -27,6 +27,7 @@
 #include <QHBoxLayout>
 #include <QTextEdit>
 #include <QFont>
+#include <QScrollBar>
 
 #include "documentview.moc"
 
@@ -42,6 +43,8 @@ class DocumentViewPrivate
 		DocumentViewInternal *internalView;
 		NumberedListWidget *horiz_numbers;
 		NumberedListWidget *vert_numbers;
+		QScrollBar *horiz_scrollBar;
+		QScrollBar *vert_scrollBar;
 
 };
 
@@ -53,6 +56,10 @@ DocumentView::DocumentView(Document &document)
 	d->document = &document;
 	d->renderer = new Renderer(this);
 	d->internalView = new DocumentViewInternal(*this, *d->renderer);
+	d->horiz_scrollBar = new QScrollBar(Qt::Horizontal);
+	d->vert_scrollBar = new QScrollBar(Qt::Vertical);
+	d->vert_scrollBar->setMaximum(document.lineCount());
+	d->horiz_scrollBar->setVisible(false);
 	setupUi();
 }
 
@@ -76,10 +83,17 @@ void DocumentView::enableVerticalNumberWidget()
 
 void DocumentView::setupUi()
 {
-	QHBoxLayout *hlayout = new QHBoxLayout(this);
+	QHBoxLayout *hlayout = new QHBoxLayout();
+	QVBoxLayout *vlayout = new QVBoxLayout(this);
 	hlayout->setContentsMargins(0, 0, 0, 0);
+	hlayout->setSpacing(0);
+	vlayout->setContentsMargins(0, 0, 0, 0);
+	vlayout->setSpacing(0);
 	hlayout->addWidget(d->internalView);
-	setLayout(hlayout);
+	hlayout->addWidget(d->vert_scrollBar);
+	vlayout->addLayout(hlayout);
+	vlayout->addWidget(d->horiz_scrollBar);
+	setLayout(vlayout);
 }
 
 Renderer &DocumentView::renderer()
