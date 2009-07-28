@@ -42,10 +42,13 @@ class DocumentViewInternal
 		DocumentViewInternal(DocumentView &parentView,
 			Renderer &renderer);
 		
-		unsigned int currentCenterLine(unsigned int line);
+		int startY() const;
+		int startX() const;
+		int endY() const;
 	
 	public Q_SLOTS:
-		void setCenterLine(unsigned int line);
+		void setStartY(int x);
+		void setStartX(int x);
 		
 	protected:
 		void paintEvent(QPaintEvent *event);
@@ -56,13 +59,14 @@ class DocumentViewInternal
 	
 	private:
 		void paintCaret(QPainter &paint);
-		int startX() { return m_startX; }
 		Renderer &renderer() { return *m_renderer; }
+		unsigned int lineAt(unsigned int x) const;
 	
 		// This is a hidden class so private members are ok
 		DocumentView *m_view;
 		Renderer *m_renderer;
 		int m_startX;
+		int m_startY;
 		TextCursor *m_caret;
 
 };

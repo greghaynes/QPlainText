@@ -28,6 +28,7 @@
 #include <QTimer>
 #include <QCursor>
 #include <QMouseEvent>
+#include <QRect>
 
 #include "documentviewinternal.moc"
 
@@ -57,6 +58,7 @@ DocumentViewInternal::DocumentViewInternal(DocumentView &parentView,
 	, m_view(&parentView)
 	, m_renderer(&renderer)
 	, m_startX(0)
+	, m_startY(0)
 	, m_caret(new TextCursor)
 {
 	setAttribute(Qt::WA_OpaquePaintEvent);
@@ -68,8 +70,31 @@ DocumentViewInternal::DocumentViewInternal(DocumentView &parentView,
 	caretTimer->start(500);
 }
 
-void DocumentViewInternal::setCenterLine(unsigned int line)
+int DocumentViewInternal::startX() const
 {
+	return m_startX;
+}
+
+int DocumentViewInternal::startY() const
+{
+	return m_startY;
+}
+
+int DocumentViewInternal::endY() const
+{
+	return m_view->document().lineCount() * fontMetrics().height();
+}
+
+void DocumentViewInternal::setStartX(int x)
+{
+	m_startX = x;
+	update();
+}
+
+void DocumentViewInternal::setStartY(int y)
+{
+	m_startY = y;
+	update();
 }
 
 void DocumentViewInternal::paintEvent(QPaintEvent *event)
@@ -77,29 +102,19 @@ void DocumentViewInternal::paintEvent(QPaintEvent *event)
 	QRect rect = event->rect();
 	QPainter paint(this);
 	
-	int xStart = startX() + rect.x();
 	unsigned int fontHeight = fontMetrics().height();
-	int lineCount = rect.height() / fontHeight;
-	int lineStart = rect.y() / fontHeight;
-	int lineEnd = lineStart + lineCount;
-	
-	QRect bound;
-	QString text;
-	// Top excess
-	bound = QRect(0, rect.y(), rect.width(), fontHeight - rect.y());
-	text =  m_view->document().text(lineStart);
-	paint.fillRect(bound, Qt::white);
-	paint.drawText(bound, text);
-	
-	int line;
-	for(line = lineStart; line < lineEnd; line++)
+	int lineYStart = (startY() % fontHeight);
+	int lineNumStart = startY() / fontHeight;
+	int numLines = (height() / fontHeight) + 2;
+	int i;
+	Document *doc = &m_view->document();
+	for(i = 0;i < numLines;i++,lineNumStart++)
 	{
-		bound = QRect(xStart, (line+1)*fontHeight, rect.width(), fontHeight);
-		text = m_view->document().text(line+1);
+		QRect bound = QRect(0, (i*fontHeight) - lineYStart, rect.width(), fontHeight);
 		paint.fillRect(bound, Qt::white);
-		paint.drawText(bound, text);
+		paint.drawText(bound, doc->text(lineNumStart));
 	}
-	
+
 	paintCaret(paint);
 }
 
@@ -151,6 +166,11 @@ void DocumentViewInternal::toggleCaretVisibility()
 {
 	m_caret->is_visible = !m_caret->is_visible;
 	update();
+}
+
+unsigned int DocumentViewInternal::lineAt(unsigned int x) const
+{
+	
 }
 
 }

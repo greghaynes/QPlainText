@@ -28,6 +28,7 @@
 #include <QTextEdit>
 #include <QFont>
 #include <QScrollBar>
+#include <QDebug>
 
 #include "documentview.moc"
 
@@ -54,11 +55,16 @@ DocumentView::DocumentView(Document &document)
 {
 	document.viewFactory().insertView(*this);
 	d->document = &document;
+	connect(d->document, SIGNAL(textInserted(const DocumentPosition&, const QString&)),
+		this, SLOT(slotDocumentTextInserted(const DocumentPosition&, const QString &)));
 	d->renderer = new Renderer(this);
 	d->internalView = new DocumentViewInternal(*this, *d->renderer);
 	d->horiz_scrollBar = new QScrollBar(Qt::Horizontal);
 	d->vert_scrollBar = new QScrollBar(Qt::Vertical);
-	d->vert_scrollBar->setMaximum(document.lineCount());
+	d->vert_scrollBar->setMaximum(d->internalView->endY());
+	d->vert_scrollBar->setSingleStep(1);
+	connect(d->vert_scrollBar, SIGNAL(sliderMoved(int)),
+		d->internalView, SLOT(setStartY(int)));
 	d->horiz_scrollBar->setVisible(false);
 	setupUi();
 }
@@ -79,6 +85,12 @@ void DocumentView::enableHorizontalNumberWidget()
 
 void DocumentView::enableVerticalNumberWidget()
 {
+}
+
+void DocumentView::slotDocumentTextInserted(const DocumentPosition &pos,
+	const QString &text)
+{
+	d->vert_scrollBar->setRange(0, d->internalView->endY());
 }
 
 void DocumentView::setupUi()

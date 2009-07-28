@@ -29,6 +29,7 @@ namespace QSourceView
 
 class Document;
 class Renderer;
+class DocumentPosition;
 class DocumentViewPrivate;
 
 class DocumentView
@@ -45,6 +46,10 @@ class DocumentView
 	public Q_SLOTS:
 		void enableHorizontalNumberWidget();
 		void enableVerticalNumberWidget();
+	
+	private Q_SLOTS:
+		void slotDocumentTextInserted(const DocumentPosition &position,
+			const QString &text);
 	
 	private:
 		unsigned int longestLine();
