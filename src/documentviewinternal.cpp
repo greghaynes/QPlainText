@@ -24,6 +24,7 @@
 
 #include <QPaintEvent>
 #include <QPainter>
+#include <QResizeEvent>
 #include <QFontMetrics>
 #include <QTimer>
 #include <QCursor>
@@ -116,6 +117,11 @@ void DocumentViewInternal::paintEvent(QPaintEvent *event)
 	}
 
 	paintCaret(paint);
+}
+
+void DocumentViewInternal::resizeEvent(QResizeEvent *event)
+{
+	emit(sizeChanged(event->size().width(), event->size().height()));
 }
 
 void DocumentViewInternal::mousePressEvent(QMouseEvent *event)

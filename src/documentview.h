@@ -50,11 +50,13 @@ class DocumentView
 	private Q_SLOTS:
 		void slotDocumentTextInserted(const DocumentPosition &position,
 			const QString &text);
+		void slotInternalViewResize(int width, int height);
 	
 	private:
 		unsigned int longestLine();
 		void setupUi();
 		Renderer &renderer();
+		void resizeScrollbar();
 	
 		DocumentViewPrivate *d;
 
