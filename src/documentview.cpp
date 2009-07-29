@@ -59,6 +59,8 @@ DocumentView::DocumentView(Document &document)
 		this, SLOT(slotDocumentTextInserted(const DocumentPosition&, const QString &)));
 	d->renderer = new Renderer(this);
 	d->internalView = new DocumentViewInternal(*this, *d->renderer);
+	connect(d->internalView, SIGNAL(sizeChanged(int, int)),
+		this, SLOT(slotInternalViewResize(int, int)));
 	d->horiz_scrollBar = new QScrollBar(Qt::Horizontal);
 	d->vert_scrollBar = new QScrollBar(Qt::Vertical);
 	d->vert_scrollBar->setMaximum(d->internalView->endY());
@@ -90,7 +92,16 @@ void DocumentView::enableVerticalNumberWidget()
 void DocumentView::slotDocumentTextInserted(const DocumentPosition &pos,
 	const QString &text)
 {
-	d->vert_scrollBar->setRange(0, d->internalView->endY());
+	Q_UNUSED(pos)
+	Q_UNUSED(text)
+	resizeScrollbar();
+}
+
+void DocumentView::slotInternalViewResize(int width, int height)
+{
+	Q_UNUSED(width)
+	Q_UNUSED(height)
+	resizeScrollbar();
 }
 
 void DocumentView::setupUi()
@@ -111,6 +122,14 @@ void DocumentView::setupUi()
 Renderer &DocumentView::renderer()
 {
 	return *d->renderer;
+}
+
+void DocumentView::resizeScrollbar()
+{
+	int endY = d->internalView->endY() - d->internalView->height();
+	if(endY < 0)
+		endY = 0;
+	d->vert_scrollBar->setRange(0, endY);
 }
 
 }
