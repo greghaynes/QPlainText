@@ -27,6 +27,7 @@ int main(int argc, char **argv)
 	
 	DocumentWidget widget;
 	widget.setVisible(true);
+	widget.resize(450, 500);
 	return app.exec();
 }
 

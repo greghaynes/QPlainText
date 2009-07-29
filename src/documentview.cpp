@@ -128,8 +128,14 @@ void DocumentView::resizeScrollbar()
 {
 	int endY = d->internalView->endY() - d->internalView->height();
 	if(endY < 0)
-		endY = 0;
-	d->vert_scrollBar->setRange(0, endY);
+	{
+		d->vert_scrollBar->setVisible(false);
+	}
+	else
+	{
+		d->vert_scrollBar->setVisible(true);
+		d->vert_scrollBar->setRange(0, endY);
+	}
 }
 
 }
