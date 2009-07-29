@@ -105,9 +105,10 @@ void DocumentViewInternal::paintEvent(QPaintEvent *event)
 	
 	unsigned int fontHeight = fontMetrics().height();
 	int lineYStart = (startY() % fontHeight);
-	int lineNumStart = startY() / fontHeight;
+	int lineNumStart = lineAt(startY());
 	int numLines = (height() / fontHeight) + 2;
 	int i;
+	// Paint the text
 	Document *doc = &m_view->document();
 	for(i = 0;i < numLines;i++,lineNumStart++)
 	{
@@ -126,7 +127,7 @@ void DocumentViewInternal::resizeEvent(QResizeEvent *event)
 
 void DocumentViewInternal::mousePressEvent(QMouseEvent *event)
 {
-	unsigned int pressLine = event->y() / fontMetrics().height();
+	unsigned int pressLine = lineAt(event->y()+startY());
 	unsigned int pressColumn;
 	if(pressLine >= m_view->document().lineCount())
 	{
@@ -150,10 +151,14 @@ void DocumentViewInternal::mousePressEvent(QMouseEvent *event)
 
 void DocumentViewInternal::paintCaret(QPainter &paint)
 {
+	unsigned int startLine = lineAt(startY());
+	if(startLine > m_caret->line()
+	   || lineAt(startY()+height()) <= m_caret->line())
+		return;
 	// Text printed infront of cursor
 	QString prevline = m_view->document().text(m_caret->line()).left(m_caret->column());
 	int xStart = fontMetrics().width(prevline);
-	QRect bound = QRect(xStart, fontMetrics().height()*m_caret->line(), 1, fontMetrics().height());
+	QRect bound = QRect(xStart, (fontMetrics().height()*m_caret->line()) - startY(), 1, fontMetrics().height());
 	
 	if(m_caret->is_visible)
 	{
@@ -176,7 +181,7 @@ void DocumentViewInternal::toggleCaretVisibility()
 
 unsigned int DocumentViewInternal::lineAt(unsigned int x) const
 {
-	
+	return x / fontMetrics().height();
 }
 
 }
