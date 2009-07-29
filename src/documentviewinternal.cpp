@@ -121,7 +121,7 @@ void DocumentViewInternal::paintEvent(QPaintEvent *event)
 
 void DocumentViewInternal::mousePressEvent(QMouseEvent *event)
 {
-	unsigned int pressLine = lineAt(event->y());
+	unsigned int pressLine = lineAt(event->y()+startY());
 	unsigned int pressColumn;
 	if(pressLine >= m_view->document().lineCount())
 	{
@@ -147,7 +147,7 @@ void DocumentViewInternal::paintCaret(QPainter &paint)
 {
 	unsigned int startLine = lineAt(startY());
 	if(startLine > m_caret->line()
-	   || lineAt(startLine+height()) < m_caret->line())
+	   || lineAt(startY()+height()) <= m_caret->line())
 		return;
 	// Text printed infront of cursor
 	QString prevline = m_view->document().text(m_caret->line()).left(m_caret->column());
