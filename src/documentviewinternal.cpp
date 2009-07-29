@@ -166,7 +166,7 @@ void DocumentViewInternal::wheelEvent(QWheelEvent *event)
 	event->ignore();
 	if(event->orientation() == Qt::Vertical)
 	{
-		setStartY(startY() - (event->delta() / 8));
+		setStartY(startY() - (event->delta() / 30));
 	}
 }
 
