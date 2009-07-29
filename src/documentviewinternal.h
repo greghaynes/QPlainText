@@ -25,6 +25,7 @@
 class QPaintEvent;
 class QMouseEvent;
 class QPainter;
+class QResizeEvent;
 
 namespace QSourceView
 {
@@ -45,6 +46,9 @@ class DocumentViewInternal
 		int startY() const;
 		int startX() const;
 		int endY() const;
+
+	Q_SIGNALS:
+		void sizeChanged(int width, int height);
 	
 	public Q_SLOTS:
 		void setStartY(int x);
@@ -53,6 +57,7 @@ class DocumentViewInternal
 	protected:
 		void paintEvent(QPaintEvent *event);
 		void mousePressEvent(QMouseEvent *event);
+		void resizeEvent(QResizeEvent *event);
 	
 	private Q_SLOTS:
 		void toggleCaretVisibility();
