@@ -25,11 +25,14 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QResizeEvent>
+#include <QWheelEvent>
 #include <QFontMetrics>
 #include <QTimer>
 #include <QCursor>
 #include <QMouseEvent>
 #include <QRect>
+
+#include <QDebug>
 
 #include "documentviewinternal.moc"
 
@@ -88,14 +91,23 @@ int DocumentViewInternal::endY() const
 
 void DocumentViewInternal::setStartX(int x)
 {
-	m_startX = x;
+	if(x < 0)
+		m_startX = 0;
+	else
+		m_startX = x;
 	update();
 }
 
 void DocumentViewInternal::setStartY(int y)
 {
-	m_startY = y;
+	if(y < 0)
+		m_startY = 0;
+	else if(y > endY() - height())
+		m_startY = endY() - height();
+	else
+		m_startY = y;
 	update();
+	emit(startYChanged(m_startY));
 }
 
 void DocumentViewInternal::paintEvent(QPaintEvent *event)
@@ -147,6 +159,15 @@ void DocumentViewInternal::mousePressEvent(QMouseEvent *event)
 	m_caret->setColumn(pressColumn);
 	m_caret->is_visible = true;
 	update();
+}
+
+void DocumentViewInternal::wheelEvent(QWheelEvent *event)
+{
+	event->ignore();
+	if(event->orientation() == Qt::Vertical)
+	{
+		setStartY(startY() - (event->delta() / 8));
+	}
 }
 
 void DocumentViewInternal::paintCaret(QPainter &paint)

@@ -67,6 +67,8 @@ DocumentView::DocumentView(Document &document)
 	d->vert_scrollBar->setSingleStep(1);
 	connect(d->vert_scrollBar, SIGNAL(sliderMoved(int)),
 		d->internalView, SLOT(setStartY(int)));
+	connect(d->internalView, SIGNAL(startYChanged(int)),
+		d->vert_scrollBar, SLOT(setValue(int)));
 	d->horiz_scrollBar->setVisible(false);
 	setupUi();
 }

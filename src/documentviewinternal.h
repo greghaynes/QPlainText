@@ -48,7 +48,9 @@ class DocumentViewInternal
 		int endY() const;
 
 	Q_SIGNALS:
-		void sizeChanged(int width, int height);
+		void sizeChanged(int width = 0, int height = 0);
+		void startYChanged(int y = 0);
+		void startXChanged(int x = 0);
 	
 	public Q_SLOTS:
 		void setStartY(int x);
@@ -57,6 +59,7 @@ class DocumentViewInternal
 	protected:
 		void paintEvent(QPaintEvent *event);
 		void mousePressEvent(QMouseEvent *event);
+		void wheelEvent(QWheelEvent *event);
 		void resizeEvent(QResizeEvent *event);
 	
 	private Q_SLOTS:
