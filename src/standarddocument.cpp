@@ -22,6 +22,7 @@
 #include <QString>
 #include <QStringList>
 #include <QList>
+#include <QDebug>
 
 namespace QSourceView
 {
@@ -77,21 +78,26 @@ void StandardDocument::clear()
 DocumentPosition StandardDocument::end() const
 {
 	unsigned int line = d->lines.size() - 1;
-	unsigned int column = d->lines.last().size()-1;
+	unsigned int column;
+	if (d->lines.last().size() == 0)
+		column = 0;
+	else
+		column = d->lines.last().size()-1;
 	return DocumentPosition(line, column);
 }
 
 void StandardDocument::onInsertText(const DocumentPosition &position,
 	const QString &insText)
 {
+	qDebug() << position.line() << ":" << position.column();
 	// Make sure the position is valid
 	if((lineCount()-1) < position.line()
-	   || (text(position.line()).size()-1) < position.column())
+	   || (text(position.line()).size()) < position.column())
 		return;
 	
 	QStringList insList = insText.split('\n');
 	// Append first line to position line
-	d->lines[position.line()].append(insList[0]);
+	d->lines[position.line()].insert(position.column(), insList[0]);
 
 	// Append bulk of lines after position line
 	if(insList.size() > 1)

@@ -66,6 +66,7 @@ DocumentViewInternal::DocumentViewInternal(DocumentView &parentView,
 	, m_caret(new TextCursor)
 {
 	setAttribute(Qt::WA_OpaquePaintEvent);
+	setFocusPolicy(Qt::ClickFocus);
 	setCursor(Qt::IBeamCursor);
 	QTimer *caretTimer = new QTimer(this);
 	caretTimer->setSingleShot(false);
@@ -135,6 +136,20 @@ void DocumentViewInternal::paintEvent(QPaintEvent *event)
 void DocumentViewInternal::resizeEvent(QResizeEvent *event)
 {
 	emit(sizeChanged(event->size().width(), event->size().height()));
+}
+
+void DocumentViewInternal::keyPressEvent(QKeyEvent *event)
+{
+	qDebug() << event->text();
+	if(!event->text().isEmpty())
+	{
+		m_view->document().insertText(*m_caret, event->text());
+		if(event->text() == "\n")
+			m_caret->setLine(m_caret->line()+1);
+		else
+			m_caret->setColumn(m_caret->column()+1);
+		update();
+	}
 }
 
 void DocumentViewInternal::mousePressEvent(QMouseEvent *event)

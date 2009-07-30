@@ -23,6 +23,7 @@
 #include <QWidget>
 
 class QPaintEvent;
+class QKeyEvent;
 class QMouseEvent;
 class QPainter;
 class QResizeEvent;
@@ -58,6 +59,7 @@ class DocumentViewInternal
 		
 	protected:
 		void paintEvent(QPaintEvent *event);
+		void keyPressEvent(QKeyEvent *event);
 		void mousePressEvent(QMouseEvent *event);
 		void wheelEvent(QWheelEvent *event);
 		void resizeEvent(QResizeEvent *event);
