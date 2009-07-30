@@ -141,15 +141,24 @@ void DocumentViewInternal::resizeEvent(QResizeEvent *event)
 void DocumentViewInternal::keyPressEvent(QKeyEvent *event)
 {
 	qDebug() << event->text();
-	if(!event->text().isEmpty())
+	QString insert;
+	int col_advance = 0;
+	int line_advance = 0;
+	switch(event->key())
 	{
-		m_view->document().insertText(*m_caret, event->text());
-		if(event->text() == "\n")
-			m_caret->setLine(m_caret->line()+1);
-		else
-			m_caret->setColumn(m_caret->column()+1);
-		update();
+		case Qt::Key_Return:
+		case Qt::Key_Enter:
+			insert = "\n";
+			line_advance = 1;
+			break;
+		default:
+			insert = event->text();
+			col_advance = 1;
 	}
+	m_view->document().insertText(*m_caret, event->text());
+	m_caret->setLine(m_caret->line()+line_advance);
+	m_caret->setColumn(m_caret->column()+col_advance);
+	update();
 }
 
 void DocumentViewInternal::mousePressEvent(QMouseEvent *event)

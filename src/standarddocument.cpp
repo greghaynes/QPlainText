@@ -89,7 +89,6 @@ DocumentPosition StandardDocument::end() const
 void StandardDocument::onInsertText(const DocumentPosition &position,
 	const QString &insText)
 {
-	qDebug() << position.line() << ":" << position.column();
 	// Make sure the position is valid
 	if((lineCount()-1) < position.line()
 	   || (text(position.line()).size()) < position.column())
