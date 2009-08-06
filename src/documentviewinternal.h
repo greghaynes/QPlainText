@@ -33,6 +33,7 @@ namespace QSourceView
 
 class DocumentView;
 class TextCursor;
+class DocumentPosition;
 class Renderer;
 
 class DocumentViewInternal
@@ -47,6 +48,8 @@ class DocumentViewInternal
 		int startY() const;
 		int startX() const;
 		int endY() const;
+		const DocumentPosition &caretPosition() const;
+		void setCaretPosition(const DocumentPosition &pos);
 
 	Q_SIGNALS:
 		void sizeChanged(int width = 0, int height = 0);

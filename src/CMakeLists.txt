@@ -14,6 +14,7 @@ set(QSOURCEVIEW_HDRS
 	documentviewfactory.h
 	documentview.h
 	documentviewinternal.h
+	documentcontroller.h
 	renderer.h
 	numberedlistwidget.h)
 
@@ -25,6 +26,7 @@ set(QSOURCEVIEW_SRCS
 	documentviewfactory.cpp
 	documentview.cpp
 	documentviewinternal.cpp
+	documentcontroller.cpp
 	renderer.cpp
 	numberedlistwidget.cpp)
 

@@ -20,6 +20,7 @@
 #include "documentview.h"
 #include "documentviewfactory.h"
 #include "documentviewinternal.h"
+#include "documentcontroller.h"
 #include "renderer.h"
 #include "document.h"
 #include "numberedlistwidget.h"
@@ -42,6 +43,7 @@ class DocumentViewPrivate
 		Document *document;
 		Renderer *renderer;
 		DocumentViewInternal *internalView;
+		DocumentController *controller;
 		NumberedListWidget *horiz_numbers;
 		NumberedListWidget *vert_numbers;
 		QScrollBar *horiz_scrollBar;
@@ -61,6 +63,7 @@ DocumentView::DocumentView(Document &document)
 	d->internalView = new DocumentViewInternal(*this, *d->renderer);
 	connect(d->internalView, SIGNAL(sizeChanged(int, int)),
 		this, SLOT(slotInternalViewResize(int, int)));
+	d->controller = new DocumentController(*this);
 	d->horiz_scrollBar = new QScrollBar(Qt::Horizontal);
 	d->vert_scrollBar = new QScrollBar(Qt::Vertical);
 	d->vert_scrollBar->setMaximum(d->internalView->endY());
@@ -81,6 +84,32 @@ DocumentView::~DocumentView()
 Document &DocumentView::document()
 {
 	return *d->document;
+}
+
+DocumentController &DocumentView::controller()
+{
+	return *d->controller;
+}
+
+void DocumentView::setController(DocumentController *controller)
+{
+	if(d->controller != controller)
+		delete d->controller;
+	
+	if(!controller)
+		d->controller = new DocumentController(*this);
+	else
+		d->controller = controller;
+}
+
+const DocumentPosition &DocumentView::caretPosition() const
+{
+	d->internalView->caretPosition();
+}
+
+void DocumentView::setCaretPosition(const DocumentPosition &pos)
+{
+	d->internalView->setCaretPosition(pos);
 }
 
 void DocumentView::enableHorizontalNumberWidget()

@@ -94,7 +94,14 @@ void StandardDocument::onInsertText(const DocumentPosition &position,
 	   || (text(position.line()).size()) < position.column())
 		return;
 	
-	QStringList insList = insText.split('\n');
+	QStringList insList;
+	if(insText[0] == '\n')
+	{
+		qDebug() << "Newline";
+		insList.prepend("");
+	}
+	insList.append(insText.split('\n'));
+	qDebug() << "Inserting " << insList.size() << " lines from " << insText;
 	// Append first line to position line
 	d->lines[position.line()].insert(position.column(), insList[0]);
 

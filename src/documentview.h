@@ -30,6 +30,7 @@ namespace QSourceView
 class Document;
 class Renderer;
 class DocumentPosition;
+class DocumentController;
 class DocumentViewPrivate;
 
 class DocumentView
@@ -42,6 +43,10 @@ class DocumentView
 		~DocumentView();
 		
 		Document &document();
+		DocumentController &controller();
+		void setController(DocumentController *controller);
+		const DocumentPosition &caretPosition() const;
+		void setCaretPosition(const DocumentPosition &pos);
 	
 	public Q_SLOTS:
 		void enableHorizontalNumberWidget();
