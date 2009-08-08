@@ -98,8 +98,10 @@ const DocumentPosition &DocumentViewInternal::caretPosition() const
 
 void DocumentViewInternal::setCaretPosition(const DocumentPosition &pos)
 {
-	m_caret->setLine(pos.line());
-	m_caret->setColumn(pos.column());
+	if(pos.line() < m_view->document().lineCount())
+		m_caret->setLine(pos.line());
+	if(pos.column() < m_view->document().text(caretPosition().line()).size())
+		m_caret->setColumn(pos.column());
 }
 
 void DocumentViewInternal::setStartX(int x)
@@ -113,10 +115,15 @@ void DocumentViewInternal::setStartX(int x)
 
 void DocumentViewInternal::setStartY(int y)
 {
+	qDebug() << y;
 	if(y < 0)
 		m_startY = 0;
-	else if(y > endY() - height())
+	else if(y > (endY() - height()))
+	{
 		m_startY = endY() - height();
+		if(m_startY < 0)
+			m_startY = 0;
+	}
 	else
 		m_startY = y;
 	update();
