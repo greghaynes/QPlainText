@@ -64,6 +64,14 @@ void DocumentController::keyPressEvent(QKeyEvent *event)
 		default:
 			insert = event->text();
 			col_advance = 1;
+			is_insert = true;
+	}
+	if(is_insert)
+	{
+		document().insertText(view().caretPosition(), insert);
+	}
+	else if(is_remove)
+	{
 	}
 	// The unsigned int wrapping causes these to work for positive and negative ends
 	if(!((line_advance+view().caretPosition().line()) > document().lineCount()))
@@ -74,12 +82,6 @@ void DocumentController::keyPressEvent(QKeyEvent *event)
 		pos.setColumn(view().caretPosition().column()+col_advance);
 	else
 		pos.setColumn(view().caretPosition().column());
-	if(is_insert)
-	{
-	}
-	else if(is_remove)
-	{
-	}
 	view().setCaretPosition(pos);
 }
 
