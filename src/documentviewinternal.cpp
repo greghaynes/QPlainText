@@ -98,9 +98,9 @@ const DocumentPosition &DocumentViewInternal::caretPosition() const
 
 void DocumentViewInternal::setCaretPosition(const DocumentPosition &pos)
 {
-	if(pos.line() < m_view->document().lineCount())
+	if(pos.line() <= m_view->document().lineCount())
 		m_caret->setLine(pos.line());
-	if(pos.column() < m_view->document().text(caretPosition().line()).size())
+	if(pos.column() <= m_view->document().text(caretPosition().line()).size())
 		m_caret->setColumn(pos.column());
 }
 

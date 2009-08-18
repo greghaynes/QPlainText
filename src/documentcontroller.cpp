@@ -24,6 +24,7 @@
 #include "documentrange.h"
 
 #include <QKeyEvent>
+#include <QDebug>
 
 namespace QSourceView
 {
@@ -78,10 +79,12 @@ void DocumentController::keyPressEvent(QKeyEvent *event)
 		pos.setLine(view().caretPosition().line()+line_advance);
 	else
 		pos.setLine(view().caretPosition().line());
-	if(!((col_advance+view().caretPosition().column()) > document().text(pos.line()).size()))
+	if(!((col_advance+view().caretPosition().column()) > document().text(pos.line()).size()+col_advance))
 		pos.setColumn(view().caretPosition().column()+col_advance);
 	else
+	{
 		pos.setColumn(view().caretPosition().column());
+	}
 	view().setCaretPosition(pos);
 }
 
