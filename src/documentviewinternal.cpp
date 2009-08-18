@@ -200,6 +200,8 @@ void DocumentViewInternal::wheelEvent(QWheelEvent *event)
 void DocumentViewInternal::paintCaret(QPainter &paint)
 {
 	int startLine = lineAt(startY());
+	if(!hasFocus())
+		return;
 	if(startLine > m_caret->line()
 	   || lineAt(startY()+height()) <= m_caret->line())
 		return;
