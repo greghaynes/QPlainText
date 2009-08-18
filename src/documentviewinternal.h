@@ -73,7 +73,7 @@ class DocumentViewInternal
 	private:
 		void paintCaret(QPainter &paint);
 		Renderer &renderer() { return *m_renderer; }
-		unsigned int lineAt(unsigned int x) const;
+		int lineAt(int x) const;
 	
 		// This is a hidden class so private members are ok
 		DocumentView *m_view;

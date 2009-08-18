@@ -28,8 +28,8 @@ DocumentPosition::DocumentPosition()
 {
 }
 
-DocumentPosition::DocumentPosition(unsigned int line,
-	unsigned int column)
+DocumentPosition::DocumentPosition(int line,
+	int column)
 	: m_line(line)
 	, m_column(column)
 {
@@ -79,22 +79,22 @@ bool DocumentPosition::operator>=(const DocumentPosition &other) const
 		return line() >= other.line();
 }
 
-unsigned int DocumentPosition::line() const
+int DocumentPosition::line() const
 {
 	return m_line;
 }
 
-unsigned int DocumentPosition::column() const
+int DocumentPosition::column() const
 {
 	return m_column;
 }
 
-void DocumentPosition::setLine(unsigned int line)
+void DocumentPosition::setLine(int line)
 {
 	m_line = line;
 }
 
-void DocumentPosition::setColumn(unsigned int column)
+void DocumentPosition::setColumn(int column)
 {
 	m_column = column;
 }

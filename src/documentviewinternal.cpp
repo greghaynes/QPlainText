@@ -98,7 +98,9 @@ const DocumentPosition &DocumentViewInternal::caretPosition() const
 
 void DocumentViewInternal::setCaretPosition(const DocumentPosition &pos)
 {
-	if(pos.line() <= m_view->document().lineCount())
+	if(pos.line() < m_view->document().lineCount() || 
+	   !m_view->document().text(m_view->document().lineCount()-1).isEmpty() && 
+		m_view->document().lineCount() == pos.line())
 		m_caret->setLine(pos.line());
 	if(pos.column() <= m_view->document().text(caretPosition().line()).size())
 		m_caret->setColumn(pos.column());
@@ -197,7 +199,7 @@ void DocumentViewInternal::wheelEvent(QWheelEvent *event)
 
 void DocumentViewInternal::paintCaret(QPainter &paint)
 {
-	unsigned int startLine = lineAt(startY());
+	int startLine = lineAt(startY());
 	if(startLine > m_caret->line()
 	   || lineAt(startY()+height()) <= m_caret->line())
 		return;
@@ -208,7 +210,7 @@ void DocumentViewInternal::paintCaret(QPainter &paint)
 	
 	if(m_caret->is_visible)
 	{
-		if(m_caret->column() >= (unsigned int)m_view->document().text(m_caret->line()).size())
+		if(m_caret->column() >= m_view->document().text(m_caret->line()).size())
 			paint.fillRect(bound, Qt::white);
 		else
 			paint.drawText(bound, QString(m_view->document().text(m_caret->line())[m_caret->column()]));
@@ -225,7 +227,7 @@ void DocumentViewInternal::toggleCaretVisibility()
 	update();
 }
 
-unsigned int DocumentViewInternal::lineAt(unsigned int x) const
+int DocumentViewInternal::lineAt(int x) const
 {
 	return x / fontMetrics().height();
 }

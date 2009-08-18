@@ -47,24 +47,20 @@ StandardDocument::~StandardDocument()
 	delete d;
 }
 
-QString StandardDocument::text(unsigned int line) const
+QString StandardDocument::text(int line) const
 {
-	if( line < (unsigned int)d->lines.size() )
-	{
+	if( line < d->lines.size() )
 		return d->lines.at(line);
-	}
 	else
-	{
 		return QString();
-	}
 }
 
-unsigned int StandardDocument::lineCount() const
+int StandardDocument::lineCount() const
 {
 	return d->lines.size();
 }
 
-unsigned int StandardDocument::lineSize(unsigned int line) const
+int StandardDocument::lineSize(int line) const
 {
 	return d->lines[line].size();
 }
@@ -115,7 +111,7 @@ void StandardDocument::onInsertText(const DocumentPosition &position,
 				d->lines.insert(position.line() + i, insList[i]);
 		}
 		// We want any text after insert to be appended on that line
-		unsigned int endLine = position.line() + insList.size();
+		int endLine = position.line() + insList.size();
 		if((lineCount()-1) < endLine)
 			d->lines.append(insList.last());
 		else

@@ -32,8 +32,8 @@ class DocumentPosition
 		/**
 		 * Counting starts at 0
 		 */
-		DocumentPosition(unsigned int line,
-			unsigned int column);
+		DocumentPosition(int line,
+			int column);
 		
 		DocumentPosition &operator=(const DocumentPosition &other);
 		bool operator==(const DocumentPosition &other) const;
@@ -42,14 +42,14 @@ class DocumentPosition
 		bool operator<=(const DocumentPosition &other) const;
 		bool operator>=(const DocumentPosition &other) const;
 		
-		unsigned int line() const;
-		unsigned int column() const;
-		void setLine(unsigned int line);
-		void setColumn(unsigned int column);
+		int line() const;
+		int column() const;
+		void setLine(int line);
+		void setColumn(int column);
 		
 	private:
-		unsigned int m_line;
-		unsigned int m_column;
+		int m_line;
+		int m_column;
 
 };
 

@@ -42,9 +42,9 @@ class Document
 		
 		DocumentViewFactory &viewFactory();
 		void setViewFactory(DocumentViewFactory &factory);
-		virtual QString text(unsigned int line) const = 0;
-		virtual unsigned int lineCount() const = 0;
-		virtual unsigned int lineSize(unsigned int line) const = 0;
+		virtual QString text(int line) const = 0;
+		virtual int lineCount() const = 0;
+		virtual int lineSize(int line) const = 0;
 		virtual void clear() = 0;
 		virtual DocumentPosition end() const = 0;
 		/**
