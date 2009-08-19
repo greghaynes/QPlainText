@@ -35,11 +35,15 @@ class DocumentController
 		DocumentController(DocumentView &view);
 		
 		void keyPressEvent(QKeyEvent *event);
+		void keyReleaseEvent(QKeyEvent *event);
 		Document &document();
 		DocumentView &view();
 	
 	private:
+		bool insertCaps();
+	
 		DocumentView *m_view;
+		bool m_shiftPressed;
 
 };
 

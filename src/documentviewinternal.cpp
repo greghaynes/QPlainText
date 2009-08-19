@@ -164,6 +164,11 @@ void DocumentViewInternal::keyPressEvent(QKeyEvent *event)
 	m_view->controller().keyPressEvent(event);
 }
 
+void DocumentViewInternal::keyReleaseEvent(QKeyEvent *event)
+{
+	m_view->controller().keyReleaseEvent(event);
+}
+
 void DocumentViewInternal::mousePressEvent(QMouseEvent *event)
 {
 	unsigned int pressLine = lineAt(event->y()+startY());

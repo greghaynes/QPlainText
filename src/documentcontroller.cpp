@@ -31,6 +31,7 @@ namespace QSourceView
 
 DocumentController::DocumentController(DocumentView &view)
 	: m_view(&view)
+	, m_shiftPressed(false)
 {
 }
 
@@ -43,6 +44,7 @@ void DocumentController::keyPressEvent(QKeyEvent *event)
 	int line_advance = 0;
 	DocumentPosition pos;
 	
+	qDebug() << event->key();
 	switch(event->key())
 	{
 		case Qt::Key_Return:
@@ -63,6 +65,9 @@ void DocumentController::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Right:
 			col_advance = 1;
 			break;
+		case Qt::Key_Shift:
+			m_shiftPressed = true;
+			break;
 		default:
 			insert = event->text();
 			col_advance = 1;
@@ -80,6 +85,16 @@ void DocumentController::keyPressEvent(QKeyEvent *event)
 	view().setCaretPosition(pos);
 }
 
+void DocumentController::keyReleaseEvent(QKeyEvent *event)
+{
+	switch(event->key())
+	{
+		case Qt::Key_Shift:
+			m_shiftPressed = false;
+			break;
+	}
+}
+
 Document &DocumentController::document()
 {
 	return view().document();
@@ -88,6 +103,11 @@ Document &DocumentController::document()
 DocumentView &DocumentController::view()
 {
 	return *m_view;
+}
+
+bool DocumentController::insertCaps()
+{
+	return m_shiftPressed;
 }
 
 }

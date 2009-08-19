@@ -89,7 +89,8 @@ void StandardDocument::onInsertText(const DocumentPosition &position,
 	if((lineCount()-1) < position.line()
 	   || (text(position.line()).size()) < position.column())
 		return;
-	
+	if(insText.size() <= 0)
+		return;
 	QStringList insList;
 	if(insText[0] == '\n')
 	{
