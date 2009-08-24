@@ -62,6 +62,7 @@ class Document
 		void textInserted(const DocumentPosition &pos,
 			const QString &text);
 		void textRemoved(const DocumentRange &range);
+		void textChanged();
 	
 	protected:
 		virtual void onInsertText(const DocumentPosition &position,

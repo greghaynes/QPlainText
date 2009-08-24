@@ -69,12 +69,14 @@ void Document::insertText(const DocumentPosition &position,
 {
 	onInsertText(position, text);
 	emit(textInserted(position, text));
+	emit(textChanged());
 }
 
 void Document::removeText(const DocumentRange &range)
 {
 	onRemoveText(range);
 	emit(textRemoved(range));
+	emit(textChanged());
 }
 
 void Document::appendText(const QString &text)

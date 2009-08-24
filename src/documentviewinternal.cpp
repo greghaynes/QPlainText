@@ -74,6 +74,8 @@ DocumentViewInternal::DocumentViewInternal(DocumentView &parentView,
 	connect(caretTimer, SIGNAL(timeout()),
 		this, SLOT(toggleCaretVisibility()));
 	caretTimer->start(500);
+	connect(&m_view->document(), SIGNAL(textChanged()),
+			this, SLOT(documentTextChanged()));
 }
 
 int DocumentViewInternal::startX() const
@@ -231,6 +233,11 @@ void DocumentViewInternal::paintCaret(QPainter &paint)
 void DocumentViewInternal::toggleCaretVisibility()
 {
 	m_caret->is_visible = !m_caret->is_visible;
+	update();
+}
+
+void DocumentViewInternal::documentTextChanged()
+{
 	update();
 }
 

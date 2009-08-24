@@ -70,6 +70,7 @@ class DocumentViewInternal
 	
 	private Q_SLOTS:
 		void toggleCaretVisibility();
+		void documentTextChanged();
 	
 	private:
 		void paintCaret(QPainter &paint);
