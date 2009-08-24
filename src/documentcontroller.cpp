@@ -55,15 +55,19 @@ void DocumentController::keyPressEvent(QKeyEvent *event)
 			break;
 		case Qt::Key_Up:
 			line_advance = -1;
+			is_insert = true;
 			break;
 		case Qt::Key_Down:
 			line_advance = 1;
+			is_insert = true;
 			break;
 		case Qt::Key_Left:
 			col_advance = -1;
+			is_insert = true;
 			break;
 		case Qt::Key_Right:
 			col_advance = 1;
+			is_insert = true;
 			break;
 		case Qt::Key_Shift:
 			m_shiftPressed = true;
