@@ -69,6 +69,7 @@ void Document::insertText(const DocumentPosition &position,
 	const QString &text)
 	throw(std::out_of_range)
 {
+	qDebug() << position.line() << ":" << position.column();
 	onInsertText(position, text);
 	emit(textInserted(position, text));
 	emit(textChanged());

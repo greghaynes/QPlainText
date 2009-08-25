@@ -22,6 +22,8 @@
 
 #include <QWidget>
 
+#include <stdexcept>
+
 class QFont;
 
 namespace QSourceView 
@@ -46,7 +48,8 @@ class DocumentView
 		DocumentController &controller();
 		void setController(DocumentController *controller);
 		const DocumentPosition &caretPosition() const;
-		void setCaretPosition(const DocumentPosition &pos);
+		void setCaretPosition(const DocumentPosition &pos)
+			throw(std::out_of_range);
 	
 	public Q_SLOTS:
 		void enableHorizontalNumberWidget();

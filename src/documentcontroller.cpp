@@ -35,58 +35,63 @@ DocumentController::DocumentController(DocumentView &view)
 {
 }
 
+/*
+ * First the text is inserted into document, which does not modify the caret.
+ * Then the caret is updated.
+ */
 void DocumentController::keyPressEvent(QKeyEvent *event)
 {
 	QString insert;
 	bool is_insert = false;
-	bool is_remove = false;
-	int col_advance = 0;
-	int line_advance = 0;
+	int caretline = view().caretPosition().line();
+	int caretcolumn = view().caretPosition().column();
 	DocumentPosition pos;
 	
-	qDebug() << event->key();
 	switch(event->key())
 	{
 		case Qt::Key_Return:
 		case Qt::Key_Enter:
 			insert = "\n";
-			line_advance = 1;
+			caretline++;
+			caretcolumn = 0;
 			is_insert = true;
 			break;
 		case Qt::Key_Up:
-			line_advance = -1;
-			is_insert = true;
+			if(caretline)
+				caretline--;
 			break;
 		case Qt::Key_Down:
-			line_advance = 1;
-			is_insert = true;
+			caretline++;
 			break;
 		case Qt::Key_Left:
-			col_advance = -1;
-			is_insert = true;
+			if(caretcolumn)
+				caretcolumn--;
 			break;
 		case Qt::Key_Right:
-			col_advance = 1;
-			is_insert = true;
+			caretcolumn++;
 			break;
 		case Qt::Key_Shift:
 			m_shiftPressed = true;
 			break;
 		default:
 			insert = event->text();
-			col_advance = 1;
+			caretcolumn++;
 			is_insert = true;
 	}
+
 	if(is_insert)
-	{
 		document().insertText(view().caretPosition(), insert);
-	}
-	else if(is_remove)
+
+	pos.setLine(caretline);
+	pos.setColumn(caretcolumn);
+	
+	try
+	{
+		view().setCaretPosition(pos);
+	} 
+	catch(std::out_of_range)
 	{
 	}
-	pos.setLine(view().caretPosition().line()+line_advance);
-	pos.setColumn(view().caretPosition().column()+col_advance);
-	view().setCaretPosition(pos);
 }
 
 void DocumentController::keyReleaseEvent(QKeyEvent *event)

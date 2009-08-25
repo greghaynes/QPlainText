@@ -66,7 +66,6 @@ DocumentViewInternal::DocumentViewInternal(DocumentView &parentView,
 	, m_startY(0)
 	, m_caret(new TextCursor)
 {
-    setFont(QFont("Monospace"));
 	setAttribute(Qt::WA_OpaquePaintEvent);
 	setFocusPolicy(Qt::ClickFocus);
 	setCursor(Qt::IBeamCursor);
@@ -100,13 +99,15 @@ const DocumentPosition &DocumentViewInternal::caretPosition() const
 }
 
 void DocumentViewInternal::setCaretPosition(const DocumentPosition &pos)
+	throw(std::out_of_range)
 {
-	if(pos.line() < m_view->document().lineCount() || 
-	   !m_view->document().text(m_view->document().lineCount()-1).isEmpty() && 
-		m_view->document().lineCount() == pos.line())
-		m_caret->setLine(pos.line());
-	if(pos.column() <= m_view->document().text(caretPosition().line()).size())
-		m_caret->setColumn(pos.column());
+	if(pos.line() >= m_view->document().lineCount())
+		throw std::out_of_range("Setting caret line beyond last line of document.");
+	if(pos.column() > m_view->document().text(pos.line()).size())
+		throw std::out_of_range("Setting caret column beyond end of caret line.");
+	
+	m_caret->setLine(pos.line());
+	m_caret->setColumn(pos.column());
 }
 
 void DocumentViewInternal::setStartX(int x)
@@ -174,8 +175,8 @@ void DocumentViewInternal::keyReleaseEvent(QKeyEvent *event)
 
 void DocumentViewInternal::mousePressEvent(QMouseEvent *event)
 {
-	unsigned int pressLine = lineAt(event->y()+startY());
-	unsigned int pressColumn;
+	int pressLine = lineAt(event->y()+startY());
+	int pressColumn;
 	if(pressLine >= m_view->document().lineCount())
 	{
 		pressLine = m_view->document().lineCount()-1;

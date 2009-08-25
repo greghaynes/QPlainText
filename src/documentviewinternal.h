@@ -22,6 +22,8 @@
 
 #include <QWidget>
 
+#include <stdexcept>
+
 class QPaintEvent;
 class QKeyEvent;
 class QMouseEvent;
@@ -49,7 +51,8 @@ class DocumentViewInternal
 		int startX() const;
 		int endY() const;
 		const DocumentPosition &caretPosition() const;
-		void setCaretPosition(const DocumentPosition &pos);
+		void setCaretPosition(const DocumentPosition &pos)
+			throw(std::out_of_range);
 
 	Q_SIGNALS:
 		void sizeChanged(int width = 0, int height = 0);

@@ -104,10 +104,11 @@ void DocumentView::setController(DocumentController *controller)
 
 const DocumentPosition &DocumentView::caretPosition() const
 {
-	d->internalView->caretPosition();
+	return d->internalView->caretPosition();
 }
 
 void DocumentView::setCaretPosition(const DocumentPosition &pos)
+	throw(std::out_of_range)
 {
 	d->internalView->setCaretPosition(pos);
 }
