@@ -120,6 +120,11 @@ void DocumentView::enableVerticalNumberWidget()
 {
 }
 
+void DocumentView::setInternalFont(const QFont &font)
+{
+	d->internalView->setFont(font);
+}
+
 void DocumentView::slotDocumentTextInserted(const DocumentPosition &pos,
 	const QString &text)
 {

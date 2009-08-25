@@ -24,6 +24,8 @@
 
 #include <QObject>
 
+#include <stdexcept>
+
 namespace QSourceView
 {
 
@@ -51,11 +53,13 @@ class Document
 		 * @brief Calls onInsertText and emits textInserted signal.
 		 */
 		void insertText(const DocumentPosition &position,
-			const QString &text);
+			const QString &text)
+			throw(std::out_of_range);
 		/**
 		 * @brief Calls onRemoveText and emits textRemoved signal.
 		 */
-		void removeText(const DocumentRange &range);
+		void removeText(const DocumentRange &range)
+			throw(std::out_of_range);
 		virtual void appendText(const QString &text);
 	
 	Q_SIGNALS:
@@ -66,8 +70,10 @@ class Document
 	
 	protected:
 		virtual void onInsertText(const DocumentPosition &position,
-			const QString &text) = 0;
-		virtual void onRemoveText(const DocumentRange &range) = 0;
+			const QString &text)
+			throw(std::out_of_range) = 0;
+		virtual void onRemoveText(const DocumentRange &range)
+			throw(std::out_of_range) = 0;
 	
 	private:
 		DocumentPrivate *d;

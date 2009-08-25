@@ -66,6 +66,7 @@ DocumentViewInternal::DocumentViewInternal(DocumentView &parentView,
 	, m_startY(0)
 	, m_caret(new TextCursor)
 {
+    setFont(QFont("Monospace"));
 	setAttribute(Qt::WA_OpaquePaintEvent);
 	setFocusPolicy(Qt::ClickFocus);
 	setCursor(Qt::IBeamCursor);

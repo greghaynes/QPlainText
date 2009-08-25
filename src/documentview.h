@@ -51,6 +51,7 @@ class DocumentView
 	public Q_SLOTS:
 		void enableHorizontalNumberWidget();
 		void enableVerticalNumberWidget();
+		void setInternalFont(const QFont &font);
 	
 	private Q_SLOTS:
 		void slotDocumentTextInserted(const DocumentPosition &position,

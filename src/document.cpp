@@ -22,6 +22,7 @@
 #include "documentposition.h"
 
 #include <QList>
+#include <QString>
 #include <QDebug>
 
 #include "document.moc"
@@ -66,6 +67,7 @@ void Document::setViewFactory(DocumentViewFactory &factory)
 
 void Document::insertText(const DocumentPosition &position,
 	const QString &text)
+	throw(std::out_of_range)
 {
 	onInsertText(position, text);
 	emit(textInserted(position, text));
@@ -73,6 +75,7 @@ void Document::insertText(const DocumentPosition &position,
 }
 
 void Document::removeText(const DocumentRange &range)
+	throw(std::out_of_range)
 {
 	onRemoveText(range);
 	emit(textRemoved(range));

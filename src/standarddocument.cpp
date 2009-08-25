@@ -84,13 +84,17 @@ DocumentPosition StandardDocument::end() const
 
 void StandardDocument::onInsertText(const DocumentPosition &position,
 	const QString &insText)
+	throw(std::out_of_range)
 {
-	// Make sure the position is valid
-	if((lineCount()-1) < position.line()
-	   || (text(position.line()).size()) < position.column())
-		return;
 	if(insText.size() <= 0)
 		return;
+
+	// Make sure the position is valid
+	if((lineCount()-1) < position.line())
+		throw std::out_of_range("Inserting text after ending line.");
+	if(text(position.line()).size() < position.column())
+		throw std::out_of_range("Insertig text after end of line.");
+
 	QStringList insList;
 	if(insText[0] == '\n')
 	{
@@ -121,6 +125,7 @@ void StandardDocument::onInsertText(const DocumentPosition &position,
 }
 
 void StandardDocument::onRemoveText(const DocumentRange &range)
+	throw(std::out_of_range)
 {
 }
 
