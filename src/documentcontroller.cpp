@@ -83,13 +83,8 @@ void DocumentController::keyPressEvent(QKeyEvent *event)
 	pos.setLine(caretline);
 	pos.setColumn(caretcolumn);
 	
-	try
-	{
+	if(view().document().isValidPosition(pos))
 		view().setCaretPosition(pos);
-	} 
-	catch(std::out_of_range)
-	{
-	}
 }
 
 void DocumentController::keyReleaseEvent(QKeyEvent *event)

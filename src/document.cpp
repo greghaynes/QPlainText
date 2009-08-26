@@ -88,4 +88,13 @@ void Document::appendText(const QString &text)
 	insertText(end(), text);
 }
 
+bool Document::isValidPosition(const DocumentPosition &position)
+{
+	if((lineCount()-1) < position.line())
+		return false;
+	if(text(position.line()).size() < position.column())
+		return false;
+	return true;
+}
+
 }

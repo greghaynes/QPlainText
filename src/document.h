@@ -61,6 +61,7 @@ class Document
 		void removeText(const DocumentRange &range)
 			throw(std::out_of_range);
 		virtual void appendText(const QString &text);
+		bool isValidPosition(const DocumentPosition &pos);
 	
 	Q_SIGNALS:
 		void textInserted(const DocumentPosition &pos,
