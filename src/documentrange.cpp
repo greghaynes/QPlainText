@@ -22,4 +22,35 @@
 namespace QSourceView
 {
 
+DocumentRange::DocumentRange()
+{
+}
+
+DocumentRange::DocumentRange(const DocumentPosition &start,
+	const DocumentPosition &end)
+	: m_start(start)
+	, m_end(end)
+{
+}
+
+const DocumentPosition &DocumentRange::start() const
+{
+	return m_start;
+}
+
+const DocumentPosition &DocumentRange::end() const
+{
+	return m_end;
+}
+
+void DocumentRange::setStart(const DocumentPosition &start)
+{
+	m_start = start;
+}
+
+void DocumentRange::setEnd(const DocumentPosition &end)
+{
+	m_end = end;
+}
+
 }

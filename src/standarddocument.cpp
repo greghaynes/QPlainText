@@ -98,7 +98,8 @@ void StandardDocument::onInsertText(const DocumentPosition &position,
 	QStringList insList;
 	if(insText[0] == '\n')
 	{
-		insList.prepend("");
+		QString prepline = d->lines[position.line()];
+		insList.prepend(prepline.remove(position.column()));
 	}
 	insList.append(insText.split('\n'));
 	// Append first line to position line
@@ -110,7 +111,7 @@ void StandardDocument::onInsertText(const DocumentPosition &position,
 		if(insList.size() > 2)
 		{
 			int i;
-			for(i = 1;i < insList.size()-1; i++)
+			for(i = 2;i < insList.size()-1; i++)
 				d->lines.insert(position.line() + i, insList[i]);
 		}
 		// We want any text after insert to be appended on that line

@@ -42,7 +42,7 @@ DocumentController::DocumentController(DocumentView &view)
 void DocumentController::keyPressEvent(QKeyEvent *event)
 {
 	QString insert;
-	bool is_insert = false;
+	DocumentRange remove;
 	int caretline = view().caretPosition().line();
 	int caretcolumn = view().caretPosition().column();
 	DocumentPosition pos;
@@ -54,7 +54,6 @@ void DocumentController::keyPressEvent(QKeyEvent *event)
 			insert = "\n";
 			caretline++;
 			caretcolumn = 0;
-			is_insert = true;
 			break;
 		case Qt::Key_Up:
 			if(caretline)
@@ -76,10 +75,9 @@ void DocumentController::keyPressEvent(QKeyEvent *event)
 		default:
 			insert = event->text();
 			caretcolumn++;
-			is_insert = true;
 	}
 
-	if(is_insert)
+	if(!insert.isEmpty())
 		document().insertText(view().caretPosition(), insert);
 
 	pos.setLine(caretline);
