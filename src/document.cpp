@@ -67,7 +67,7 @@ void Document::setViewFactory(DocumentViewFactory &factory)
 
 void Document::insertText(const DocumentPosition &position,
 	const QString &text)
-	throw(std::out_of_range)
+	throw(std::out_of_range, std::runtime_error)
 {
 	qDebug() << position.line() << ":" << position.column();
 	onInsertText(position, text);
@@ -76,7 +76,7 @@ void Document::insertText(const DocumentPosition &position,
 }
 
 void Document::removeText(const DocumentRange &range)
-	throw(std::out_of_range)
+	throw(std::out_of_range, std::runtime_error)
 {
 	onRemoveText(range);
 	emit(textRemoved(range));

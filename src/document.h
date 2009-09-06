@@ -49,17 +49,26 @@ class Document
 		virtual int lineSize(int line) const = 0;
 		virtual void clear() = 0;
 		virtual DocumentPosition end() const = 0;
+
 		/**
 		 * @brief Calls onInsertText and emits textInserted signal.
+		 *
+		 * This method throws std::out_of_range and std::runtime_error.
+		 * the out_of_range error is used to specify invalid arguments,
+		 * while runtime_error's should be used to signal the end of
+		 * the world.
 		 */
 		void insertText(const DocumentPosition &position,
 			const QString &text)
-			throw(std::out_of_range);
+			throw(std::out_of_range, std::runtime_error);
+
 		/**
 		 * @brief Calls onRemoveText and emits textRemoved signal.
+		 *
+		 * See insertText for information on exceptions.
 		 */
 		void removeText(const DocumentRange &range)
-			throw(std::out_of_range);
+			throw(std::out_of_range, std::runtime_error);
 		virtual void appendText(const QString &text);
 		bool isValidPosition(const DocumentPosition &pos);
 	
@@ -72,9 +81,9 @@ class Document
 	protected:
 		virtual void onInsertText(const DocumentPosition &position,
 			const QString &text)
-			throw(std::out_of_range) = 0;
+			throw(std::out_of_range, std::runtime_error) = 0;
 		virtual void onRemoveText(const DocumentRange &range)
-			throw(std::out_of_range) = 0;
+			throw(std::out_of_range, std::runtime_error) = 0;
 	
 	private:
 		DocumentPrivate *d;

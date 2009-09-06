@@ -84,7 +84,7 @@ DocumentPosition StandardDocument::end() const
 
 void StandardDocument::onInsertText(const DocumentPosition &position,
 	const QString &insText)
-	throw(std::out_of_range)
+	throw(std::out_of_range, std::runtime_error)
 {
 	if(insText.size() <= 0)
 		return;
@@ -93,36 +93,23 @@ void StandardDocument::onInsertText(const DocumentPosition &position,
 	if(!isValidPosition(position))
 		throw std::out_of_range("Inserting at invalid position.");
 
-	QStringList insList;
-	if(insText[0] == '\n')
-	{
-		QString prepline = d->lines[position.line()];
-		insList.prepend(prepline.remove(position.column()));
-	}
-	insList.append(insText.split('\n'));
-	// Append first line to position line
-	d->lines[position.line()].insert(position.column(), insList[0]);
+	QStringList insLines = insText.split('\n', QString::KeepEmptyParts);
 
-	// Append bulk of lines after position line
-	if(insList.size() > 1)
+	if(insLines.size() == 1)
 	{
-		if(insList.size() > 2)
-		{
-			int i;
-			for(i = 2;i < insList.size()-1; i++)
-				d->lines.insert(position.line() + i, insList[i]);
-		}
-		// We want any text after insert to be appended on that line
-		int endLine = position.line() + insList.size();
-		if((lineCount()-1) < endLine)
-			d->lines.append(insList.last());
-		else
-			d->lines[position.line()+insList.size()].prepend(insList.last());
+		d->lines[position.line()].insert(position.column(), insText);	
 	}
+	else if(insLines.size() > 1)
+	{
+		// Append text on insertion line after insert pos to end last of the insertion text
+		insLines.last().append(d->lines[position.line()].right(d->lines[position.line()].size() - position.column()));
+	}
+	else
+		throw std::runtime_error("Insertion list has size of zero.");
 }
 
 void StandardDocument::onRemoveText(const DocumentRange &range)
-	throw(std::out_of_range)
+	throw(std::out_of_range, std::runtime_error)
 {
 }
 

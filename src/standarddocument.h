@@ -47,9 +47,9 @@ class StandardDocument
 	protected:
 		void onInsertText(const DocumentPosition &position,
 			const QString &text)
-			throw(std::out_of_range);
+			throw(std::out_of_range, std::runtime_error);
 		void onRemoveText(const DocumentRange &range)
-			throw(std::out_of_range);
+			throw(std::out_of_range, std::runtime_error);
 	
 	private:
 		StandardDocumentPrivate *d;
