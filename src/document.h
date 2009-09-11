@@ -50,6 +50,10 @@ class Document
 		virtual void clear() = 0;
 		virtual DocumentPosition end() const = 0;
 
+		void insertText(const DocumentPosition &position,
+			QChar ch)
+			throw (std::out_of_range, std::runtime_error);
+
 		/**
 		 * @brief Calls onInsertText and emits textInserted signal.
 		 *
@@ -74,11 +78,16 @@ class Document
 	
 	Q_SIGNALS:
 		void textInserted(const DocumentPosition &pos,
+			QChar ch);
+		void textInserted(const DocumentPosition &pos,
 			const QString &text);
 		void textRemoved(const DocumentRange &range);
 		void textChanged();
 	
 	protected:
+		virtual void onInsertText(const DocumentPosition &position,
+			QChar ch)
+			throw(std::out_of_range, std::runtime_error) = 0;
 		virtual void onInsertText(const DocumentPosition &position,
 			const QString &text)
 			throw(std::out_of_range, std::runtime_error) = 0;

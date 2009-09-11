@@ -82,35 +82,56 @@ DocumentPosition StandardDocument::end() const
 	return DocumentPosition(line, column);
 }
 
+#define DOC_CHECK_POS(x) \
+	if (!isValidPosition(x)) \
+		throw std::out_of_range("Inserting at invalid position.");
+
+void StandardDocument::onInsertText(const DocumentPosition &position,
+	QChar ch)
+	throw(std::out_of_range, std::runtime_error)
+{
+	DOC_CHECK_POS(position);
+
+	if(isNewline(ch))
+	{
+		// TODO: Make this understandable to muggles
+		QString chop = d->lines[position.line()].right(d->lines[position.line()].length()-position.column());
+		chop.prepend(ch);
+		d->lines.insert(position.line()+1, chop);
+	}
+	else
+		d->lines[position.line()].insert(position.column(), ch);
+}
+
+// TODO: Finish/Test this
 void StandardDocument::onInsertText(const DocumentPosition &position,
 	const QString &insText)
 	throw(std::out_of_range, std::runtime_error)
 {
 	if(insText.size() <= 0)
 		return;
-
-	// Make sure the position is valid
-	if(!isValidPosition(position))
-		throw std::out_of_range("Inserting at invalid position.");
+	DOC_CHECK_POS(position);
 
 	QStringList insLines = insText.split('\n', QString::KeepEmptyParts);
-
 	if(insLines.size() == 1)
-	{
 		d->lines[position.line()].insert(position.column(), insText);	
-	}
 	else if(insLines.size() > 1)
-	{
 		// Append text on insertion line after insert pos to end last of the insertion text
 		insLines.last().append(d->lines[position.line()].right(d->lines[position.line()].size() - position.column()));
-	}
 	else
 		throw std::runtime_error("Insertion list has size of zero.");
 }
 
+#undef DOC_CHECK_POS
+
 void StandardDocument::onRemoveText(const DocumentRange &range)
 	throw(std::out_of_range, std::runtime_error)
 {
+}
+
+bool StandardDocument::isNewline(QChar ch) const
+{
+	return ch == '\n';
 }
 
 }

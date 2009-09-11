@@ -66,10 +66,18 @@ void Document::setViewFactory(DocumentViewFactory &factory)
 }
 
 void Document::insertText(const DocumentPosition &position,
+	QChar ch)
+	throw(std::out_of_range, std::runtime_error)
+{
+	onInsertText(position, ch);
+	emit(textInserted(position, ch));
+	emit(textChanged());
+}
+
+void Document::insertText(const DocumentPosition &position,
 	const QString &text)
 	throw(std::out_of_range, std::runtime_error)
 {
-	qDebug() << position.line() << ":" << position.column();
 	onInsertText(position, text);
 	emit(textInserted(position, text));
 	emit(textChanged());
