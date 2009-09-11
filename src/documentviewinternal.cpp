@@ -37,6 +37,8 @@
 
 #include "documentviewinternal.moc"
 
+#define CARET_INTERVAL 500
+
 namespace QSourceView
 {
 
@@ -48,6 +50,7 @@ class TextCursor
 		TextCursor();
 		
 		bool is_visible;
+		QTimer timer;
 
 };
 
@@ -69,11 +72,10 @@ DocumentViewInternal::DocumentViewInternal(DocumentView &parentView,
 	setAttribute(Qt::WA_OpaquePaintEvent);
 	setFocusPolicy(Qt::ClickFocus);
 	setCursor(Qt::IBeamCursor);
-	QTimer *caretTimer = new QTimer(this);
-	caretTimer->setSingleShot(false);
-	connect(caretTimer, SIGNAL(timeout()),
+	m_caret->timer.setSingleShot(false);
+	connect(&m_caret->timer, SIGNAL(timeout()),
 		this, SLOT(toggleCaretVisibility()));
-	caretTimer->start(500);
+	m_caret->timer.start(CARET_INTERVAL);
 	connect(&m_view->document(), SIGNAL(textChanged()),
 			this, SLOT(documentTextChanged()));
 }
@@ -108,6 +110,10 @@ void DocumentViewInternal::setCaretPosition(const DocumentPosition &pos)
 	
 	m_caret->setLine(pos.line());
 	m_caret->setColumn(pos.column());
+	m_caret->timer.stop();
+	m_caret->is_visible = false;
+	m_caret->timer.start(CARET_INTERVAL);
+	update();
 }
 
 void DocumentViewInternal::setStartX(int x)
