@@ -116,8 +116,20 @@ void StandardDocument::onInsertText(const DocumentPosition &position,
 	if(insLines.size() == 1)
 		d->lines[position.line()].insert(position.column(), insText);	
 	else if(insLines.size() > 1)
-		// Append text on insertion line after insert pos to end last of the insertion text
-		insLines.last().append(d->lines[position.line()].right(d->lines[position.line()].size() - position.column()));
+	{
+		int choplen = d->lines[position.line()].length() - position.column();
+		QString chop = d->lines[position.line()].right(choplen);
+		d->lines[position.line()].chop(choplen);
+		insLines[0].append(chop);
+		if(insLines.last().isEmpty())
+			insLines.removeLast();
+		int i = position.line() + 1;
+		foreach(chop, insLines)
+		{
+			d->lines.insert(i, chop);
+			i++;
+		}
+	}
 	else
 		throw std::runtime_error("Insertion list has size of zero.");
 }
