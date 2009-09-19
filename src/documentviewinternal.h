@@ -86,6 +86,7 @@ class DocumentViewInternal
 		int m_startX;
 		int m_startY;
 		TextCursor *m_caret;
+		int m_scrollWheelFactor;
 
 };
 

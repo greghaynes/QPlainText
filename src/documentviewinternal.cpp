@@ -68,6 +68,7 @@ DocumentViewInternal::DocumentViewInternal(DocumentView &parentView,
 	, m_startX(0)
 	, m_startY(0)
 	, m_caret(new TextCursor)
+	, m_scrollWheelFactor(1) 
 {
 	setAttribute(Qt::WA_OpaquePaintEvent);
 	setFocusPolicy(Qt::ClickFocus);
@@ -207,7 +208,7 @@ void DocumentViewInternal::wheelEvent(QWheelEvent *event)
 	event->ignore();
 	if(event->orientation() == Qt::Vertical)
 	{
-		setStartY(startY() - (event->delta() / 30));
+		setStartY(startY() - (event->delta() / this->m_scrollWheelFactor));
 	}
 }
 
