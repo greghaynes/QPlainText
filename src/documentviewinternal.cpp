@@ -127,7 +127,6 @@ void DocumentViewInternal::setStartX(int x)
 
 void DocumentViewInternal::setStartY(int y)
 {
-	qDebug() << y;
 	if(y < 0)
 		m_startY = 0;
 	else if(y > (endY() - height()))
