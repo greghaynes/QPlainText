@@ -55,7 +55,7 @@ DocumentView::DocumentView(Document &document)
 	: QWidget(0)
 	, d(new DocumentViewPrivate)
 {
-	document.viewFactory().insertView(*this);
+	setParent(&document);
 	d->document = &document;
 	connect(d->document, SIGNAL(textInserted(const DocumentPosition&, const QString&)),
 		this, SLOT(slotDocumentTextInserted(const DocumentPosition&, const QString &)));

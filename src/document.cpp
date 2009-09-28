@@ -30,79 +30,26 @@
 namespace QSourceView
 {
 
-class DocumentPrivate
-{
-
-	public:
-		DocumentViewFactory *viewFactory;
-
-};
-
 Document::Document(QObject *parent)
 	: QObject(parent)
-	, d(new DocumentPrivate)
 {
-	d->viewFactory = new DocumentViewFactory(this);
 }
 
 Document::~Document()
 {
-	delete d;
 }
 
-DocumentViewFactory &Document::viewFactory()
-{
-	return *d->viewFactory;
-}
-
-void Document::setViewFactory(DocumentViewFactory &factory)
-{
-	DocumentView *view;
-	Q_FOREACH(view, viewFactory().views())
-		factory.insertView(*view);
-	delete d->viewFactory;
-	d->viewFactory = &factory;
-	factory.setParent(this);
-}
-
-void Document::insertText(const DocumentPosition &position,
-	QChar ch)
-	throw(std::out_of_range, std::runtime_error)
-{
-	onInsertText(position, ch);
-	emit(textInserted(position, ch));
-	emit(textChanged());
-}
-
-void Document::insertText(const DocumentPosition &position,
+bool Document::insertText(const DocumentPosition &position,
 	const QString &text)
-	throw(std::out_of_range, std::runtime_error)
 {
 	onInsertText(position, text);
 	emit(textInserted(position, text));
-	emit(textChanged());
 }
 
 void Document::removeText(const DocumentRange &range)
-	throw(std::out_of_range, std::runtime_error)
 {
 	onRemoveText(range);
 	emit(textRemoved(range));
-	emit(textChanged());
-}
-
-void Document::appendText(const QString &text)
-{
-	insertText(end(), text);
-}
-
-bool Document::isValidPosition(const DocumentPosition &position)
-{
-	if((lineCount()-1) < position.line())
-		return false;
-	if(text(position.line()).size() < position.column())
-		return false;
-	return true;
 }
 
 }

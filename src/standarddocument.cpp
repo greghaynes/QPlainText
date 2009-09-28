@@ -18,6 +18,7 @@
  */
 
 #include "standarddocument.h"
+#include "documentrange.h"
 
 #include <QString>
 #include <QStringList>
@@ -47,12 +48,40 @@ StandardDocument::~StandardDocument()
 	delete d;
 }
 
-QString StandardDocument::text(int line) const
+QString *StandardDocument::text(const DocumentRange &range) const
 {
-	if( line < d->lines.size() )
-		return d->lines.at(line);
-	else
-		return QString();
+	QString *ret = 0;
+	int i, j, startline, startcol, endline, endcol, lineoff;
+	if(isValidPosition(range.start()) && isValidPosition(range.end()))
+	{
+		ret = new QString();
+		startline = range.start().line();
+		startcol = range.start().column();
+		endline = range.end().line();
+		endcol = range.end().column();
+		if(startline == endline)
+		{
+			if(endcol == -1)
+			{
+				ret->append(d->lines[startline].right(startcol));
+			}
+			else
+			{
+				ret->append(d->lines[startline].mid(startcol, endcol - startcol));
+			}
+		}
+		else
+		{
+			ret->append(d->lines[startline].right(startcol));
+			for(i = startline+1; i < endline; i++)
+			{
+				ret->append(d->lines[i]);
+			}
+			ret->append(d->lines[endline].left(endcol));
+		}
+
+	}
+	return ret;
 }
 
 int StandardDocument::lineCount() const
@@ -60,7 +89,7 @@ int StandardDocument::lineCount() const
 	return d->lines.size();
 }
 
-int StandardDocument::lineSize(int line) const
+int StandardDocument::lineLength(int line) const
 {
 	return d->lines[line].size();
 }
@@ -83,33 +112,15 @@ DocumentPosition StandardDocument::end() const
 }
 
 #define DOC_CHECK_POS(x) \
-	if (!isValidPosition(x)) \
-		throw std::out_of_range("Inserting at invalid position.");
-
-void StandardDocument::onInsertText(const DocumentPosition &position,
-	QChar ch)
-	throw(std::out_of_range, std::runtime_error)
-{
-	DOC_CHECK_POS(position);
-
-	if(isNewline(ch))
-	{
-		// TODO: Make this understandable to muggles
-		QString chop = d->lines[position.line()].right(d->lines[position.line()].length()-position.column());
-		chop.prepend(ch);
-		d->lines.insert(position.line()+1, chop);
-	}
-	else
-		d->lines[position.line()].insert(position.column(), ch);
-}
+	if(!isValidPosition(x)) \
+		return false;
 
 // TODO: Finish/Test this
-void StandardDocument::onInsertText(const DocumentPosition &position,
+bool StandardDocument::onInsertText(const DocumentPosition &position,
 	const QString &insText)
-	throw(std::out_of_range, std::runtime_error)
 {
 	if(insText.size() <= 0)
-		return;
+		return true;
 	DOC_CHECK_POS(position);
 
 	QStringList insLines = insText.split('\n', QString::KeepEmptyParts);
@@ -131,14 +142,20 @@ void StandardDocument::onInsertText(const DocumentPosition &position,
 		}
 	}
 	else
-		throw std::runtime_error("Insertion list has size of zero.");
+		return false;
 }
 
 #undef DOC_CHECK_POS
 
 void StandardDocument::onRemoveText(const DocumentRange &range)
-	throw(std::out_of_range, std::runtime_error)
 {
+}
+
+bool StandardDocument::isValidPosition(const DocumentPosition &pos) const
+{
+	if(pos.line() > 0 && pos.line() < d->lines.size())
+			return pos.column() > 0 && pos.column() < d->lines[pos.line()].size();
+	return false;
 }
 
 bool StandardDocument::isNewline(QChar ch) const

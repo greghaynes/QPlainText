@@ -24,8 +24,6 @@
 
 #include <QObject>
 
-#include <stdexcept>
-
 namespace QSourceView
 {
 
@@ -33,70 +31,99 @@ class DocumentViewFactory;
 class DocumentRange;
 class DocumentPrivate;
 
+/**
+  * @brief Abstract document interface.
+  */
 class Document
 	: public QObject
 {
 	Q_OBJECT
 
 	public:
+		/**
+		  * @brief Create a new Document.
+		  */
 		Document(QObject *parent = 0);
+
+		/**
+		  * @brief Destroy a document.
+		  */
 		virtual ~Document();
 		
-		DocumentViewFactory &viewFactory();
-		void setViewFactory(DocumentViewFactory &factory);
-		virtual QString text(int line) const = 0;
-		virtual int lineCount() const = 0;
-		virtual int lineSize(int line) const = 0;
-		virtual void clear() = 0;
-		virtual DocumentPosition end() const = 0;
+		/**
+		  * @brief Obtain text from the document.
+		  * @return QString instance containing text, or NULL on error
+		  *
+		  * Creates a new QString instance contaning text or NULL.
+		  * You should delete the returned instance when it is no
+		  * longer needed.
+		  */
+		virtual QString *text(const DocumentRange &range) const = 0;
 
-		void insertText(const DocumentPosition &position,
-			QChar ch)
-			throw (std::out_of_range, std::runtime_error);
+		/**
+		  * @brief Number of lines in document.
+		  */
+		virtual int lineCount() const = 0;
+
+		/**
+		  * @brief Number of characters in specified line.
+		  */
+		virtual int lineLength(int line) const = 0;
+
+		/**
+		  * @brief Clear all text from document.
+		  */
+		virtual void clear() = 0;
+
+		/**
+		  * @brief Position pointed to last character in document.
+		  */
+		virtual DocumentPosition end() const = 0;
 
 		/**
 		 * @brief Calls onInsertText and emits textInserted signal.
-		 *
-		 * This method throws std::out_of_range and std::runtime_error.
-		 * the out_of_range error is used to specify invalid arguments,
-		 * while runtime_error's should be used to signal the end of
-		 * the world.
 		 */
-		void insertText(const DocumentPosition &position,
-			const QString &text)
-			throw(std::out_of_range, std::runtime_error);
+		bool insertText(const DocumentPosition &position,
+			const QString &text);
 
 		/**
 		 * @brief Calls onRemoveText and emits textRemoved signal.
-		 *
-		 * See insertText for information on exceptions.
 		 */
-		void removeText(const DocumentRange &range)
-			throw(std::out_of_range, std::runtime_error);
-		virtual void appendText(const QString &text);
-		bool isValidPosition(const DocumentPosition &pos);
-	
+		void removeText(const DocumentRange &range);
+
 	Q_SIGNALS:
-		void textInserted(const DocumentPosition &pos,
-			QChar ch);
-		void textInserted(const DocumentPosition &pos,
+		/**
+		  * @brief Text has been inserted into document.
+		  *
+		  * Text insertion begins at character pointed to by pos.
+		  */
+		bool textInserted(const DocumentPosition &pos,
 			const QString &text);
+
+		/**
+		  * @brief Text has been removed from document.
+		  *
+		  * Text removal was betwen characters pointed to by range,
+		  * including endpoints.
+		  */
 		void textRemoved(const DocumentRange &range);
-		void textChanged();
 	
 	protected:
-		virtual void onInsertText(const DocumentPosition &position,
-			QChar ch)
-			throw(std::out_of_range, std::runtime_error) = 0;
-		virtual void onInsertText(const DocumentPosition &position,
-			const QString &text)
-			throw(std::out_of_range, std::runtime_error) = 0;
-		virtual void onRemoveText(const DocumentRange &range)
-			throw(std::out_of_range, std::runtime_error) = 0;
-	
-	private:
-		DocumentPrivate *d;
+		/**
+		  * @brief Called for text insertion.
+		  *
+		  * Override this method to store text.
+		  */
+		virtual bool onInsertText(const DocumentPosition &position,
+			const QString &text) = 0;
 
+		/**
+		  * @brief Called for text removal.
+		  *
+		  * Override this method to remove text.
+		  */
+		virtual void onRemoveText(const DocumentRange &range) = 0;
+	
 };
 
 }

@@ -38,23 +38,19 @@ class StandardDocument
 		StandardDocument(QObject *parent = 0);
 		~StandardDocument();
 		
-		QString text(int line) const;
+		QString *text(const DocumentRange &range) const;
 		int lineCount() const;
-		int lineSize(int line) const; 
+		int lineLength(int line) const; 
 		void clear();
 		DocumentPosition end() const;
 	
 	protected:
-		void onInsertText(const DocumentPosition &position,
-			QChar ch)
-			throw(std::out_of_range, std::runtime_error);
-		void onInsertText(const DocumentPosition &position,
-			const QString &text)
-			throw(std::out_of_range, std::runtime_error);
-		void onRemoveText(const DocumentRange &range)
-			throw(std::out_of_range, std::runtime_error);
+		bool onInsertText(const DocumentPosition &position,
+			const QString &text);
+		void onRemoveText(const DocumentRange &range);
 	
 	private:
+		bool isValidPosition(const DocumentPosition &pos) const;
 		bool isNewline(QChar ch) const;
 
 		StandardDocumentPrivate *d;
