@@ -24,7 +24,7 @@
 
 #include <QObject>
 
-namespace QSourceView
+namespace QSourceEdit
 {
 
 class DocumentViewFactory;

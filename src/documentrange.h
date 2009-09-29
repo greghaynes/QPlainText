@@ -22,7 +22,7 @@
 
 #include "documentposition.h"
 
-namespace QSourceView
+namespace QSourceEdit
 {
 
 class DocumentRange

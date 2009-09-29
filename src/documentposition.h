@@ -20,7 +20,7 @@
 #ifndef QSOURCEVIEW_DOCUMENT_POSITION_H
 #define QSOURCEVIEW_DOCUMENT_POSITION_H
 
-namespace QSourceView
+namespace QSourceEdit
 {
 
 class DocumentPosition

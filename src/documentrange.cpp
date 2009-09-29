@@ -19,7 +19,7 @@
 
 #include "documentrange.h"
 
-namespace QSourceView
+namespace QSourceEdit
 {
 
 DocumentRange::DocumentRange()

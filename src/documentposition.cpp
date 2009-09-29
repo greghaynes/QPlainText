@@ -19,7 +19,7 @@
 
 #include "documentposition.h"
 
-namespace QSourceView
+namespace QSourceEdit
 {
 
 DocumentPosition::DocumentPosition()

@@ -25,7 +25,7 @@
 #include <QList>
 #include <QDebug>
 
-namespace QSourceView
+namespace QSourceEdit
 {
 
 class StandardDocumentPrivate

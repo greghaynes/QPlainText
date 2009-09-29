@@ -24,7 +24,7 @@
 
 class QString;
 
-namespace QSourceView
+namespace QSourceEdit
 {
 
 class DocumentRange;

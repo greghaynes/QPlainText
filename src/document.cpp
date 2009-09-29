@@ -27,7 +27,7 @@
 
 #include "document.moc"
 
-namespace QSourceView
+namespace QSourceEdit
 {
 
 Document::Document(QObject *parent)

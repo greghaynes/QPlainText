@@ -5,11 +5,19 @@
 
 void TestStandardDocument::singeLineInsert()
 {
-	QSourceView::StandardDocument doc;
+	QSourceEdit::StandardDocument doc;
 	QString str("Hello, there.");
-	doc.insert(QSourceView::DocumentPosition(), str);
-	QVERIFY(doc.lineCount() == 1);
-	QVERIFY(doc.text(QSourceView::DocumentRange(QSourceView::DocumentPosition(), QSourceView::DocumentPosition(0, -1))) == str);
+	doc.insert(QSourceEdit::DocumentPosition(), str);
+	QCOMPARE(doc.lineCount(), 1);
+	QString *text = doc.text(
+		QSourceEdit::DocumentRange(
+			QSourceEdit::DocumentPosition(),
+			QSourceEdit::DocumentPosition(0, -1)));
+	QVERIFY(text != 0);
+	if(text != 0)
+	{
+		QCOMPARE(*text, str);
+	}
 }
 
 QTEST_MAIN(TestStandardDocument)
