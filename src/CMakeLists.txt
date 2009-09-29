@@ -36,10 +36,9 @@ target_link_libraries(qsourceview ${QT_LIBRARIES})
 QT4_AUTOMOC(test/teststandarddocument.cpp)
 
 add_executable(teststandarddocument
-	test/teststandarddocument.cpp
-	${QSOURCEVIEW_SRCS})
+	test/teststandarddocument.cpp)
 
-target_link_libraries(teststandarddocument ${QT_LIBRARIES})
+target_link_libraries(teststandarddocument ${QT_LIBRARIES} qsourceview)
 
 install(TARGETS qsourceview
 	DESTINATION lib)

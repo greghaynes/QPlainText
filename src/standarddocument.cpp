@@ -114,7 +114,6 @@ DocumentPosition StandardDocument::end() const
 	return DocumentPosition(line, column);
 }
 
-
 // TODO: Finish/Test this
 bool StandardDocument::onInsertText(const DocumentPosition &position,
 	const QString &insText)
@@ -155,8 +154,6 @@ bool StandardDocument::onInsertText(const DocumentPosition &position,
 		return false;
 	return true;
 }
-
-#undef DOC_CHECK_POS
 
 void StandardDocument::onRemoveText(const DocumentRange &range)
 {
