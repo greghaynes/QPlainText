@@ -52,7 +52,7 @@ QString *StandardDocument::text(const DocumentRange &range) const
 {
 	QString *ret = 0;
 	int i, j, startline, startcol, endline, endcol, lineoff;
-	if(isValidPosition(range.start()) && isValidPosition(range.end()))
+	if(isValidPosition(range.start()) && isValidPosition(range.end(), true))
 	{
 		ret = new QString();
 		startline = range.start().line();
@@ -63,7 +63,8 @@ QString *StandardDocument::text(const DocumentRange &range) const
 		{
 			if(endcol == -1)
 			{
-				ret->append(d->lines[startline].right(startcol));
+				ret->append(d->lines[startline]);
+				ret->remove(0, startcol);
 			}
 			else
 			{
@@ -81,6 +82,8 @@ QString *StandardDocument::text(const DocumentRange &range) const
 		}
 
 	}
+	else
+		qDebug() << "Attempt to retrieve text from invalid position";
 	return ret;
 }
 
@@ -111,21 +114,28 @@ DocumentPosition StandardDocument::end() const
 	return DocumentPosition(line, column);
 }
 
-#define DOC_CHECK_POS(x) \
-	if(!isValidPosition(x)) \
-		return false;
 
 // TODO: Finish/Test this
 bool StandardDocument::onInsertText(const DocumentPosition &position,
 	const QString &insText)
 {
+	if(!isValidPosition(position))
+	{
+		qDebug() << "Attempting to insert text into invalid position.";
+		return false;
+	}
+
 	if(insText.size() <= 0)
 		return true;
-	DOC_CHECK_POS(position);
 
 	QStringList insLines = insText.split('\n', QString::KeepEmptyParts);
 	if(insLines.size() == 1)
-		d->lines[position.line()].insert(position.column(), insText);	
+	{
+		if(d->lines.size() > position.line())
+			d->lines[position.line()].insert(position.column(), insText);	
+		else
+			d->lines[position.line()] = insText;
+	}
 	else if(insLines.size() > 1)
 	{
 		int choplen = d->lines[position.line()].length() - position.column();
@@ -143,6 +153,7 @@ bool StandardDocument::onInsertText(const DocumentPosition &position,
 	}
 	else
 		return false;
+	return true;
 }
 
 #undef DOC_CHECK_POS
@@ -151,10 +162,19 @@ void StandardDocument::onRemoveText(const DocumentRange &range)
 {
 }
 
-bool StandardDocument::isValidPosition(const DocumentPosition &pos) const
+bool StandardDocument::isValidPosition(const DocumentPosition &pos,
+	bool allow_end) const
 {
-	if(pos.line() > 0 && pos.line() < d->lines.size())
-			return pos.column() > 0 && pos.column() < d->lines[pos.line()].size();
+	if(pos.line() >= 0 && pos.line() < d->lines.size())
+	{
+			if(allow_end && pos.column() == -1)
+				return true;
+			else if(pos.column() == 0)
+				return true;
+			else
+				return pos.column() > 0
+					&& pos.column() < d->lines[pos.line()].size();
+	}
 	return false;
 }
 

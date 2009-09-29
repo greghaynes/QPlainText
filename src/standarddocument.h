@@ -50,7 +50,8 @@ class StandardDocument
 		void onRemoveText(const DocumentRange &range);
 	
 	private:
-		bool isValidPosition(const DocumentPosition &pos) const;
+		bool isValidPosition(const DocumentPosition &pos,
+			bool allow_end = false) const;
 		bool isNewline(QChar ch) const;
 
 		StandardDocumentPrivate *d;

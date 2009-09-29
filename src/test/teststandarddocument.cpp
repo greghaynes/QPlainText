@@ -7,8 +7,9 @@ void TestStandardDocument::singeLineInsert()
 {
 	QSourceEdit::StandardDocument doc;
 	QString str("Hello, there.");
-	doc.insert(QSourceEdit::DocumentPosition(), str);
+	QVERIFY(doc.insert(QSourceEdit::DocumentPosition(), str));
 	QCOMPARE(doc.lineCount(), 1);
+	QCOMPARE(doc.lineLength(0), str.length());
 	QString *text = doc.text(
 		QSourceEdit::DocumentRange(
 			QSourceEdit::DocumentPosition(),

@@ -42,8 +42,9 @@ Document::~Document()
 bool Document::insert(const DocumentPosition &position,
 	const QString &text)
 {
-	onInsertText(position, text);
+	bool val = onInsertText(position, text);
 	emit(textInserted(position, text));
+	return val;
 }
 
 void Document::remove(const DocumentRange &range)
