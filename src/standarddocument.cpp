@@ -40,7 +40,6 @@ StandardDocument::StandardDocument(QObject *parent)
 	: Document(parent)
 	, d(new StandardDocumentPrivate)
 {
-	d->lines.append("");
 }
 
 StandardDocument::~StandardDocument()
@@ -52,7 +51,7 @@ QString *StandardDocument::text(const DocumentRange &range) const
 {
 	QString *ret = 0;
 	int i, j, startline, startcol, endline, endcol, lineoff;
-	if(isValidPosition(range.start()) && isValidPosition(range.end(), true))
+	if(isValidPosition(range.start()) && isValidPosition(range.end(), false, true))
 	{
 		ret = new QString();
 		startline = range.start().line();
@@ -118,7 +117,7 @@ DocumentPosition StandardDocument::end() const
 bool StandardDocument::onInsertText(const DocumentPosition &position,
 	const QString &insText)
 {
-	if(!isValidPosition(position))
+	if(!isValidPosition(position, true))
 	{
 		qDebug() << "Attempting to insert text into invalid position.";
 		return false;
@@ -133,22 +132,27 @@ bool StandardDocument::onInsertText(const DocumentPosition &position,
 		if(d->lines.size() > position.line())
 			d->lines[position.line()].insert(position.column(), insText);	
 		else
-			d->lines[position.line()] = insText;
+			d->lines.insert(position.line(), insText);
 	}
 	else if(insLines.size() > 1)
 	{
-		int choplen = d->lines[position.line()].length() - position.column();
-		QString chop = d->lines[position.line()].right(choplen);
-		d->lines[position.line()].chop(choplen);
-		insLines[0].append(chop);
+		QString chop;
+		int choplen = 0;
+		if(d->lines.length() > position.line())
+		{
+			int choplen = d->lines[position.line()].length() - position.column();
+			QString chop = d->lines[position.line()].right(choplen);
+			d->lines[position.line()].chop(choplen);
+		}
+		insLines.last().append(chop);
 		if(insLines.last().isEmpty())
 			insLines.removeLast();
 		int i = position.line() + 1;
-		foreach(chop, insLines)
+		for(i = 0;i < insLines.length();i++)
 		{
-			d->lines.insert(i, chop);
-			i++;
+			d->lines.insert(i, insLines[i]);
 		}
+		qDebug() << d->lines;
 	}
 	else
 		return false;
@@ -160,17 +164,34 @@ void StandardDocument::onRemoveText(const DocumentRange &range)
 }
 
 bool StandardDocument::isValidPosition(const DocumentPosition &pos,
-	bool allow_end) const
+	bool lines_plus_one,
+	bool allow_end_col) const
 {
-	if(pos.line() >= 0 && pos.line() < d->lines.size())
+	if(lines_plus_one)
 	{
-			if(allow_end && pos.column() == -1)
+		if(pos.line() >= 0 && pos.line() <= d->lines.size())
+		{
+			if(allow_end_col && pos.column() == -1)
 				return true;
 			else if(pos.column() == 0)
 				return true;
 			else
 				return pos.column() > 0
 					&& pos.column() < d->lines[pos.line()].size();
+		}
+	}
+	else
+	{
+		if(pos.line() >= 0 && pos.line() < d->lines.size())
+		{
+			if(allow_end_col && pos.column() == -1)
+				return true;
+			else if(pos.column() == 0)
+				return true;
+			else
+				return pos.column() > 0
+					&& pos.column() < d->lines[pos.line()].size();
+		}
 	}
 	return false;
 }

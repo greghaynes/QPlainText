@@ -51,7 +51,8 @@ class StandardDocument
 	
 	private:
 		bool isValidPosition(const DocumentPosition &pos,
-			bool allow_end = false) const;
+			bool lines_plus_one = false,
+			bool allow_end_col = false) const;
 		bool isNewline(QChar ch) const;
 
 		StandardDocumentPrivate *d;

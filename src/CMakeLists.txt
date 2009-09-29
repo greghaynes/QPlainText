@@ -45,3 +45,4 @@ install(TARGETS qsourceview
 
 INSTALL(FILES ${QSOURCEVIEW_HDRS}
 	DESTINATION include/libqsourceview-1.0/libqsourceview)
+

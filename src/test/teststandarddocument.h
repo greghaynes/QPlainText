@@ -10,6 +10,7 @@ class TestStandardDocument
 	
 	private Q_SLOTS:
 		void singeLineInsert();
+		void twoLineInsert();
 
 };
 

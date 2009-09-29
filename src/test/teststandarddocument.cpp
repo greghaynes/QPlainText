@@ -21,6 +21,16 @@ void TestStandardDocument::singeLineInsert()
 	}
 }
 
+void TestStandardDocument::twoLineInsert()
+{
+	QSourceEdit::StandardDocument doc;
+	QString str("Hello\nthere.");
+	QVERIFY(doc.insert(QSourceEdit::DocumentPosition(), str));
+	QCOMPARE(doc.lineCount(), 2);
+	QCOMPARE(doc.lineLength(0), 5);
+	QCOMPARE(doc.lineLength(1), 6);
+}
+
 QTEST_MAIN(TestStandardDocument)
 #include "teststandarddocument.moc"
 
