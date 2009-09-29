@@ -83,13 +83,13 @@ class Document
 		/**
 		 * @brief Calls onInsertText and emits textInserted signal.
 		 */
-		bool insertText(const DocumentPosition &position,
+		bool insert(const DocumentPosition &position,
 			const QString &text);
 
 		/**
 		 * @brief Calls onRemoveText and emits textRemoved signal.
 		 */
-		void removeText(const DocumentRange &range);
+		void remove(const DocumentRange &range);
 
 	Q_SIGNALS:
 		/**

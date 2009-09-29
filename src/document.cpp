@@ -39,14 +39,14 @@ Document::~Document()
 {
 }
 
-bool Document::insertText(const DocumentPosition &position,
+bool Document::insert(const DocumentPosition &position,
 	const QString &text)
 {
 	onInsertText(position, text);
 	emit(textInserted(position, text));
 }
 
-void Document::removeText(const DocumentRange &range)
+void Document::remove(const DocumentRange &range)
 {
 	onRemoveText(range);
 	emit(textRemoved(range));
