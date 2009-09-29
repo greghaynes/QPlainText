@@ -72,6 +72,27 @@ void TestStandardDocument::innerLineInsert()
 	}
 }
 
+void TestStandardDocument::appendLine()
+{
+	QSourceEdit::StandardDocument doc;
+	QString str("Hello, there.");
+	QVERIFY(doc.insert(QSourceEdit::DocumentPosition(), str));
+	str = "Hi!";
+	QVERIFY(doc.insert(QSourceEdit::DocumentPosition(1, 0), str));
+	QCOMPARE(doc.lineCount(), 2);
+	QString *text = doc.text(
+		QSourceEdit::DocumentRange(
+			QSourceEdit::DocumentPosition(),
+			QSourceEdit::DocumentPosition(1, -1)));
+	QVERIFY(text != 0);
+	str = "Hello, there.Hi!";
+	if(text != 0)
+	{
+		QCOMPARE(*text, str);
+		delete text;
+	}
+}
+
 QTEST_MAIN(TestStandardDocument)
 #include "teststandarddocument.moc"
 

@@ -12,6 +12,7 @@ class TestStandardDocument
 		void singeLineInsert();
 		void twoLineInsert();
 		void innerLineInsert();
+		void appendLine();
 
 };
 
