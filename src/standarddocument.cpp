@@ -152,7 +152,6 @@ bool StandardDocument::onInsertText(const DocumentPosition &position,
 		{
 			d->lines.insert(i, insLines[i]);
 		}
-		qDebug() << d->lines;
 	}
 	else
 		return false;

@@ -18,6 +18,7 @@ void TestStandardDocument::singeLineInsert()
 	if(text != 0)
 	{
 		QCOMPARE(*text, str);
+		delete text;
 	}
 }
 
@@ -29,6 +30,26 @@ void TestStandardDocument::twoLineInsert()
 	QCOMPARE(doc.lineCount(), 2);
 	QCOMPARE(doc.lineLength(0), 5);
 	QCOMPARE(doc.lineLength(1), 6);
+	QString *text = doc.text(
+		QSourceEdit::DocumentRange(
+			QSourceEdit::DocumentPosition(),
+			QSourceEdit::DocumentPosition(0, -1)));
+	QVERIFY(text != 0);
+	if(text != 0)
+	{
+		QCOMPARE(*text, QString("Hello"));
+		delete text;
+	}
+	text = doc.text(
+		QSourceEdit::DocumentRange(
+			QSourceEdit::DocumentPosition(1, 0),
+			QSourceEdit::DocumentPosition(1, -1)));
+	QVERIFY(text != 0);
+	if(text != 0)
+	{
+		QCOMPARE(*text, QString("there."));
+		delete text;
+	}
 }
 
 QTEST_MAIN(TestStandardDocument)
