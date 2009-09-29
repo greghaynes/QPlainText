@@ -58,6 +58,8 @@ QString *StandardDocument::text(const DocumentRange &range) const
 		startcol = range.start().column();
 		endline = range.end().line();
 		endcol = range.end().column();
+		if(endcol == -1)
+			endcol = d->lines[endline].length();
 		if(startline == endline)
 		{
 			if(endcol == -1)
@@ -72,10 +74,13 @@ QString *StandardDocument::text(const DocumentRange &range) const
 		}
 		else
 		{
-			ret->append(d->lines[startline].right(startcol));
-			for(i = startline+1; i < endline; i++)
+			ret->append(d->lines[startline]);
+			ret->remove(0, startcol);
+			ret->append("\n");
+			for(i = (startline+1); i < endline; i++)
 			{
 				ret->append(d->lines[i]);
+				ret->append("\n");
 			}
 			ret->append(d->lines[endline].left(endcol));
 		}

@@ -85,7 +85,7 @@ void TestStandardDocument::appendLine()
 			QSourceEdit::DocumentPosition(),
 			QSourceEdit::DocumentPosition(1, -1)));
 	QVERIFY(text != 0);
-	str = "Hello, there.Hi!";
+	str = "Hello, there.\nHi!";
 	if(text != 0)
 	{
 		QCOMPARE(*text, str);
