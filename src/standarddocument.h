@@ -47,7 +47,7 @@ class StandardDocument
 	protected:
 		bool onInsertText(const DocumentPosition &position,
 			const QString &text);
-		void onRemoveText(const DocumentRange &range);
+		bool onRemoveText(const DocumentRange &range);
 	
 	private:
 		bool isValidPosition(const DocumentPosition &pos,

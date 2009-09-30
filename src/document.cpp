@@ -43,14 +43,17 @@ bool Document::insert(const DocumentPosition &position,
 	const QString &text)
 {
 	bool val = onInsertText(position, text);
-	emit(textInserted(position, text));
+	if(val)
+		emit(textInserted(position, text));
 	return val;
 }
 
-void Document::remove(const DocumentRange &range)
+bool Document::remove(const DocumentRange &range)
 {
-	onRemoveText(range);
-	emit(textRemoved(range));
+	bool val = onRemoveText(range);
+	if(val)
+		emit(textRemoved(range));
+	return val;
 }
 
 }

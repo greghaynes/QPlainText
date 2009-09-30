@@ -89,7 +89,7 @@ class Document
 		/**
 		 * @brief Calls onRemoveText and emits textRemoved signal.
 		 */
-		void remove(const DocumentRange &range);
+		bool remove(const DocumentRange &range);
 
 	Q_SIGNALS:
 		/**
@@ -106,7 +106,7 @@ class Document
 		  * Text removal was betwen characters pointed to by range,
 		  * including endpoints.
 		  */
-		void textRemoved(const DocumentRange &range);
+		bool textRemoved(const DocumentRange &range);
 	
 	protected:
 		/**
@@ -122,7 +122,7 @@ class Document
 		  *
 		  * Override this method to remove text.
 		  */
-		virtual void onRemoveText(const DocumentRange &range) = 0;
+		virtual bool onRemoveText(const DocumentRange &range) = 0;
 	
 };
 

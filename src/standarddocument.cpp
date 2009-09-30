@@ -163,8 +163,38 @@ bool StandardDocument::onInsertText(const DocumentPosition &position,
 	return true;
 }
 
-void StandardDocument::onRemoveText(const DocumentRange &range)
+bool StandardDocument::onRemoveText(const DocumentRange &range)
 {
+	int startline, endline;
+	int startcol, endcol;
+	int i;
+
+	if(isValidPosition(range.start()) && isValidPosition(range.end(), false, true))
+	{
+		startline = range.start().line();
+		startcol = range.start().column();
+		endline = range.end().line();
+		endcol = range.end().column();
+		if(startline == endline)
+		{
+			if(endcol == -1)
+				d->lines[startline].remove(startcol, d->lines[startline].length() - startcol);
+			else
+				d->lines[startline].remove(startcol, endcol - startcol);
+		}
+		else
+		{
+			d->lines[startline].remove(startcol, endcol - startcol);
+			startline += 1;
+			for(i = startline;i < endline;i++)
+				d->lines.removeAt(startline);
+			d->lines[startline-1].append(d->lines[startline].right(d->lines[startline].length() - endcol));
+			d->lines.removeAt(startline);
+		}
+		return true;
+	}
+	else
+		return false;
 }
 
 bool StandardDocument::isValidPosition(const DocumentPosition &pos,

@@ -13,6 +13,7 @@ class TestStandardDocument
 		void twoLineInsert();
 		void innerLineInsert();
 		void appendLine();
+		void removeText();
 
 };
 

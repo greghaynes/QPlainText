@@ -93,6 +93,28 @@ void TestStandardDocument::appendLine()
 	}
 }
 
+void TestStandardDocument::removeText()
+{
+	QSourceEdit::StandardDocument doc;
+	QString str("Hello, there.");
+	QVERIFY(doc.insert(QSourceEdit::DocumentPosition(), str));
+	QVERIFY(doc.remove(
+			QSourceEdit::DocumentRange(
+				QSourceEdit::DocumentPosition(0, 1),
+				QSourceEdit::DocumentPosition(0, 4))));
+	QString *text = doc.text(
+		QSourceEdit::DocumentRange(
+			QSourceEdit::DocumentPosition(),
+			QSourceEdit::DocumentPosition(0, -1)));
+	QVERIFY(text != 0);
+	str = "Ho, there.";
+	if(text != 0)
+	{
+		QCOMPARE(*text, str);
+		delete text;
+	}
+}
+
 QTEST_MAIN(TestStandardDocument)
 #include "teststandarddocument.moc"
 
