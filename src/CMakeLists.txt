@@ -11,12 +11,15 @@ set(QSOURCEVIEW_HDRS
 	documentposition.h
 	documentrange.h
 	document.h
+	documentview.h
 	standarddocument.h)
 
 set(QSOURCEVIEW_SRCS
 	documentposition.cpp
 	documentrange.cpp
 	document.cpp
+	documentview.cpp
+	documentviewinternal.cpp
 	standarddocument.cpp)
 
 QT4_AUTOMOC(${QSOURCEVIEW_SRCS})

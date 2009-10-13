@@ -18,10 +18,8 @@
  */
 
 #include "documentview.h"
-#include "documentviewfactory.h"
 #include "documentviewinternal.h"
 #include "documentcontroller.h"
-#include "renderer.h"
 #include "document.h"
 #include "numberedlistwidget.h"
 
@@ -33,7 +31,7 @@
 
 #include "documentview.moc"
 
-namespace QSourceView
+namespace QSourceEdit
 {
 
 class DocumentViewPrivate
@@ -41,11 +39,10 @@ class DocumentViewPrivate
 
 	public:
 		Document *document;
-		Renderer *renderer;
 		DocumentViewInternal *internalView;
 		DocumentController *controller;
-		NumberedListWidget *horiz_numbers;
-		NumberedListWidget *vert_numbers;
+		//NumberedListWidget *horiz_numbers;
+		//NumberedListWidget *vert_numbers;
 		QScrollBar *horiz_scrollBar;
 		QScrollBar *vert_scrollBar;
 
@@ -55,25 +52,12 @@ DocumentView::DocumentView(Document &document)
 	: QWidget(0)
 	, d(new DocumentViewPrivate)
 {
-	setParent(&document);
 	d->document = &document;
-	connect(d->document, SIGNAL(textInserted(const DocumentPosition&, const QString&)),
-		this, SLOT(slotDocumentTextInserted(const DocumentPosition&, const QString &)));
-	d->renderer = new Renderer(this);
-	d->internalView = new DocumentViewInternal(*this, *d->renderer);
-	connect(d->internalView, SIGNAL(sizeChanged(int, int)),
-		this, SLOT(slotInternalViewResize(int, int)));
+	d->internalView = new DocumentViewInternal(*this);
 	d->controller = new DocumentController(*this);
-	d->horiz_scrollBar = new QScrollBar(Qt::Horizontal);
-	d->vert_scrollBar = new QScrollBar(Qt::Vertical);
-	d->vert_scrollBar->setMaximum(d->internalView->endY());
-	d->vert_scrollBar->setSingleStep(1);
-	connect(d->vert_scrollBar, SIGNAL(sliderMoved(int)),
-		d->internalView, SLOT(setStartY(int)));
-	connect(d->internalView, SIGNAL(startYChanged(int)),
-		d->vert_scrollBar, SLOT(setValue(int)));
-	d->horiz_scrollBar->setVisible(false);
 	setupUi();
+	setupScrollBars();
+	setupSignals();
 }
 
 DocumentView::~DocumentView()
@@ -107,18 +91,9 @@ const DocumentPosition &DocumentView::caretPosition() const
 	return d->internalView->caretPosition();
 }
 
-void DocumentView::setCaretPosition(const DocumentPosition &pos)
-	throw(std::out_of_range)
+bool DocumentView::setCaretPosition(const DocumentPosition &pos)
 {
 	d->internalView->setCaretPosition(pos);
-}
-
-void DocumentView::enableHorizontalNumberWidget()
-{
-}
-
-void DocumentView::enableVerticalNumberWidget()
-{
 }
 
 void DocumentView::setInternalFont(const QFont &font)
@@ -126,7 +101,7 @@ void DocumentView::setInternalFont(const QFont &font)
 	d->internalView->setFont(font);
 }
 
-void DocumentView::slotDocumentTextInserted(const DocumentPosition &pos,
+void DocumentView::documentTextInserted(const DocumentPosition &pos,
 	const QString &text)
 {
 	Q_UNUSED(pos)
@@ -139,6 +114,29 @@ void DocumentView::slotInternalViewResize(int width, int height)
 	Q_UNUSED(width)
 	Q_UNUSED(height)
 	resizeScrollbar();
+}
+
+void DocumentView::setupSignals()
+{
+	connect(d->document, SIGNAL(destroyed(QObject*)),
+		this, SLOT(deleteLater()));
+	connect(d->document, SIGNAL(textInserted(const DocumentPosition&, const QString&)),
+		this, SLOT(documentTextInserted(const DocumentPosition&, const QString &)));
+	connect(d->internalView, SIGNAL(sizeChanged(int, int)),
+		this, SLOT(slotInternalViewResize(int, int)));
+	connect(d->vert_scrollBar, SIGNAL(sliderMoved(int)),
+		d->internalView, SLOT(setStartY(int)));
+	connect(d->internalView, SIGNAL(startYChanged(int)),
+		d->vert_scrollBar, SLOT(setValue(int)));
+}
+
+void DocumentView::setupScrollBars()
+{
+	d->horiz_scrollBar = new QScrollBar(Qt::Horizontal);
+	d->vert_scrollBar = new QScrollBar(Qt::Vertical);
+	d->vert_scrollBar->setMaximum(d->internalView->documentOffsetY());
+	d->vert_scrollBar->setSingleStep(1);
+	d->horiz_scrollBar->setVisible(false);
 }
 
 void DocumentView::setupUi()
@@ -156,14 +154,9 @@ void DocumentView::setupUi()
 	setLayout(vlayout);
 }
 
-Renderer &DocumentView::renderer()
-{
-	return *d->renderer;
-}
-
 void DocumentView::resizeScrollbar()
 {
-	int endY = d->internalView->endY() - d->internalView->height();
+	int endY = d->internalView->documentOffsetY();
 	if(endY < 0)
 	{
 		d->vert_scrollBar->setVisible(false);

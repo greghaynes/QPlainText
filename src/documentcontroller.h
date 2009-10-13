@@ -19,7 +19,7 @@
 
 class QKeyEvent;
 
-namespace QSourceView
+namespace QSourceEdit
 {
 
 class DocumentView;

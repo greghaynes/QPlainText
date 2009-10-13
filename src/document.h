@@ -58,7 +58,7 @@ class Document
 		  * You should delete the returned instance when it is no
 		  * longer needed.
 		  */
-		virtual QString *text(const DocumentRange &range) const = 0;
+		virtual QString text(const DocumentRange &range) const = 0;
 
 		/**
 		  * @brief Number of lines in document.

@@ -47,13 +47,12 @@ StandardDocument::~StandardDocument()
 	delete d;
 }
 
-QString *StandardDocument::text(const DocumentRange &range) const
+QString StandardDocument::text(const DocumentRange &range) const
 {
-	QString *ret = 0;
+	QString ret = 0;
 	int i, j, startline, startcol, endline, endcol, lineoff;
 	if(isValidPosition(range.start()) && isValidPosition(range.end(), false, true))
 	{
-		ret = new QString();
 		startline = range.start().line();
 		startcol = range.start().column();
 		endline = range.end().line();
@@ -64,25 +63,25 @@ QString *StandardDocument::text(const DocumentRange &range) const
 		{
 			if(endcol == -1)
 			{
-				ret->append(d->lines[startline]);
-				ret->remove(0, startcol);
+				ret.append(d->lines[startline]);
+				ret.remove(0, startcol);
 			}
 			else
 			{
-				ret->append(d->lines[startline].mid(startcol, endcol - startcol));
+				ret.append(d->lines[startline].mid(startcol, endcol - startcol));
 			}
 		}
 		else
 		{
-			ret->append(d->lines[startline]);
-			ret->remove(0, startcol);
-			ret->append("\n");
+			ret.append(d->lines[startline]);
+			ret.remove(0, startcol);
+			ret.append("\n");
 			for(i = (startline+1); i < endline; i++)
 			{
-				ret->append(d->lines[i]);
-				ret->append("\n");
+				ret.append(d->lines[i]);
+				ret.append("\n");
 			}
-			ret->append(d->lines[endline].left(endcol));
+			ret.append(d->lines[endline].left(endcol));
 		}
 
 	}

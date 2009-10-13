@@ -22,11 +22,9 @@
 
 #include <QWidget>
 
-#include <stdexcept>
-
 class QFont;
 
-namespace QSourceView 
+namespace QSourceEdit
 {
 
 class Document;
@@ -35,36 +33,73 @@ class DocumentPosition;
 class DocumentController;
 class DocumentViewPrivate;
 
+/**
+  * @brief QWidget view of a document.
+  */
 class DocumentView
 	: public QWidget
 {
 	Q_OBJECT
 
 	public:
+		/**
+		  * @brief Create a document view.
+		  *
+		  * This view is parented by the document.
+		  */
 		DocumentView(Document &document);
+
+		/**
+		  * @brief Destroy a document view.
+		  */
 		~DocumentView();
 		
+		/**
+		  * @brief Get document represented by this view.
+		  */
 		Document &document();
+
+		/**
+		  * @brief Controller for this view.
+		  */
 		DocumentController &controller();
+
+		/**
+		  * @brief Set controller for this view.
+		  */
 		void setController(DocumentController *controller);
+
+		/**
+		  * @brief Current caret position.
+		  */
 		const DocumentPosition &caretPosition() const;
-		void setCaretPosition(const DocumentPosition &pos)
-			throw(std::out_of_range);
+
+		/**
+		  * @brief Set the caret position.
+		  */
+		bool setCaretPosition(const DocumentPosition &pos);
 	
 	public Q_SLOTS:
-		void enableHorizontalNumberWidget();
-		void enableVerticalNumberWidget();
+		/**
+		  * @brief Set font for internal text.
+		  */
 		void setInternalFont(const QFont &font);
+
+		/**
+		  * @brief Enable vertical scroll bar.
+		  */
+		void enableVerticalScrollBar(bool enable);
 	
 	private Q_SLOTS:
-		void slotDocumentTextInserted(const DocumentPosition &position,
+		void documentTextInserted(const DocumentPosition &position,
 			const QString &text);
 		void slotInternalViewResize(int width, int height);
 	
 	private:
+		void setupSignals();
+		void setupScrollBars();
 		unsigned int longestLine();
 		void setupUi();
-		Renderer &renderer();
 		void resizeScrollbar();
 	
 		DocumentViewPrivate *d;

@@ -21,7 +21,7 @@
 #include "documentview.h"
 #include "documentcontroller.h"
 #include "document.h"
-#include "renderer.h"
+#include "documentrange.h"
 
 #include <QPaintEvent>
 #include <QPainter>
@@ -39,7 +39,7 @@
 
 #define CARET_INTERVAL 500
 
-namespace QSourceView
+namespace QSourceEdit
 {
 
 class TextCursor
@@ -60,11 +60,9 @@ TextCursor::TextCursor()
 {
 }
 
-DocumentViewInternal::DocumentViewInternal(DocumentView &parentView,
-	Renderer &renderer)
+DocumentViewInternal::DocumentViewInternal(DocumentView &parentView)
 	: QWidget(&parentView)
 	, m_view(&parentView)
-	, m_renderer(&renderer)
 	, m_startX(0)
 	, m_startY(0)
 	, m_caret(new TextCursor)
@@ -81,19 +79,14 @@ DocumentViewInternal::DocumentViewInternal(DocumentView &parentView,
 			this, SLOT(documentTextChanged()));
 }
 
-int DocumentViewInternal::startX() const
+int DocumentViewInternal::documentOffsetX() const
 {
 	return m_startX;
 }
 
-int DocumentViewInternal::startY() const
+int DocumentViewInternal::documentOffsetY() const
 {
 	return m_startY;
-}
-
-int DocumentViewInternal::endY() const
-{
-	return m_view->document().lineCount() * fontMetrics().height();
 }
 
 const DocumentPosition &DocumentViewInternal::caretPosition() const
@@ -101,13 +94,12 @@ const DocumentPosition &DocumentViewInternal::caretPosition() const
 	return *m_caret;
 }
 
-void DocumentViewInternal::setCaretPosition(const DocumentPosition &pos)
-	throw(std::out_of_range)
+bool DocumentViewInternal::setCaretPosition(const DocumentPosition &pos)
 {
 	if(pos.line() >= m_view->document().lineCount())
-		throw std::out_of_range("Setting caret line beyond last line of document.");
-	if(pos.column() > m_view->document().text(pos.line()).size())
-		throw std::out_of_range("Setting caret column beyond end of caret line.");
+		return false;
+	if(pos.column() > m_view->document().lineLength(pos.line()) < pos.column())
+		return false;
 	
 	m_caret->setLine(pos.line());
 	m_caret->setColumn(pos.column());
@@ -115,31 +107,33 @@ void DocumentViewInternal::setCaretPosition(const DocumentPosition &pos)
 	m_caret->is_visible = false;
 	m_caret->timer.start(CARET_INTERVAL);
 	update();
+	return true;
 }
 
-void DocumentViewInternal::setStartX(int x)
+void DocumentViewInternal::setDocumentOffsetX(int x)
 {
 	if(x < 0)
 		m_startX = 0;
 	else
 		m_startX = x;
 	update();
+	emit(documentOffsetXChanged(m_startX));
 }
 
-void DocumentViewInternal::setStartY(int y)
+void DocumentViewInternal::setDocumentOffsetY(int y)
 {
 	if(y < 0)
 		m_startY = 0;
-	else if(y > (endY() - height()))
+	else if(y > (documentOffsetY() - height()))
 	{
-		m_startY = endY() - height();
+		m_startY = documentOffsetY() - height();
 		if(m_startY < 0)
 			m_startY = 0;
 	}
 	else
 		m_startY = y;
 	update();
-	emit(startYChanged(m_startY));
+	emit(documentOffsetYChanged(m_startY));
 }
 
 void DocumentViewInternal::paintEvent(QPaintEvent *event)
@@ -148,8 +142,8 @@ void DocumentViewInternal::paintEvent(QPaintEvent *event)
 	QPainter paint(this);
 	
 	unsigned int fontHeight = fontMetrics().height();
-	int lineYStart = (startY() % fontHeight);
-	int lineNumStart = lineAt(startY());
+	int lineYStart = (documentOffsetY() % fontHeight);
+	int lineNumStart = lineAt(documentOffsetY());
 	int numLines = (height() / fontHeight) + 2;
 	int i;
 	// Paint the text
@@ -158,7 +152,9 @@ void DocumentViewInternal::paintEvent(QPaintEvent *event)
 	{
 		QRect bound = QRect(0, (i*fontHeight) - lineYStart, rect.width(), fontHeight);
 		paint.fillRect(bound, Qt::white);
-		paint.drawText(bound, doc->text(lineNumStart));
+		paint.drawText(bound, doc->text(DocumentRange(
+			DocumentPosition(lineNumStart, 0),
+			DocumentPosition(lineNumStart, -1))));
 	}
 
 	paintCaret(paint);
@@ -181,14 +177,17 @@ void DocumentViewInternal::keyReleaseEvent(QKeyEvent *event)
 
 void DocumentViewInternal::mousePressEvent(QMouseEvent *event)
 {
-	int pressLine = lineAt(event->y()+startY());
+	int pressLine = lineAt(event->y()+documentOffsetY());
 	int pressColumn;
 	if(pressLine >= m_view->document().lineCount())
 	{
 		pressLine = m_view->document().lineCount()-1;
 	}
 	
-	QString line = m_view->document().text(pressLine);
+	QString line = m_view->document().text(
+		DocumentRange(
+			DocumentPosition(pressLine, 0),
+			DocumentPosition(pressLine, -1)));
 	// Find the column were at
 	int i;
 	for(i = 0;i < line.size();i++)
@@ -208,29 +207,35 @@ void DocumentViewInternal::wheelEvent(QWheelEvent *event)
 	event->ignore();
 	if(event->orientation() == Qt::Vertical)
 	{
-		setStartY(startY() - (event->delta() / this->m_scrollWheelFactor));
+		setDocumentOffsetY(documentOffsetY() - (event->delta() / this->m_scrollWheelFactor));
 	}
 }
 
 void DocumentViewInternal::paintCaret(QPainter &paint)
 {
-	int startLine = lineAt(startY());
+	int startLine = lineAt(documentOffsetY());
 	if(!hasFocus())
 		return;
 	if(startLine > m_caret->line()
-	   || lineAt(startY()+height()) <= m_caret->line())
+	   || lineAt(documentOffsetY()+height()) <= m_caret->line())
 		return;
 	// Text printed infront of cursor
-	QString prevline = m_view->document().text(m_caret->line()).left(m_caret->column());
+	QString prevline = m_view->document().text(
+		DocumentRange(
+			DocumentPosition(m_caret->line(), 0),
+			DocumentPosition(m_caret->line(), -1))).left(m_caret->column());
 	int xStart = fontMetrics().width(prevline);
-	QRect bound = QRect(xStart, (fontMetrics().height()*m_caret->line()) - startY(), 1, fontMetrics().height());
+	QRect bound = QRect(xStart, (fontMetrics().height()*m_caret->line()) - documentOffsetY(), 1, fontMetrics().height());
 	
 	if(m_caret->is_visible)
 	{
-		if(m_caret->column() >= m_view->document().text(m_caret->line()).size())
+		if(m_caret->column() >= m_view->document().lineLength(m_caret->line()))
 			paint.fillRect(bound, Qt::white);
 		else
-			paint.drawText(bound, QString(m_view->document().text(m_caret->line())[m_caret->column()]));
+			paint.drawText(bound, QString(m_view->document().text(
+				DocumentRange(
+					DocumentPosition(m_caret->line(), 0),
+					DocumentPosition(m_caret->line(), -1)))[m_caret->column()]));
 	}
 	else
 	{

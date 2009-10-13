@@ -38,7 +38,7 @@ class StandardDocument
 		StandardDocument(QObject *parent = 0);
 		~StandardDocument();
 		
-		QString *text(const DocumentRange &range) const;
+		QString text(const DocumentRange &range) const;
 		int lineCount() const;
 		int lineLength(int line) const; 
 		void clear();

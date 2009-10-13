@@ -22,15 +22,13 @@
 
 #include <QWidget>
 
-#include <stdexcept>
-
 class QPaintEvent;
 class QKeyEvent;
 class QMouseEvent;
 class QPainter;
 class QResizeEvent;
 
-namespace QSourceView
+namespace QSourceEdit
 {
 
 class DocumentView;
@@ -38,37 +36,107 @@ class TextCursor;
 class DocumentPosition;
 class Renderer;
 
+/**
+  * @brief Internal text widget of document view.
+  */
 class DocumentViewInternal
 	: public QWidget
 {
 	Q_OBJECT
 
 	public:
-		DocumentViewInternal(DocumentView &parentView,
-			Renderer &renderer);
+		/**
+		  * @brief Create internal view.
+		  */
+		DocumentViewInternal(DocumentView &parentView);
 		
-		int startY() const;
-		int startX() const;
-		int endY() const;
+		/**
+		  * @brief Offset in document in Y direction.
+		  *
+		  * Offset in terms of document's pixels to top of view.
+		  */ 
+		int documentOffsetY() const;
+
+		/**
+		  * @brief Offset in document in X direction.
+		  *
+		  * Offset in terms of document's pixels to leftmost pont of view.
+		  */ 
+		int documentOffsetX() const;
+
+		/**
+		  * @brief Current position of caret.
+		  *
+		  * See DocumentViewInternal::setCaretPosition for more information.
+		  */
 		const DocumentPosition &caretPosition() const;
-		void setCaretPosition(const DocumentPosition &pos)
-			throw(std::out_of_range);
+
+		/**
+		  * @brief Set the current position of caret.
+		  *
+		  * The caret will be displayed infront of character it points to.
+		  * Ex: Position 0, 0 will display before first character in document.
+		  *
+		  * The caret can be set in the range of 0, 0 to  numlines+1, linelength+1.
+		  */
+		bool setCaretPosition(const DocumentPosition &pos);
 
 	Q_SIGNALS:
+		/**
+		  * @brief The size of the view has changed.
+		  */
 		void sizeChanged(int width = 0, int height = 0);
-		void startYChanged(int y = 0);
-		void startXChanged(int x = 0);
+
+		/**
+		  * @brief The Y offset of the view has changed.
+		  */
+		void documentOffsetYChanged(int y = 0);
+
+		/**
+		  * @brief The X offset of the view has changed.
+		  */
+		void documentOffsetXChanged(int x = 0);
 	
 	public Q_SLOTS:
-		void setStartY(int x);
-		void setStartX(int x);
+		/**
+		  * @brief Set offset from the document's start.
+		  */
+		void setDocumentOffsetY(int);
+
+		/**
+		  * @brief Set offset from the document's line's start.
+		  */
+		void setDocumentOffsetX(int);
 		
 	protected:
+		/**
+		  * @brief Paint event occoured.
+		  */
 		void paintEvent(QPaintEvent *event);
+
+		/**
+		  * @brief A key has been pressed.
+		  */
 		void keyPressEvent(QKeyEvent *event);
+		
+		/**
+		  * @brief A key has been released.
+		  */
 		void keyReleaseEvent(QKeyEvent *event);
+
+		/**
+		  * @brief A mouse button has been pressed.
+		  */
 		void mousePressEvent(QMouseEvent *event);
+
+		/**
+		  * @brief The mouse wheel has been moved.
+		  */
 		void wheelEvent(QWheelEvent *event);
+
+		/**
+		  * @brief The widget has been resized.
+		  */
 		void resizeEvent(QResizeEvent *event);
 	
 	private Q_SLOTS:
