@@ -26,7 +26,7 @@
 #include <QKeyEvent>
 #include <QDebug>
 
-namespace QSourceView
+namespace QSourceEdit
 {
 
 DocumentController::DocumentController(DocumentView &view)
@@ -78,13 +78,12 @@ void DocumentController::keyPressEvent(QKeyEvent *event)
 	}
 
 	if(!insert.isEmpty())
-		document().insertText(view().caretPosition(), insert);
+		document().insert(view().caretPosition(), insert);
 
 	pos.setLine(caretline);
 	pos.setColumn(caretcolumn);
 	
-	if(view().document().isValidPosition(pos))
-		view().setCaretPosition(pos);
+	view().setCaretPosition(pos);
 }
 
 void DocumentController::keyReleaseEvent(QKeyEvent *event)

@@ -88,7 +88,8 @@ class DocumentView
 		/**
 		  * @brief Enable vertical scroll bar.
 		  */
-		void enableVerticalScrollBar(bool enable);
+		void setScrollBarEnabled(bool enable,
+			Qt::Orientation orientation=Qt::Vertical);
 	
 	private Q_SLOTS:
 		void documentTextInserted(const DocumentPosition &position,

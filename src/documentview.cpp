@@ -101,6 +101,10 @@ void DocumentView::setInternalFont(const QFont &font)
 	d->internalView->setFont(font);
 }
 
+void DocumentView::setScrollBarEnabled(bool value, Qt::Orientation orientation)
+{
+}
+
 void DocumentView::documentTextInserted(const DocumentPosition &pos,
 	const QString &text)
 {
