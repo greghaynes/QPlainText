@@ -55,8 +55,8 @@ DocumentView::DocumentView(Document &document)
 	d->document = &document;
 	d->internalView = new DocumentViewInternal(*this);
 	d->controller = new DocumentController(*this);
-	setupUi();
 	setupScrollBars();
+	setupUi();
 	setupSignals();
 }
 

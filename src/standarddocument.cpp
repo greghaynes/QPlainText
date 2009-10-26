@@ -97,7 +97,9 @@ int StandardDocument::lineCount() const
 
 int StandardDocument::lineLength(int line) const
 {
-	return d->lines[line].size();
+	if(d->lines.size() > line)
+		return d->lines[line].size();
+	return -1;
 }
 
 void StandardDocument::clear()

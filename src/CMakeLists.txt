@@ -38,12 +38,18 @@ set_target_properties(qsourceview
 
 target_link_libraries(qsourceview ${QT_LIBRARIES})
 
-QT4_AUTOMOC(test/teststandarddocument.cpp)
+QT4_AUTOMOC(test/teststandarddocument.cpp
+	test/testdocumentview.cpp)
 
 add_executable(teststandarddocument
 	test/teststandarddocument.cpp)
 
 target_link_libraries(teststandarddocument ${QT_LIBRARIES} qsourceview)
+
+add_executable(testdocumentview
+	test/testdocumentview.cpp)
+
+target_link_libraries(testdocumentview ${QT_LIBRARIES} qsourceview)
 
 install(TARGETS qsourceview
 	DESTINATION lib)
