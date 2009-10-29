@@ -19,7 +19,13 @@ add_executable(testdocumentview
 	teststandarddocument.moc
 	teststandarddocument.cpp)
 
-target_link_libraries(${QT_QMAIN_LIBRARY}
+target_link_libraries(teststandarddocument
+	${QT_QMAIN_LIBRARY}
+	${QT_QTCORE_LIBRARY}
+	${QT_QTTEST_LIBRARY})
+
+target_link_libraries(testdocumentview
+	${QT_QMAIN_LIBRARY}
 	${QT_QTCORE_LIBRARY}
 	${QT_QTTEST_LIBRARY})
 
