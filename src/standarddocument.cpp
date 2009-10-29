@@ -50,7 +50,7 @@ StandardDocument::~StandardDocument()
 QString StandardDocument::text(const DocumentRange &range) const
 {
 	QString ret = 0;
-	int i, j, startline, startcol, endline, endcol, lineoff;
+	int i, startline, startcol, endline, endcol;
 	if(isValidPosition(range.start()) && isValidPosition(range.end(), false, true))
 	{
 		startline = range.start().line();
@@ -119,13 +119,17 @@ DocumentPosition StandardDocument::end() const
 	return DocumentPosition(line, column);
 }
 
-// TODO: Finish/Test this
 bool StandardDocument::onInsertText(const DocumentPosition &position,
 	const QString &insText)
 {
-	if(!isValidPosition(position, true))
+	// Check insert position
+	if(position.line() < 0
+	   || position.line() > d->lines.size()
+	   || (position.line() < d->lines.size() && position.column() > d->lines[position.line()].size())
+	   || (position.line() == d->lines.size() && position.column() != 0))
 	{
-		qDebug() << "Attempting to insert text into invalid position.";
+		qDebug() << "Attempting to insert text into invalid position: " 
+			<< position.line() << "," << position.column();
 		return false;
 	}
 
@@ -143,7 +147,6 @@ bool StandardDocument::onInsertText(const DocumentPosition &position,
 	else if(insLines.size() > 1)
 	{
 		QString chop;
-		int choplen = 0;
 		if(d->lines.length() > position.line())
 		{
 			int choplen = d->lines[position.line()].length() - position.column();

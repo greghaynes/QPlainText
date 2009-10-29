@@ -17,6 +17,14 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#ifndef QSOURCEEDIT_DOCCONTROLLER_H
+#define QSOURCEEDIT_DOCCONTROLLER_H
+
+#include <QObject>
+
+#include "documentposition.h"
+
+class QString;
 class QKeyEvent;
 
 namespace QSourceEdit
@@ -29,22 +37,33 @@ class Document;
  * @brief Interprets QKeyEvent's into operations on the document.
  */
 class DocumentController
+	: public QObject
 {
+	Q_OBJECT
 
 	public:
-		DocumentController(DocumentView &view);
+		DocumentController(DocumentView &view,
+			QObject *parent = 0);
 		
 		void keyPressEvent(QKeyEvent *event);
 		void keyReleaseEvent(QKeyEvent *event);
 		Document &document();
 		DocumentView &view();
+		DocumentPosition &position();
+	
+	private Q_SLOTS:
+		void onTextInserted(const DocumentPosition &pos,
+			const QString &text);
 	
 	private:
 		bool insertCaps();
 	
 		DocumentView *m_view;
+		DocumentPosition m_position;
 		bool m_shiftPressed;
 
 };
 
 }
+
+#endif

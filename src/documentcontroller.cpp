@@ -20,19 +20,25 @@
 #include "documentcontroller.h"
 #include "document.h"
 #include "documentview.h"
-#include "documentposition.h"
 #include "documentrange.h"
 
 #include <QKeyEvent>
 #include <QDebug>
 
+#include "documentcontroller.moc"
+
 namespace QSourceEdit
 {
 
-DocumentController::DocumentController(DocumentView &view)
-	: m_view(&view)
+DocumentController::DocumentController(DocumentView &view,
+	QObject *parent)
+	: QObject(parent)
+	, m_view(&view)
 	, m_shiftPressed(false)
 {
+	connect(&view.document(), SIGNAL(textInserted(
+			const DocumentPosition&, const QString &)),
+		this, SLOT(onTextInserted(const DocumentPosition&, const QString&)));
 }
 
 /*
@@ -78,12 +84,7 @@ void DocumentController::keyPressEvent(QKeyEvent *event)
 	}
 
 	if(!insert.isEmpty())
-		document().insert(view().caretPosition(), insert);
-
-	pos.setLine(caretline);
-	pos.setColumn(caretcolumn);
-	
-	view().setCaretPosition(pos);
+		document().insert(position(), insert);
 }
 
 void DocumentController::keyReleaseEvent(QKeyEvent *event)
@@ -104,6 +105,19 @@ Document &DocumentController::document()
 DocumentView &DocumentController::view()
 {
 	return *m_view;
+}
+
+DocumentPosition &DocumentController::position()
+{
+	return m_position;
+}
+
+void DocumentController::onTextInserted(const DocumentPosition &pos,
+	const QString &text)
+{
+	if(pos.line() == position().line()
+	   && pos.column() <= position().column())
+		position().setColumn(position().column()+1);
 }
 
 bool DocumentController::insertCaps()
