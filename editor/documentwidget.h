@@ -41,7 +41,7 @@ class DocumentWidget
 		void setupActions();
 		void setupUi();
 	
-		QSourceView::DocumentView *docView;
+		QSourceEdit::DocumentView *docView;
 		QAction *openAction;
 
 };

@@ -111,6 +111,7 @@ void DocumentView::documentTextInserted(const DocumentPosition &pos,
 	Q_UNUSED(pos)
 	Q_UNUSED(text)
 	resizeScrollbar();
+	d->internalView->update();
 }
 
 void DocumentView::slotInternalViewResize(int width, int height)

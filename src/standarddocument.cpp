@@ -125,7 +125,8 @@ bool StandardDocument::onInsertText(const DocumentPosition &position,
 	// Check insert position
 	if(position.line() < 0
 	   || position.line() > d->lines.size()
-	   || (position.line() < d->lines.size() && position.column() > d->lines[position.line()].size())
+	   || (position.line() < d->lines.size() 
+			&& position.column() > d->lines[position.line()].size())
 	   || (position.line() == d->lines.size() && position.column() != 0))
 	{
 		qDebug() << "Attempting to insert text into invalid position: " 

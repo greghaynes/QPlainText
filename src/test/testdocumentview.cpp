@@ -17,6 +17,7 @@ void TestDocumentView::empty()
 
 void TestDocumentView::typeHello()
 {
+	delete (int*)0;
 	QSourceEdit::Document *doc = new QSourceEdit::StandardDocument();
 	QSourceEdit::DocumentView view(*doc);
 	QString str("Hello");

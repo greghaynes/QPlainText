@@ -48,6 +48,16 @@ bool Document::insert(const DocumentPosition &position,
 	return val;
 }
 
+bool Document::append(const QString &text)
+{
+	DocumentPosition pos;
+	pos.setLine(lineCount());
+	if(pos.line() != 0)
+		pos.setLine(pos.line()-1);
+	pos.setColumn(-1);
+	insert(pos, text);
+}
+
 bool Document::remove(const DocumentRange &range)
 {
 	bool val = onRemoveText(range);

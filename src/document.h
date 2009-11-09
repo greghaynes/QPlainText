@@ -85,6 +85,13 @@ class Document
 		 */
 		bool insert(const DocumentPosition &position,
 			const QString &text);
+		
+		/**
+		 * @brief Append text to end of document.
+		 *
+		 * Does not insert a newline before appending text.
+		 */
+		bool append(const QString &text);
 
 		/**
 		 * @brief Calls onRemoveText and emits textRemoved signal.

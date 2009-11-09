@@ -48,7 +48,7 @@ void DocumentWidget::slotOpen()
 		QFile file(path);
 		file.open(QIODevice::ReadOnly | QIODevice::Text);
 		while(!file.atEnd())
-			docView->document().appendText(file.read(1024));
+			docView->document().append(file.read(1024));
 	}
 }
 
@@ -64,8 +64,8 @@ void DocumentWidget::setupUi()
 	QToolBar *toolBar = new QToolBar(this);
 	toolBar->addAction(openAction);
 	
-	QSourceView::Document *doc = new QSourceView::StandardDocument(this);
-	docView = new QSourceView::DocumentView(*doc);
+	QSourceEdit::Document *doc = new QSourceEdit::StandardDocument(this);
+	docView = new QSourceEdit::DocumentView(*doc);
 	
 	QVBoxLayout *vlayout = new QVBoxLayout(this);
 	vlayout->setContentsMargins(2, 2, 2, 2);
