@@ -19,19 +19,31 @@
 
 #include "documentposition.h"
 
+#include "documentposition.moc"
+
 namespace QSourceEdit
 {
 
-DocumentPosition::DocumentPosition()
-	: m_line(0)
+DocumentPosition::DocumentPosition(QObject *parent)
+	: QObject(parent)
+	, m_line(0)
 	, m_column(0)
 {
 }
 
 DocumentPosition::DocumentPosition(int line,
-	int column)
-	: m_line(line)
+	int column,
+	QObject *parent)
+	: QObject(parent)
+	, m_line(line)
 	, m_column(column)
+{
+}
+
+DocumentPosition::DocumentPosition(const DocumentPosition &other)
+	: QObject(other.parent())
+	, m_line(other.line())
+	, m_column(other.column())
 {
 }
 

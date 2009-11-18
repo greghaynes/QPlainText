@@ -20,33 +20,94 @@
 #ifndef QSOURCEVIEW_DOCUMENT_POSITION_H
 #define QSOURCEVIEW_DOCUMENT_POSITION_H
 
+#include <QObject>
+
 namespace QSourceEdit
 {
 
+/**
+  * @brief Represents a position in a document
+  */
 class DocumentPosition
+	: public QObject
 {
+	Q_OBJECT
 
 	public:
-		DocumentPosition();
+		/**
+		  * @brief Create a document position instance.
+		  *
+		  * Line and column are initialized to 0.
+		  */
+		DocumentPosition(QObject *parent = 0);
 		
 		/**
-		 * Counting starts at 0
-		 */
+		  * @brief Create a document position instance.
+		  *
+		  * Counting starts at 0
+		  */
 		DocumentPosition(int line,
-			int column);
+			int column,
+			QObject *parent = 0);
 		
+		/**
+		  * @brief Make copy of other position
+		  */
+		DocumentPosition(const DocumentPosition &other);
+		
+		/**
+		  * @brief Assign position value of other position.
+		  */
 		DocumentPosition &operator=(const DocumentPosition &other);
+		
+		/**
+		  * @brief Does position point to same location as other position.
+		  */
 		bool operator==(const DocumentPosition &other) const;
+		
+		/**
+		  * @brief Is position pointing to location infront of other position.
+		  */
 		bool operator<(const DocumentPosition &other) const;
+		
+		/**
+		  * @brief Is position pointing to location after other position.
+		  */
 		bool operator>(const DocumentPosition &other) const;
+		
+		/**
+		  * @brief Is positon pointing before or at other position.
+		  */
 		bool operator<=(const DocumentPosition &other) const;
+		
+		/**
+		  * @brief Is position pointing after or at other position.
+		  */
 		bool operator>=(const DocumentPosition &other) const;
 		
+		/**
+		  * @brief Line of position.
+		  */
 		int line() const;
-		int column() const;
-		void setLine(int line);
-		void setColumn(int column);
 		
+		/**
+		  * @brief Column of position.
+		  */
+		int column() const;
+		
+		/**
+		  * @brief Set the line of the position.
+		  */
+		void setLine(int line);
+		
+		/**
+		  * @brief Set the column of the position.
+		  */
+		void setColumn(int column);
+	
+	Q_SIGNALS:
+		void changed();
+	
 	private:
 		int m_line;
 		int m_column;

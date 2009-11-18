@@ -55,7 +55,7 @@ bool Document::append(const QString &text)
 	if(pos.line() != 0)
 		pos.setLine(pos.line()-1);
 	pos.setColumn(-1);
-	insert(pos, text);
+	return insert(pos, text);
 }
 
 bool Document::remove(const DocumentRange &range)

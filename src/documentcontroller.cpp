@@ -49,8 +49,8 @@ void DocumentController::keyPressEvent(QKeyEvent *event)
 {
 	QString insert;
 	DocumentRange remove;
-	int caretline = view().caretPosition().line();
-	int caretcolumn = view().caretPosition().column();
+	int caretline = view().keyboardCaret()->line();
+	int caretcolumn = view().keyboardCaret()->column();
 	DocumentPosition pos;
 	
 	switch(event->key())

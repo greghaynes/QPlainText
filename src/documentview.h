@@ -20,6 +20,8 @@
 #ifndef QSOURCEVIEW_SOURCE_DOCUMENT_VIEW_H
 #define QSOURCEVIEW_SOURCE_DOCUMENT_VIEW_H
 
+#include "documentcaret.h"
+
 #include <QWidget>
 
 class QFont;
@@ -68,16 +70,24 @@ class DocumentView
 		  * @brief Set controller for this view.
 		  */
 		void setController(DocumentController *controller);
-
+		
 		/**
-		  * @brief Current caret position.
+		  * @brief Carets displayed in document.
 		  */
-		const DocumentPosition &caretPosition() const;
-
+		QList<DocumentPosition*> &carets();
+		
 		/**
-		  * @brief Set the caret position.
+		  * @brief Caret representing input position from keyboard.
 		  */
-		bool setCaretPosition(const DocumentPosition &pos);
+		DocumentPosition *keyboardCaret();
+		
+		/**
+		  * @brief Add caret to view.
+		  *
+		  * Deleting the caret will remove it from the view.  You are
+		  * still responsible for the passed caret's memory.
+		  */
+		void addCaret(DocumentPosition *position);
 	
 	public Q_SLOTS:
 		/**
@@ -95,6 +105,7 @@ class DocumentView
 		void documentTextInserted(const DocumentPosition &position,
 			const QString &text);
 		void slotInternalViewResize(int width, int height);
+		void slotCaretDeleted(QObject *obj);
 	
 	private:
 		void setupSignals();

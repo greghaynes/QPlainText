@@ -41,6 +41,8 @@ class DocumentViewPrivate
 		Document *document;
 		DocumentViewInternal *internalView;
 		DocumentController *controller;
+		DocumentPosition *keyboardCaret;
+		QList<DocumentPosition*> carets;
 		//NumberedListWidget *horiz_numbers;
 		//NumberedListWidget *vert_numbers;
 		QScrollBar *horiz_scrollBar;
@@ -55,6 +57,11 @@ DocumentView::DocumentView(Document &document)
 	d->document = &document;
 	d->internalView = new DocumentViewInternal(*this);
 	d->controller = new DocumentController(*this);
+	
+	// Create keyboard caret
+	d->keyboardCaret = new DocumentPosition();
+	d->carets.append(d->keyboardCaret);
+	
 	setupScrollBars();
 	setupUi();
 	setupSignals();
@@ -62,6 +69,11 @@ DocumentView::DocumentView(Document &document)
 
 DocumentView::~DocumentView()
 {
+	// Delete carets
+	DocumentPosition *p;
+	foreach(p, carets())
+		delete p;
+
 	delete d;
 }
 
@@ -86,14 +98,21 @@ void DocumentView::setController(DocumentController *controller)
 		d->controller = controller;
 }
 
-const DocumentPosition &DocumentView::caretPosition() const
+QList<DocumentPosition*> &DocumentView::carets()
 {
-	return d->internalView->caretPosition();
+	return d->carets;
 }
 
-bool DocumentView::setCaretPosition(const DocumentPosition &pos)
+DocumentPosition *DocumentView::keyboardCaret()
 {
-	d->internalView->setCaretPosition(pos);
+	return d->keyboardCaret;
+}
+
+void DocumentView::addCaret(DocumentPosition *pos)
+{
+	connect(pos, SIGNAL(destroyed(QObject*)),
+		this, SLOT(slotCaretDeleted(QObject(QObject*))));
+	carets().append(pos);
 }
 
 void DocumentView::setInternalFont(const QFont &font)
@@ -119,6 +138,15 @@ void DocumentView::slotInternalViewResize(int width, int height)
 	Q_UNUSED(width)
 	Q_UNUSED(height)
 	resizeScrollbar();
+}
+
+void DocumentView::slotCaretDeleted(QObject *obj)
+{
+	DocumentPosition *caret = qobject_cast<DocumentPosition*>(obj);
+	if(!caret)
+		qDebug() << "Recieved caret delete event from non-caret instance";
+	else
+		carets().removeAll(caret);
 }
 
 void DocumentView::setupSignals()
