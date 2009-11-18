@@ -144,7 +144,7 @@ class DocumentViewInternal
 		void documentTextChanged();
 	
 	private:
-		void paintCaret(QPainter &paint);
+		void paintCaret(QPainter &paint, DocumentPosition *pos);
 		Renderer &renderer() { return *m_renderer; }
 		int lineAt(int x) const;
 	

@@ -20,8 +20,6 @@
 #ifndef QSOURCEVIEW_DOCUMENT_POSITION_H
 #define QSOURCEVIEW_DOCUMENT_POSITION_H
 
-#include <QObject>
-
 namespace QSourceEdit
 {
 
@@ -29,9 +27,7 @@ namespace QSourceEdit
   * @brief Represents a position in a document
   */
 class DocumentPosition
-	: public QObject
 {
-	Q_OBJECT
 
 	public:
 		/**
@@ -39,7 +35,7 @@ class DocumentPosition
 		  *
 		  * Line and column are initialized to 0.
 		  */
-		DocumentPosition(QObject *parent = 0);
+		DocumentPosition();
 		
 		/**
 		  * @brief Create a document position instance.
@@ -47,13 +43,17 @@ class DocumentPosition
 		  * Counting starts at 0
 		  */
 		DocumentPosition(int line,
-			int column,
-			QObject *parent = 0);
+			int column);
 		
 		/**
 		  * @brief Make copy of other position
 		  */
 		DocumentPosition(const DocumentPosition &other);
+		
+		/**
+		  * @brief Destroy the DocumentPosition.
+		  */
+		virtual ~DocumentPosition();
 		
 		/**
 		  * @brief Assign position value of other position.
@@ -105,8 +105,22 @@ class DocumentPosition
 		  */
 		void setColumn(int column);
 	
-	Q_SIGNALS:
-		void changed();
+	protected:
+		/**
+		  * @brief Called after line number changes with old line value.
+		  *
+		  * This is meant to allow subclasses to implement signals on 
+		  * position changed while keeping this class lightweight.
+		  */
+		virtual void onSetLine(int line) {}
+		
+		/**
+		  * @brief Called after column changes with old column value.
+		  *
+		  * This is meant to allow subclasses to implement signals on 
+		  * position changed while keeping this class lightweight.
+		  */
+		virtual void onSetColumn(int coulumn) {}
 	
 	private:
 		int m_line;

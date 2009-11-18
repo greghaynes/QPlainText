@@ -17,4 +17,4 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${CM
 
 add_executable(editor ${EDITOR_SRCS} ${EDITOR_RCC_SRCS})
 
-target_link_libraries(editor qsourceview)
+target_link_libraries(editor qsourceedit)

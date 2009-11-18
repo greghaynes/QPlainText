@@ -20,6 +20,7 @@
 #include "documentview.h"
 #include "documentviewinternal.h"
 #include "documentcontroller.h"
+#include "documentcaret.h"
 #include "document.h"
 #include "numberedlistwidget.h"
 
@@ -41,8 +42,8 @@ class DocumentViewPrivate
 		Document *document;
 		DocumentViewInternal *internalView;
 		DocumentController *controller;
-		DocumentPosition *keyboardCaret;
-		QList<DocumentPosition*> carets;
+		DocumentCaret *keyboardCaret;
+		QList<DocumentCaret*> carets;
 		//NumberedListWidget *horiz_numbers;
 		//NumberedListWidget *vert_numbers;
 		QScrollBar *horiz_scrollBar;
@@ -59,7 +60,7 @@ DocumentView::DocumentView(Document &document)
 	d->controller = new DocumentController(*this);
 	
 	// Create keyboard caret
-	d->keyboardCaret = new DocumentPosition();
+	d->keyboardCaret = new DocumentCaret();
 	d->carets.append(d->keyboardCaret);
 	
 	setupScrollBars();
@@ -98,17 +99,17 @@ void DocumentView::setController(DocumentController *controller)
 		d->controller = controller;
 }
 
-QList<DocumentPosition*> &DocumentView::carets()
+QList<DocumentCaret*> &DocumentView::carets()
 {
 	return d->carets;
 }
 
-DocumentPosition *DocumentView::keyboardCaret()
+DocumentCaret *DocumentView::keyboardCaret()
 {
 	return d->keyboardCaret;
 }
 
-void DocumentView::addCaret(DocumentPosition *pos)
+void DocumentView::addCaret(DocumentCaret *pos)
 {
 	connect(pos, SIGNAL(destroyed(QObject*)),
 		this, SLOT(slotCaretDeleted(QObject(QObject*))));
@@ -142,7 +143,7 @@ void DocumentView::slotInternalViewResize(int width, int height)
 
 void DocumentView::slotCaretDeleted(QObject *obj)
 {
-	DocumentPosition *caret = qobject_cast<DocumentPosition*>(obj);
+	DocumentCaret *caret = qobject_cast<DocumentCaret*>(obj);
 	if(!caret)
 		qDebug() << "Recieved caret delete event from non-caret instance";
 	else

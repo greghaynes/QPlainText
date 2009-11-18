@@ -157,7 +157,9 @@ void DocumentViewInternal::paintEvent(QPaintEvent *event)
 			DocumentPosition(lineNumStart, -1))));
 	}
 
-	paintCaret(paint);
+	DocumentPosition *pos;
+	foreach(pos, m_view->carets())
+		paintCaret(paint, pos);
 }
 
 void DocumentViewInternal::resizeEvent(QResizeEvent *event)
@@ -211,7 +213,8 @@ void DocumentViewInternal::wheelEvent(QWheelEvent *event)
 	}
 }
 
-void DocumentViewInternal::paintCaret(QPainter &paint)
+void DocumentViewInternal::paintCaret(QPainter &paint,
+	DocumentPosition *pos)
 {
 	int startLine = lineAt(documentOffsetY());
 	if(!hasFocus())

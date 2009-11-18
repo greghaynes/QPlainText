@@ -74,12 +74,12 @@ class DocumentView
 		/**
 		  * @brief Carets displayed in document.
 		  */
-		QList<DocumentPosition*> &carets();
+		QList<DocumentCaret*> &carets();
 		
 		/**
 		  * @brief Caret representing input position from keyboard.
 		  */
-		DocumentPosition *keyboardCaret();
+		DocumentCaret *keyboardCaret();
 		
 		/**
 		  * @brief Add caret to view.
@@ -87,7 +87,7 @@ class DocumentView
 		  * Deleting the caret will remove it from the view.  You are
 		  * still responsible for the passed caret's memory.
 		  */
-		void addCaret(DocumentPosition *position);
+		void addCaret(DocumentCaret *position);
 	
 	public Q_SLOTS:
 		/**
