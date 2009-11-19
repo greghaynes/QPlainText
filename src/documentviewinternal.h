@@ -35,6 +35,7 @@ class DocumentView;
 class TextCursor;
 class DocumentPosition;
 class Renderer;
+class DocumentCaret;
 
 /**
   * @brief Internal text widget of document view.
@@ -144,7 +145,7 @@ class DocumentViewInternal
 		void documentTextChanged();
 	
 	private:
-		void paintCaret(QPainter &paint, DocumentPosition *pos);
+		void paintCaret(QPainter &paint, DocumentCaret *pos);
 		Renderer &renderer() { return *m_renderer; }
 		int lineAt(int x) const;
 	

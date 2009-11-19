@@ -22,6 +22,7 @@
 #include "documentcontroller.h"
 #include "document.h"
 #include "documentrange.h"
+#include "documentcaret.h"
 
 #include <QPaintEvent>
 #include <QPainter>
@@ -136,6 +137,8 @@ void DocumentViewInternal::setDocumentOffsetY(int y)
 	emit(documentOffsetYChanged(m_startY));
 }
 
+#define min(x, y) x < y : x ? y
+
 void DocumentViewInternal::paintEvent(QPaintEvent *event)
 {
 	QRect rect = event->rect();
@@ -146,18 +149,24 @@ void DocumentViewInternal::paintEvent(QPaintEvent *event)
 	int lineNumStart = lineAt(documentOffsetY());
 	int numLines = (height() / fontHeight) + 2;
 	int i;
-	// Paint the text
 	Document *doc = &m_view->document();
+	// Where do we want to stop painting text
+	int textLines = (numLines + lineYStart) <= doc->lineCount() ? numLines : doc->lineCount();
+	
+	// Paint the text
 	for(i = 0;i < numLines;i++,lineNumStart++)
 	{
 		QRect bound = QRect(0, (i*fontHeight) - lineYStart, rect.width(), fontHeight);
 		paint.fillRect(bound, Qt::white);
-		paint.drawText(bound, doc->text(DocumentRange(
-			DocumentPosition(lineNumStart, 0),
-			DocumentPosition(lineNumStart, -1))));
+		if(textLines > i)
+		{
+			paint.drawText(bound, doc->text(DocumentRange(
+				DocumentPosition(lineNumStart, 0),
+				DocumentPosition(lineNumStart, -1))));
+		}
 	}
 
-	DocumentPosition *pos;
+	DocumentCaret *pos;
 	foreach(pos, m_view->carets())
 		paintCaret(paint, pos);
 }
@@ -214,31 +223,35 @@ void DocumentViewInternal::wheelEvent(QWheelEvent *event)
 }
 
 void DocumentViewInternal::paintCaret(QPainter &paint,
-	DocumentPosition *pos)
+	DocumentCaret *pos)
 {
 	int startLine = lineAt(documentOffsetY());
 	if(!hasFocus())
 		return;
-	if(startLine > m_caret->line()
-	   || lineAt(documentOffsetY()+height()) <= m_caret->line())
+	if(startLine > pos->line()
+	   || lineAt(documentOffsetY()+height()) <= pos->line())
 		return;
 	// Text printed infront of cursor
-	QString prevline = m_view->document().text(
-		DocumentRange(
-			DocumentPosition(m_caret->line(), 0),
-			DocumentPosition(m_caret->line(), -1))).left(m_caret->column());
-	int xStart = fontMetrics().width(prevline);
-	QRect bound = QRect(xStart, (fontMetrics().height()*m_caret->line()) - documentOffsetY(), 1, fontMetrics().height());
-	
-	if(m_caret->is_visible)
+	QString prevline;
+	if(m_view->document().lineCount() > 0)
 	{
-		if(m_caret->column() >= m_view->document().lineLength(m_caret->line()))
+		prevline = m_view->document().text(
+			DocumentRange(
+				DocumentPosition(pos->line(), 0),
+				DocumentPosition(pos->line(), -1))).left(pos->column());
+	}
+	int xStart = fontMetrics().width(prevline);
+	QRect bound = QRect(xStart, (fontMetrics().height()*pos->line()) - documentOffsetY(), 1, fontMetrics().height());
+	
+	if(pos->isVisible())
+	{
+		if(pos->column() >= m_view->document().lineLength(pos->line()))
 			paint.fillRect(bound, Qt::white);
-		else
+		else if(m_view->document().lineCount() > 0)
 			paint.drawText(bound, QString(m_view->document().text(
 				DocumentRange(
-					DocumentPosition(m_caret->line(), 0),
-					DocumentPosition(m_caret->line(), -1)))[m_caret->column()]));
+					DocumentPosition(pos->line(), 0),
+					DocumentPosition(pos->line(), -1)))[pos->column()]));
 	}
 	else
 	{

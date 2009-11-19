@@ -27,6 +27,7 @@ namespace QSourceEdit
 DocumentCaret::DocumentCaret(QObject *parent)
 	: QObject(parent)
 	, DocumentPosition()
+	, m_visible(true)
 {
 }
 
@@ -35,7 +36,22 @@ DocumentCaret::DocumentCaret(int line,
 	QObject *parent)
 	: QObject(parent)
 	, DocumentPosition(line, column)
+	, m_visible(true)
 {
+}
+
+bool DocumentCaret::isVisible() const
+{
+	return m_visible;
+}
+
+void DocumentCaret::setVisible(bool value)
+{
+	if(m_visible != value)
+	{
+		emit(visibilityChanged(this, value));
+		m_visible = value;
+	}
 }
 
 void DocumentCaret::onSetLine(int line)

@@ -86,7 +86,11 @@ QString StandardDocument::text(const DocumentRange &range) const
 
 	}
 	else
-		qDebug() << "Attempt to retrieve text from invalid position";
+	{
+		qDebug() << "Attempt to retrieve text from invalid position "
+			<< range.start().line() << ":" << range.start().column()
+			<< " - " << range.end().line() << ":" << range.end().column();
+	}
 	return ret;
 }
 

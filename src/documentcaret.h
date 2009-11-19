@@ -48,16 +48,35 @@ class DocumentCaret
 		DocumentCaret(int line,
 			int column,
 			QObject *parent);
+		
+		/**
+		  * @brief Is the caret visible.
+		  */
+		bool isVisible() const;
+		
+		/**
+		  * @brief Make caret invisible.
+		  */
+		void setVisible(bool val);
 	
 	Q_SIGNALS:
 		/**
 		  * @brief The position of the caret has changed.
 		  */
-		void positionChanged(DocumentCaret *self = 0);
+		void positionChanged(DocumentCaret *self);
+		
+		/**
+		  * @brief The visibility of the caret has changed.
+		  */
+		void visibilityChanged(DocumentCaret *self,
+			bool visible);
 	
 	protected:
 		void onSetLine(int line);
 		void onSetColumn(int line);
+	
+	private:
+		bool m_visible;
 
 };
 
