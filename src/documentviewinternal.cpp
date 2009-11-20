@@ -142,6 +142,7 @@ void DocumentViewInternal::mousePressEvent(QMouseEvent *event)
 	int pressLine = (event->y() + documentOffsetY()) / fontMetrics().height();
 	int pressColumn = 0;
 	int lineLength;
+	int letterWidth;
 	QString line;
 	
 	if(pressLine >= m_view->document().lineCount())
@@ -159,12 +160,14 @@ void DocumentViewInternal::mousePressEvent(QMouseEvent *event)
 	int i;
 	for(i = 0;i < lineLength;i++)
 	{
-		pressColumn += fontMetrics().width(line[i]);
-		if(event->x() <= pressColumn)
+		letterWidth = fontMetrics().width(line[i]);
+		if(event->x() <= (pressColumn + letterWidth / 2))
 		{
 			pressColumn--;
 			break;
 		}
+		else
+			pressColumn += letterWidth;
 	}
 	pressColumn = i;
 	
