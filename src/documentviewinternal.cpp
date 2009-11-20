@@ -167,6 +167,11 @@ void DocumentViewInternal::mousePressEvent(QMouseEvent *event)
 		}
 	}
 	pressColumn = i;
+	
+	// Set keyboard caret
+	m_view->keyboardCaret()->setLine(pressLine);
+	m_view->keyboardCaret()->setColumn(pressColumn);
+	
 	update();
 }
 
