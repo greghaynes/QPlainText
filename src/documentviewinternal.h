@@ -34,7 +34,6 @@ namespace QSourceEdit
 class DocumentView;
 class TextCursor;
 class DocumentPosition;
-class Renderer;
 class DocumentCaret;
 
 /**
@@ -64,23 +63,6 @@ class DocumentViewInternal
 		  * Offset in terms of document's pixels to leftmost pont of view.
 		  */ 
 		int documentOffsetX() const;
-
-		/**
-		  * @brief Current position of caret.
-		  *
-		  * See DocumentViewInternal::setCaretPosition for more information.
-		  */
-		const DocumentPosition &caretPosition() const;
-
-		/**
-		  * @brief Set the current position of caret.
-		  *
-		  * The caret will be displayed infront of character it points to.
-		  * Ex: Position 0, 0 will display before first character in document.
-		  *
-		  * The caret can be set in the range of 0, 0 to  numlines+1, linelength+1.
-		  */
-		bool setCaretPosition(const DocumentPosition &pos);
 
 	Q_SIGNALS:
 		/**
@@ -141,20 +123,18 @@ class DocumentViewInternal
 		void resizeEvent(QResizeEvent *event);
 	
 	private Q_SLOTS:
-		void toggleCaretVisibility();
 		void documentTextChanged();
 	
 	private:
+		void setupUi();
+		void setupSignals();
 		void paintCaret(QPainter &paint, DocumentCaret *pos);
-		Renderer &renderer() { return *m_renderer; }
 		int lineAt(int x) const;
 	
 		// This is a hidden class so private members are ok
 		DocumentView *m_view;
-		Renderer *m_renderer;
 		int m_startX;
 		int m_startY;
-		TextCursor *m_caret;
 		int m_scrollWheelFactor;
 
 };

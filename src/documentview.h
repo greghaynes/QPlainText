@@ -89,6 +89,13 @@ class DocumentView
 		  */
 		void addCaret(DocumentCaret *position);
 	
+	Q_SIGNALS:
+		/**
+		  * @brief Internal font of the view changed
+		  */
+		void internalFontChanged(DocumentView *view,
+			const QFont &font);
+	
 	public Q_SLOTS:
 		/**
 		  * @brief Set font for internal text.

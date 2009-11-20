@@ -43,41 +43,15 @@
 namespace QSourceEdit
 {
 
-class TextCursor
-	: public DocumentPosition
-{
-
-	public:
-		TextCursor();
-		
-		bool is_visible;
-		QTimer timer;
-
-};
-
-TextCursor::TextCursor()
-	: DocumentPosition(0, 0)
-	, is_visible(false)
-{
-}
-
 DocumentViewInternal::DocumentViewInternal(DocumentView &parentView)
 	: QWidget(&parentView)
 	, m_view(&parentView)
 	, m_startX(0)
 	, m_startY(0)
-	, m_caret(new TextCursor)
 	, m_scrollWheelFactor(1) 
 {
-	setAttribute(Qt::WA_OpaquePaintEvent);
-	setFocusPolicy(Qt::ClickFocus);
-	setCursor(Qt::IBeamCursor);
-	m_caret->timer.setSingleShot(false);
-	connect(&m_caret->timer, SIGNAL(timeout()),
-		this, SLOT(toggleCaretVisibility()));
-	m_caret->timer.start(CARET_INTERVAL);
-	connect(&m_view->document(), SIGNAL(textChanged()),
-			this, SLOT(documentTextChanged()));
+	setupUi();
+	setupSignals();
 }
 
 int DocumentViewInternal::documentOffsetX() const
@@ -88,27 +62,6 @@ int DocumentViewInternal::documentOffsetX() const
 int DocumentViewInternal::documentOffsetY() const
 {
 	return m_startY;
-}
-
-const DocumentPosition &DocumentViewInternal::caretPosition() const
-{
-	return *m_caret;
-}
-
-bool DocumentViewInternal::setCaretPosition(const DocumentPosition &pos)
-{
-	if(pos.line() >= m_view->document().lineCount())
-		return false;
-	if(pos.column() > m_view->document().lineLength(pos.line()) < pos.column())
-		return false;
-	
-	m_caret->setLine(pos.line());
-	m_caret->setColumn(pos.column());
-	m_caret->timer.stop();
-	m_caret->is_visible = false;
-	m_caret->timer.start(CARET_INTERVAL);
-	update();
-	return true;
 }
 
 void DocumentViewInternal::setDocumentOffsetX(int x)
@@ -136,8 +89,6 @@ void DocumentViewInternal::setDocumentOffsetY(int y)
 	update();
 	emit(documentOffsetYChanged(m_startY));
 }
-
-#define min(x, y) x < y : x ? y
 
 void DocumentViewInternal::paintEvent(QPaintEvent *event)
 {
@@ -188,28 +139,34 @@ void DocumentViewInternal::keyReleaseEvent(QKeyEvent *event)
 
 void DocumentViewInternal::mousePressEvent(QMouseEvent *event)
 {
-	int pressLine = lineAt(event->y()+documentOffsetY());
-	int pressColumn;
+	int pressLine = (event->y() + documentOffsetY()) / fontMetrics().height();
+	int pressColumn = 0;
+	int lineLength;
+	QString line;
+	
 	if(pressLine >= m_view->document().lineCount())
 	{
 		pressLine = m_view->document().lineCount()-1;
 	}
 	
-	QString line = m_view->document().text(
+	line = m_view->document().text(
 		DocumentRange(
 			DocumentPosition(pressLine, 0),
 			DocumentPosition(pressLine, -1)));
+	lineLength = line.length();
+	
 	// Find the column were at
 	int i;
-	for(i = 0;i < line.size();i++)
+	for(i = 0;i < lineLength;i++)
 	{
-		if(event->x() <= fontMetrics().width(line.left(i+1)))
+		pressColumn += fontMetrics().width(line[i]);
+		if(event->x() <= pressColumn)
+		{
+			pressColumn--;
 			break;
+		}
 	}
 	pressColumn = i;
-	m_caret->setLine(pressLine);
-	m_caret->setColumn(pressColumn);
-	m_caret->is_visible = true;
 	update();
 }
 
@@ -222,47 +179,39 @@ void DocumentViewInternal::wheelEvent(QWheelEvent *event)
 	}
 }
 
+void DocumentViewInternal::setupUi()
+{
+	setAttribute(Qt::WA_OpaquePaintEvent);
+	setFocusPolicy(Qt::ClickFocus);
+	setCursor(Qt::IBeamCursor);
+}
+
+void DocumentViewInternal::setupSignals()
+{
+	connect(&m_view->document(), SIGNAL(textChanged()),
+			this, SLOT(documentTextChanged()));
+}
+
 void DocumentViewInternal::paintCaret(QPainter &paint,
 	DocumentCaret *pos)
 {
-	int startLine = lineAt(documentOffsetY());
-	if(!hasFocus())
-		return;
-	if(startLine > pos->line()
-	   || lineAt(documentOffsetY()+height()) <= pos->line())
-		return;
-	// Text printed infront of cursor
-	QString prevline;
-	if(m_view->document().lineCount() > 0)
+	int fontHeight = fontMetrics().height();
+	int caretYStart, caretXStart;
+	QString prevText;
+	QRect bound;
+	
+	if(pos->isVisible() && hasFocus())
 	{
-		prevline = m_view->document().text(
+		prevText = m_view->document().text(
 			DocumentRange(
 				DocumentPosition(pos->line(), 0),
-				DocumentPosition(pos->line(), -1))).left(pos->column());
-	}
-	int xStart = fontMetrics().width(prevline);
-	QRect bound = QRect(xStart, (fontMetrics().height()*pos->line()) - documentOffsetY(), 1, fontMetrics().height());
-	
-	if(pos->isVisible())
-	{
-		if(pos->column() >= m_view->document().lineLength(pos->line()))
-			paint.fillRect(bound, Qt::white);
-		else if(m_view->document().lineCount() > 0)
-			paint.drawText(bound, QString(m_view->document().text(
-				DocumentRange(
-					DocumentPosition(pos->line(), 0),
-					DocumentPosition(pos->line(), -1)))[pos->column()]));
-	}
-	else
-	{
+				DocumentPosition(pos->line(), pos->column())));
+		caretYStart = (pos->line() * fontHeight) - documentOffsetY();
+		caretXStart = fontMetrics().width(prevText);
+		
+		bound = QRect(caretXStart, caretYStart, 1, fontMetrics().height());
 		paint.fillRect(bound, Qt::black);
 	}
-}
-
-void DocumentViewInternal::toggleCaretVisibility()
-{
-	m_caret->is_visible = !m_caret->is_visible;
-	update();
 }
 
 void DocumentViewInternal::documentTextChanged()
