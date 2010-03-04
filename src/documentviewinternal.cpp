@@ -227,7 +227,7 @@ void DocumentViewInternal::paintLines(QPainter &paint,
 		charNdx = 0;
 		line = doc->text(DocumentRange(
 			DocumentPosition(curLine, 0), DocumentPosition(curLine, -1)));
-		while(curLineLen < width())
+		while(charNdx < line.size() && curLineLen < width())
 		{
 			charNdx++;
 			curLineLen += fontMetrics().width(line[charNdx]);
