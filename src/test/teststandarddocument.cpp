@@ -52,7 +52,7 @@ void TestStandardDocument::innerLineInsert()
 	QCOMPARE(text, res);
 }
 
-void TestStandardDocument::appendLine()
+void TestStandardDocument::seperateTwoLineInsert()
 {
 	QSourceEdit::StandardDocument doc;
 	QString str("Hello, there.");
@@ -66,6 +66,18 @@ void TestStandardDocument::appendLine()
 			QSourceEdit::DocumentPosition(1, -1)));
 	str = "Hello, there.\nHi!";
 	QCOMPARE(text, str);
+}
+
+void TestStandardDocument::append()
+{
+	QSourceEdit::StandardDocument doc;
+	QString str("Hello");
+	QVERIFY(doc.append(str));
+	QCOMPARE(doc.lineCount(), 1);
+	QCOMPARE(doc.text(QSourceEdit::DocumentRange(
+			QSourceEdit::DocumentPosition(0, 0),
+			QSourceEdit::DocumentPosition(0, -1))),
+		QString("Hello"));
 }
 
 void TestStandardDocument::removeText()

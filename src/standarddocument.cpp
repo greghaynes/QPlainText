@@ -116,6 +116,8 @@ DocumentPosition StandardDocument::end() const
 {
 	unsigned int line = d->lines.size() - 1;
 	unsigned int column;
+	if (line == -1)
+		return DocumentPosition();
 	if (d->lines.last().size() == 0)
 		column = 0;
 	else
