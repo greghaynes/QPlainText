@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2009 Gregory Haynes <greg@greghaynes.net>
+ *   Copyright (C) 2009-2010 Gregory Haynes <greg@greghaynes.net>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -128,6 +128,7 @@ class DocumentViewInternal
 	private:
 		void setupUi();
 		void setupSignals();
+		void paintLines(QPainter &paint, QPaintEvent &event);
 		void paintCaret(QPainter &paint, DocumentCaret *pos);
 		int lineAt(int x) const;
 	

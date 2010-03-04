@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2009 Gregory Haynes <greg@greghaynes.net>
+ *   Copyright (C) 2009-2010 Gregory Haynes <greg@greghaynes.net>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -92,8 +92,10 @@ void DocumentViewInternal::setDocumentOffsetY(int y)
 
 void DocumentViewInternal::paintEvent(QPaintEvent *event)
 {
+	QPainter painter(this);
+	paintLines(painter, *event);
+	/*
 	QRect rect = event->rect();
-	QPainter paint(this);
 	
 	unsigned int fontHeight = fontMetrics().height();
 	int lineYStart = (documentOffsetY() % fontHeight);
@@ -120,6 +122,7 @@ void DocumentViewInternal::paintEvent(QPaintEvent *event)
 	DocumentCaret *pos;
 	foreach(pos, m_view->carets())
 		paintCaret(paint, pos);
+	*/
 }
 
 void DocumentViewInternal::resizeEvent(QResizeEvent *event)
@@ -139,6 +142,7 @@ void DocumentViewInternal::keyReleaseEvent(QKeyEvent *event)
 
 void DocumentViewInternal::mousePressEvent(QMouseEvent *event)
 {
+	/*
 	int pressLine = (event->y() + documentOffsetY()) / fontMetrics().height();
 	int pressColumn = 0;
 	int lineLength;
@@ -176,6 +180,7 @@ void DocumentViewInternal::mousePressEvent(QMouseEvent *event)
 	m_view->keyboardCaret()->setColumn(pressColumn);
 	
 	update();
+	*/
 }
 
 void DocumentViewInternal::wheelEvent(QWheelEvent *event)
@@ -198,6 +203,37 @@ void DocumentViewInternal::setupSignals()
 {
 	connect(&m_view->document(), SIGNAL(textChanged()),
 			this, SLOT(documentTextChanged()));
+}
+
+void DocumentViewInternal::paintLines(QPainter &paint,
+	QPaintEvent &event)
+{
+	int lineHeight = fontMetrics().height();
+	int curOffset = lineHeight - (documentOffsetY() % (lineHeight));
+	int startLine = documentOffsetY() / lineHeight;
+	int endLine = ((documentOffsetY() + height()) / lineHeight) + 1;
+	int curLine, curLineLen, charNdx;
+	Document *doc = &m_view->document();
+	QString line;
+
+	if(doc->lineCount() < endLine)
+		endLine = doc->lineCount();
+
+	paint.fillRect(0, 0, width(), height(), Qt::white);
+
+	for(curLine = startLine;curLine < endLine;++curLine,curOffset+=lineHeight)
+	{
+		curLineLen = 0;
+		charNdx = 0;
+		line = doc->text(DocumentRange(
+			DocumentPosition(curLine, 0), DocumentPosition(curLine, -1)));
+		while(curLineLen < width())
+		{
+			charNdx++;
+			curLineLen += fontMetrics().width(line[charNdx]);
+		}
+		paint.drawText(0, curOffset, line.left(charNdx));
+	}
 }
 
 void DocumentViewInternal::paintCaret(QPainter &paint,
