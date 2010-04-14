@@ -125,7 +125,20 @@ DocumentPosition StandardDocument::end() const
 	return DocumentPosition(line, column);
 }
 
-bool StandardDocument::onInsertText(const DocumentPosition &position,
+bool StandardDocument::insert(const DocumentPosition &position,
+	const QString &text)
+{
+	if(tryInsert(position, text))
+		emit(textInserted(position, text));
+}
+
+bool StandardDocument::remove(const DocumentRange &range)
+{
+	if(tryRemove(range))
+		emit(textRemoved(range));
+}
+
+bool StandardDocument::tryInsert(const DocumentPosition &position,
 	const QString &insText)
 {
 	// Check insert position
@@ -174,7 +187,7 @@ bool StandardDocument::onInsertText(const DocumentPosition &position,
 	return true;
 }
 
-bool StandardDocument::onRemoveText(const DocumentRange &range)
+bool StandardDocument::tryRemove(const DocumentRange &range)
 {
 	int startline, endline;
 	int startcol, endcol;

@@ -43,13 +43,14 @@ class StandardDocument
 		int lineLength(int line) const; 
 		void clear();
 		DocumentPosition end() const;
-	
-	protected:
-		bool onInsertText(const DocumentPosition &position,
+		bool insert(const DocumentPosition &position,
 			const QString &text);
-		bool onRemoveText(const DocumentRange &range);
+		bool remove(const DocumentRange &range);
 	
 	private:
+		bool tryInsert(const DocumentPosition &position,
+			const QString &text);
+		bool tryRemove(const DocumentRange &range);
 		bool isValidPosition(const DocumentPosition &pos,
 			bool lines_plus_one = false,
 			bool allow_end_col = false) const;

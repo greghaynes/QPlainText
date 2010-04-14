@@ -39,26 +39,9 @@ Document::~Document()
 {
 }
 
-bool Document::insert(const DocumentPosition &position,
-	const QString &text)
-{
-	bool val = onInsertText(position, text);
-	if(val)
-		emit(textInserted(position, text));
-	return val;
-}
-
 bool Document::append(const QString &text)
 {
 	return insert(end(), text);
-}
-
-bool Document::remove(const DocumentRange &range)
-{
-	bool val = onRemoveText(range);
-	if(val)
-		emit(textRemoved(range));
-	return val;
 }
 
 }

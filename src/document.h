@@ -83,8 +83,8 @@ class Document
 		/**
 		 * @brief Calls onInsertText and emits textInserted signal.
 		 */
-		bool insert(const DocumentPosition &position,
-			const QString &text);
+		virtual bool insert(const DocumentPosition &position,
+			const QString &text) = 0;
 		
 		/**
 		 * @brief Append text to end of document.
@@ -96,7 +96,7 @@ class Document
 		/**
 		 * @brief Calls onRemoveText and emits textRemoved signal.
 		 */
-		bool remove(const DocumentRange &range);
+		virtual bool remove(const DocumentRange &range) = 0;
 
 	Q_SIGNALS:
 		/**
@@ -114,22 +114,6 @@ class Document
 		  * including endpoints.
 		  */
 		bool textRemoved(const DocumentRange &range);
-	
-	protected:
-		/**
-		  * @brief Called for text insertion.
-		  *
-		  * Override this method to store text.
-		  */
-		virtual bool onInsertText(const DocumentPosition &position,
-			const QString &text) = 0;
-
-		/**
-		  * @brief Called for text removal.
-		  *
-		  * Override this method to remove text.
-		  */
-		virtual bool onRemoveText(const DocumentRange &range) = 0;
 	
 };
 
