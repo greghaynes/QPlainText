@@ -1,13 +1,13 @@
 #
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
-project(qsourceedit)
+project(qplaintext)
 
 find_package(Qt4 COMPONENTS QtCore QtGui QtTest REQUIRED)
 
 include(${QT_USE_FILE})
 
-set(QSOURCEEDIT_HDRS
+set(QPLAINTEXT_HDRS
 	documentposition.h
 	documentcaret.h
 	documentrange.h
@@ -16,7 +16,7 @@ set(QSOURCEEDIT_HDRS
 	documentcontroller.h
 	standarddocument.h)
 
-set(QSOURCEEDIT_SRCS
+set(QPLAINTEXT_SRCS
 	documentposition.cpp
 	documentcaret.cpp
 	documentrange.cpp
@@ -26,19 +26,19 @@ set(QSOURCEEDIT_SRCS
 	documentcontroller.cpp
 	standarddocument.cpp)
 
-QT4_AUTOMOC(${QSOURCEEDIT_SRCS})
+QT4_AUTOMOC(${QPLAINTEXT_SRCS})
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_SOURCE_DIR}/src)
 
-add_library(qsourceedit SHARED ${QSOURCEEDIT_SRCS})
+add_library(qplaintext SHARED ${QSOURCEEDIT_SRCS})
 
-set_target_properties(qsourceedit
+set_target_properties(qplaintext
 	PROPERTIES
 	VERSION 0.1
 	SOVERSION 1)
 
-target_link_libraries(qsourceedit ${QT_LIBRARIES})
+target_link_libraries(qplaintext ${QT_LIBRARIES})
 
 QT4_AUTOMOC(test/teststandarddocument.cpp
 	test/testdocumentview.cpp)
@@ -46,16 +46,16 @@ QT4_AUTOMOC(test/teststandarddocument.cpp
 add_executable(teststandarddocument
 	test/teststandarddocument.cpp)
 
-target_link_libraries(teststandarddocument ${QT_LIBRARIES} qsourceedit)
+target_link_libraries(teststandarddocument ${QT_LIBRARIES} qplaintext)
 
 add_executable(testdocumentview
 	test/testdocumentview.cpp)
 
-target_link_libraries(testdocumentview ${QT_LIBRARIES} qsourceedit)
+target_link_libraries(testdocumentview ${QT_LIBRARIES} qplaintext)
 
 install(TARGETS qsourceedit
 	DESTINATION lib)
 
-INSTALL(FILES ${QSOURCEEDIT_HDRS}
-	DESTINATION include/libqsourceview-1.0/libqsourceedit)
+INSTALL(FILES ${QPLAINTEXT_HDRS}
+	DESTINATION include/libqplaintext-1.0/libqsourceedit)
 
