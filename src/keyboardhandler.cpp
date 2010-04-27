@@ -84,6 +84,8 @@ void KeyboardHandler::keyPressEvent(QKeyEvent *event)
 
 	if(!insert.isEmpty())
 		view().document().insert(view().keyboardCaret(), insert);
+	view().keyboardCaret().setLine(caretline);
+	view().keyboardCaret().setColumn(caretcolumn);
 }
 
 void KeyboardHandler::keyReleaseEvent(QKeyEvent *event)
