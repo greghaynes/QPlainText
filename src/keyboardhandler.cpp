@@ -101,6 +101,15 @@ DocumentView &KeyboardHandler::view()
 	return *m_view;
 }
 
+void KeyboardHandler::onTextInserted(const DocumentPosition &pos,
+	const QString &text)
+{
+	DocumentPosition *kbdPos = &view().keyboardCaret();
+	if(pos.line() == kbdPos->line()
+	   && pos.column() <= kbdPos->column())
+		kbdPos->setColumn(kbdPos->column()+1);
+}
+
 bool KeyboardHandler::insertCaps()
 {
 	return m_shiftPressed;

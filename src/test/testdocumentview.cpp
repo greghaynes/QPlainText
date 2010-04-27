@@ -1,15 +1,15 @@
 #include "testdocumentview.h"
 #include "standarddocument.h"
-#include "documentview.h"
+#include "standarddocumentview.h"
 #include "documentrange.h"
-#include "documentcontroller.h"
+#include "keyboardhandler.h"
 
 #include <QKeyEvent>
 
 void TestDocumentView::empty()
 {
-	QSourceEdit::Document *doc = new QSourceEdit::StandardDocument();
-	QSourceEdit::DocumentView view(*doc);
+	QPlainText::Document *doc = new QPlainText::StandardDocument();
+	QPlainText::StandardDocumentView view(*doc);
 
 	QCOMPARE(doc->lineLength(0), -1);
 	delete doc;
@@ -18,23 +18,23 @@ void TestDocumentView::empty()
 void TestDocumentView::typeHello()
 {
 	delete (int*)0;
-	QSourceEdit::Document *doc = new QSourceEdit::StandardDocument();
-	QSourceEdit::DocumentView view(*doc);
+	QPlainText::Document *doc = new QPlainText::StandardDocument();
+	QPlainText::StandardDocumentView view(*doc);
 	QString str("Hello");
 	int i;
 
 	for(i = 0; i < str.size(); i++)
 	{
 		QKeyEvent *ev = new QKeyEvent(QEvent::KeyPress, str.at(i).digitValue(), Qt::NoModifier, QString(str[i]));
-		view.controller().keyPressEvent(ev);
+		view.keyboardHandler().keyPressEvent(ev);
 		delete ev;
 	}
 
 	QCOMPARE(doc->lineLength(0), 5);
 	QCOMPARE(doc->text(
-		QSourceEdit::DocumentRange(
-			QSourceEdit::DocumentPosition(0, 0),
-			QSourceEdit::DocumentPosition(0, -1))), str);
+		QPlainText::DocumentRange(
+			QPlainText::DocumentPosition(0, 0),
+			QPlainText::DocumentPosition(0, -1))), str);
 
 	delete doc;
 }

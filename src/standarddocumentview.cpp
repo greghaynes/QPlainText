@@ -68,6 +68,11 @@ StandardDocumentView::~StandardDocumentView()
 	delete d;
 }
 
+DocumentCaret &StandardDocumentView::keyboardCaret()
+{
+	return *d->keyboardCaret;
+}
+
 void StandardDocumentView::setInternalFont(const QFont &font)
 {
 	d->internalView->setFont(font);
