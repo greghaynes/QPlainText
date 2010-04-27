@@ -20,7 +20,7 @@
 #ifndef EDITOR_DOCUMENT_WIDGET_H
 #define EDITOR_DOCUMENT_WIDGET_H
 
-#include "documentview.h"
+#include "standarddocumentview.h"
 
 #include <QWidget>
 
@@ -41,7 +41,7 @@ class DocumentWidget
 		void setupActions();
 		void setupUi();
 	
-		QSourceEdit::DocumentView *docView;
+		QPlainText::DocumentView *docView;
 		QAction *openAction;
 
 };

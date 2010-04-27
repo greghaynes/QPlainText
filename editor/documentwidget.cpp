@@ -64,8 +64,8 @@ void DocumentWidget::setupUi()
 	QToolBar *toolBar = new QToolBar(this);
 	toolBar->addAction(openAction);
 	
-	QSourceEdit::Document *doc = new QSourceEdit::StandardDocument(this);
-	docView = new QSourceEdit::DocumentView(*doc);
+	QPlainText::Document *doc = new QPlainText::StandardDocument(this);
+	docView = new QPlainText::StandardDocumentView(*doc);
 	
 	QVBoxLayout *vlayout = new QVBoxLayout(this);
 	vlayout->setContentsMargins(2, 2, 2, 2);
