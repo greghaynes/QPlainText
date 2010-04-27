@@ -17,14 +17,14 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef QSOURCEVIEW_STANDARD_DOCUMENT_H
-#define QSOURCEVIEW_STANDARD_DOCUMENT_H
+#ifndef QPLAINTEXT_STANDARD_DOCUMENT_H
+#define QPLAINTEXT_STANDARD_DOCUMENT_H
 
 #include "document.h"
 
 class QString;
 
-namespace QSourceEdit
+namespace QPlainText
 {
 
 class DocumentRange;

@@ -19,9 +19,7 @@
 
 #include "documentcaret.h"
 
-#include "documentcaret.moc"
-
-namespace QSourceEdit
+namespace QPlainText
 {
 
 DocumentCaret::DocumentCaret(QObject *parent)
@@ -65,3 +63,5 @@ void DocumentCaret::onSetColumn(int column)
 }
 
 }
+
+#include "documentcaret.moc"

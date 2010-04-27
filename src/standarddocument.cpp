@@ -25,7 +25,7 @@
 #include <QList>
 #include <QDebug>
 
-namespace QSourceEdit
+namespace QPlainText
 {
 
 class StandardDocumentPrivate

@@ -27,7 +27,7 @@
 
 #include "document.moc"
 
-namespace QSourceEdit
+namespace QPlainText
 {
 
 Document::Document(QObject *parent)

@@ -17,40 +17,50 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "documentrange.h"
+#ifndef QPLAINTEXT_KEYBOARD_HANDLER_H
+#define QPLAINTEXT_KEYBOARD_HANDLER_H
+
+#include <QObject>
+
+#include "documentposition.h"
+
+class QString;
+class QKeyEvent;
 
 namespace QPlainText
 {
 
-DocumentRange::DocumentRange()
+class DocumentView;
+class Document;
+
+/**
+ * @brief Interprets QKeyEvent's into operations on the document.
+ */
+class KeyboardHandler
+	: public QObject
 {
+	Q_OBJECT
+
+	public:
+		KeyboardHandler(DocumentView &view);
+		
+		void keyPressEvent(QKeyEvent *event);
+		void keyReleaseEvent(QKeyEvent *event);
+		DocumentView &view();
+	
+	private Q_SLOTS:
+		void onTextInserted(const DocumentPosition &pos,
+			const QString &text);
+	
+	private:
+		bool insertCaps();
+	
+		DocumentView *m_view;
+		DocumentPosition m_position;
+		bool m_shiftPressed;
+
+};
+
 }
 
-DocumentRange::DocumentRange(const DocumentPosition &start,
-	const DocumentPosition &end)
-	: m_start(start)
-	, m_end(end)
-{
-}
-
-const DocumentPosition &DocumentRange::start() const
-{
-	return m_start;
-}
-
-const DocumentPosition &DocumentRange::end() const
-{
-	return m_end;
-}
-
-void DocumentRange::setStart(const DocumentPosition &start)
-{
-	m_start = start;
-}
-
-void DocumentRange::setEnd(const DocumentPosition &end)
-{
-	m_end = end;
-}
-
-}
+#endif

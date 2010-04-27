@@ -19,7 +19,7 @@
 
 #include "documentposition.h"
 
-namespace QSourceEdit
+namespace QPlainText
 {
 
 DocumentPosition::DocumentPosition()

@@ -17,10 +17,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef QSOURCEVIEW_DOCUMENT_POSITION_H
-#define QSOURCEVIEW_DOCUMENT_POSITION_H
+#ifndef QPLAINTEXT_DOCUMENT_POSITION_H
+#define QPLAINTEXT_DOCUMENT_POSITION_H
 
-namespace QSourceEdit
+namespace QPlainText
 {
 
 /**

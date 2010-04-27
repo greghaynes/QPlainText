@@ -17,14 +17,14 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef QSOURCEVIEW_DOCUMENT_CARET_H
-#define QSOURCEVIEW_DOCUMENT_CARET_H
+#ifndef QPLAINTEXT_DOCUMENT_CARET_H
+#define QPLAINTEXT_DOCUMENT_CARET_H
 
 #include "documentposition.h"
 
 #include <QObject>
 
-namespace QSourceEdit
+namespace QPlainText
 {
 
 /**

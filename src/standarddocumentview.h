@@ -17,27 +17,30 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef QPLAINTEXT_DOCUMENT_VIEW_H
-#define QPLAINTEXT_DOCUMENT_VIEW_H
+#ifndef QPLAINTEXT_STANDARD_DOCUMENT_VIEW_H
+#define QPLAINTEXT_STANDARD_DOCUMENT_VIEW_H
 
+#include "documentview.h"
 #include "documentcaret.h"
 
-#include <QWidget>
+class QFont;
 
 namespace QPlainText
 {
 
 class Document;
-class DocumentCaret;
-class KeyboardHandler;
-class DocumentViewPrivate;
+class Renderer;
+class DocumentPosition;
+class DocumentController;
+class StandardDocumentViewPrivate;
 
 /**
   * @brief QWidget view of a document.
   */
-class DocumentView
-	: public QWidget
+class StandardDocumentView
+	: public DocumentView
 {
+	Q_OBJECT
 
 	public:
 		/**
@@ -45,32 +48,47 @@ class DocumentView
 		  *
 		  * This view is parented by the document.
 		  */
-		DocumentView(Document &document);
+		StandardDocumentView(Document &document);
 
 		/**
 		  * @brief Destroy a document view.
 		  */
-		virtual ~DocumentView();
+		~StandardDocumentView();
 		
+		DocumentCaret &keyboardCaret();
+		
+	Q_SIGNALS:
 		/**
-		  * @brief Get document represented by this view.
+		  * @brief Internal font of the view changed
 		  */
-		Document &document();
+		void internalFontChanged(StandardDocumentView *view,
+			const QFont &font);
+	
+	public Q_SLOTS:
+		/**
+		  * @brief Set font for internal text.
+		  */
+		void setInternalFont(const QFont &font);
 
 		/**
-		  * @brief Position of caret for keyboard.
+		  * @brief Enable vertical scroll bar.
 		  */
-		virtual DocumentCaret &keyboardCaret() = 0;
-
-		/**
-		  * 0 creates default handler.
-		  */
-		void setKeyboardHandler(KeyboardHandler *kdbHandler);
-
-		KeyboardHandler &keyboardHandler();
+		void setScrollBarEnabled(bool enable,
+			Qt::Orientation orientation=Qt::Vertical);
+	
+	private Q_SLOTS:
+		void documentTextInserted(const DocumentPosition &position,
+			const QString &text);
+		void slotInternalViewResize(int width, int height);
 	
 	private:
-		DocumentViewPrivate *d;
+		void setupSignals();
+		void setupScrollBars();
+		unsigned int longestLine();
+		void setupUi();
+		void resizeScrollbar();
+	
+		StandardDocumentViewPrivate *d;
 
 };
 

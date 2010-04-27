@@ -13,7 +13,8 @@ set(QPLAINTEXT_HDRS
 	documentrange.h
 	document.h
 	documentview.h
-	documentcontroller.h
+	standarddocumentview.h
+	keyboardhandler.h
 	standarddocument.h)
 
 set(QPLAINTEXT_SRCS
@@ -22,8 +23,9 @@ set(QPLAINTEXT_SRCS
 	documentrange.cpp
 	document.cpp
 	documentview.cpp
-	documentviewinternal.cpp
-	documentcontroller.cpp
+	standarddocumentview.cpp
+	standarddocumentviewinternal.cpp
+	keyboardhandler.cpp
 	standarddocument.cpp)
 
 QT4_AUTOMOC(${QPLAINTEXT_SRCS})
@@ -31,7 +33,7 @@ QT4_AUTOMOC(${QPLAINTEXT_SRCS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_SOURCE_DIR}/src)
 
-add_library(qplaintext SHARED ${QSOURCEEDIT_SRCS})
+add_library(qplaintext SHARED ${QPLAINTEXT_SRCS})
 
 set_target_properties(qplaintext
 	PROPERTIES
@@ -53,9 +55,9 @@ add_executable(testdocumentview
 
 target_link_libraries(testdocumentview ${QT_LIBRARIES} qplaintext)
 
-install(TARGETS qsourceedit
+install(TARGETS qplaintext
 	DESTINATION lib)
 
 INSTALL(FILES ${QPLAINTEXT_HDRS}
-	DESTINATION include/libqplaintext-1.0/libqsourceedit)
+	DESTINATION include/libqplaintext-1.0/libqplaintext)
 

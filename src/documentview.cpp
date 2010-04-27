@@ -18,21 +18,9 @@
  */
 
 #include "documentview.h"
-#include "documentviewinternal.h"
-#include "documentcontroller.h"
-#include "documentcaret.h"
-#include "document.h"
-#include "numberedlistwidget.h"
+#include "keyboardhandler.h"
 
-#include <QHBoxLayout>
-#include <QTextEdit>
-#include <QFont>
-#include <QScrollBar>
-#include <QDebug>
-
-#include "documentview.moc"
-
-namespace QSourceEdit
+namespace QPlainText
 {
 
 class DocumentViewPrivate
@@ -40,14 +28,7 @@ class DocumentViewPrivate
 
 	public:
 		Document *document;
-		DocumentViewInternal *internalView;
-		DocumentController *controller;
-		DocumentCaret *keyboardCaret;
-		QList<DocumentCaret*> carets;
-		//NumberedListWidget *horiz_numbers;
-		//NumberedListWidget *vert_numbers;
-		QScrollBar *horiz_scrollBar;
-		QScrollBar *vert_scrollBar;
+		KeyboardHandler *kbdHandler;
 
 };
 
@@ -56,25 +37,11 @@ DocumentView::DocumentView(Document &document)
 	, d(new DocumentViewPrivate)
 {
 	d->document = &document;
-	d->internalView = new DocumentViewInternal(*this);
-	d->controller = new DocumentController(*this);
-	
-	// Create keyboard caret
-	d->keyboardCaret = new DocumentCaret();
-	d->carets.append(d->keyboardCaret);
-	
-	setupScrollBars();
-	setupUi();
-	setupSignals();
+	d->kbdHandler = new KeyboardHandler(*this);
 }
 
 DocumentView::~DocumentView()
 {
-	// Delete carets
-	DocumentPosition *p;
-	foreach(p, carets())
-		delete p;
-
 	delete d;
 }
 
@@ -83,123 +50,19 @@ Document &DocumentView::document()
 	return *d->document;
 }
 
-DocumentController &DocumentView::controller()
+void DocumentView::setKeyboardHandler(KeyboardHandler *kbdHandler)
 {
-	return *d->controller;
-}
-
-void DocumentView::setController(DocumentController *controller)
-{
-	if(d->controller != controller)
-		delete d->controller;
-	
-	if(!controller)
-		d->controller = new DocumentController(*this);
+	if(!kbdHandler)
+		kbdHandler = new KeyboardHandler(*this);
 	else
-		d->controller = controller;
+		kbdHandler->setParent(this);
+	d->kbdHandler = kbdHandler;
 }
 
-QList<DocumentCaret*> &DocumentView::carets()
+KeyboardHandler &DocumentView::keyboardHandler()
 {
-	return d->carets;
-}
-
-DocumentCaret *DocumentView::keyboardCaret()
-{
-	return d->keyboardCaret;
-}
-
-void DocumentView::addCaret(DocumentCaret *pos)
-{
-	connect(pos, SIGNAL(destroyed(QObject*)),
-		this, SLOT(slotCaretDeleted(QObject(QObject*))));
-	carets().append(pos);
-}
-
-void DocumentView::setInternalFont(const QFont &font)
-{
-	d->internalView->setFont(font);
-}
-
-void DocumentView::setScrollBarEnabled(bool value, Qt::Orientation orientation)
-{
-}
-
-void DocumentView::documentTextInserted(const DocumentPosition &pos,
-	const QString &text)
-{
-	Q_UNUSED(pos)
-	Q_UNUSED(text)
-	resizeScrollbar();
-	d->internalView->update();
-}
-
-void DocumentView::slotInternalViewResize(int width, int height)
-{
-	Q_UNUSED(width)
-	Q_UNUSED(height)
-	resizeScrollbar();
-}
-
-void DocumentView::slotCaretDeleted(QObject *obj)
-{
-	DocumentCaret *caret = qobject_cast<DocumentCaret*>(obj);
-	if(!caret)
-		qDebug() << "Recieved caret delete event from non-caret instance";
-	else
-		carets().removeAll(caret);
-}
-
-void DocumentView::setupSignals()
-{
-	connect(d->document, SIGNAL(destroyed(QObject*)),
-		this, SLOT(deleteLater()));
-	connect(d->document, SIGNAL(textInserted(const DocumentPosition&, const QString&)),
-		this, SLOT(documentTextInserted(const DocumentPosition&, const QString &)));
-	connect(d->internalView, SIGNAL(sizeChanged(int, int)),
-		this, SLOT(slotInternalViewResize(int, int)));
-	connect(d->vert_scrollBar, SIGNAL(sliderMoved(int)),
-		d->internalView, SLOT(setStartY(int)));
-	connect(d->internalView, SIGNAL(startYChanged(int)),
-		d->vert_scrollBar, SLOT(setValue(int)));
-}
-
-void DocumentView::setupScrollBars()
-{
-	d->horiz_scrollBar = new QScrollBar(Qt::Horizontal);
-	d->vert_scrollBar = new QScrollBar(Qt::Vertical);
-	d->vert_scrollBar->setMaximum(d->internalView->documentOffsetY());
-	d->vert_scrollBar->setSingleStep(1);
-	d->horiz_scrollBar->setVisible(false);
-}
-
-void DocumentView::setupUi()
-{
-	QHBoxLayout *hlayout = new QHBoxLayout();
-	QVBoxLayout *vlayout = new QVBoxLayout(this);
-	hlayout->setContentsMargins(0, 0, 0, 0);
-	hlayout->setSpacing(0);
-	vlayout->setContentsMargins(0, 0, 0, 0);
-	vlayout->setSpacing(0);
-	hlayout->addWidget(d->internalView);
-	hlayout->addWidget(d->vert_scrollBar);
-	vlayout->addLayout(hlayout);
-	vlayout->addWidget(d->horiz_scrollBar);
-	setLayout(vlayout);
-}
-
-void DocumentView::resizeScrollbar()
-{
-	int endY = d->internalView->documentOffsetY();
-	if(endY < 0)
-	{
-		d->vert_scrollBar->setVisible(false);
-	}
-	else
-	{
-		d->vert_scrollBar->setVisible(true);
-		d->vert_scrollBar->setRange(0, endY);
-	}
+	return *d->kbdHandler;
 }
 
 }
+
