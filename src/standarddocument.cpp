@@ -128,14 +128,18 @@ DocumentPosition StandardDocument::end() const
 bool StandardDocument::insert(const DocumentPosition &position,
 	const QString &text)
 {
-	if(tryInsert(position, text))
+	bool ret;
+	if((ret = tryInsert(position, text)))
 		emit(textInserted(position, text));
+	return ret;
 }
 
 bool StandardDocument::remove(const DocumentRange &range)
 {
-	if(tryRemove(range))
+	bool ret;
+	if((ret = tryRemove(range)))
 		emit(textRemoved(range));
+	return ret;
 }
 
 bool StandardDocument::tryInsert(const DocumentPosition &position,
@@ -157,6 +161,7 @@ bool StandardDocument::tryInsert(const DocumentPosition &position,
 		return true;
 
 	QStringList insLines = insText.split('\n', QString::KeepEmptyParts);
+	qDebug() << "Inserting " << insLines.size() << " lines.";
 	if(insLines.size() == 1)
 	{
 		if(d->lines.size() > position.line())

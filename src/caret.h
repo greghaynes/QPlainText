@@ -30,7 +30,7 @@ namespace QPlainText
 /**
   * @brief Represents a caret in a document view.
   */
-class DocumentCaret
+class Caret
 	: public QObject
 	, public DocumentPosition
 {
@@ -38,14 +38,14 @@ class DocumentCaret
 
 	public:
 		/**
-		  * @brief Create a DocumentCaret.
+		  * @brief Create a Caret.
 		  */
-		DocumentCaret(QObject *parent = 0);
+		Caret(QObject *parent = 0);
 		
 		/**
-		  * @brief Create a DocumentCaret.
+		  * @brief Create a Caret.
 		  */
-		DocumentCaret(int line,
+		Caret(int line,
 			int column,
 			QObject *parent);
 		
@@ -63,12 +63,12 @@ class DocumentCaret
 		/**
 		  * @brief The position of the caret has changed.
 		  */
-		void positionChanged(DocumentCaret *self);
+		void positionChanged(Caret *self);
 		
 		/**
 		  * @brief The visibility of the caret has changed.
 		  */
-		void visibilityChanged(DocumentCaret *self,
+		void visibilityChanged(Caret *self,
 			bool visible);
 	
 	protected:

@@ -20,7 +20,7 @@
 #include "standarddocumentview.h"
 #include "standarddocumentviewinternal.h"
 #include "keyboardhandler.h"
-#include "documentcaret.h"
+#include "caret.h"
 #include "document.h"
 #include "numberedlistwidget.h"
 
@@ -38,7 +38,7 @@ class StandardDocumentViewPrivate
 
 	public:
 		StandardDocumentViewInternal *internalView;
-		DocumentCaret *keyboardCaret;
+		Caret *keyboardCaret;
 		//NumberedListWidget *horiz_numbers;
 		//NumberedListWidget *vert_numbers;
 		QScrollBar *horiz_scrollBar;
@@ -53,7 +53,7 @@ StandardDocumentView::StandardDocumentView(Document &document)
 	d->internalView = new StandardDocumentViewInternal(*this);
 	
 	// Create keyboard caret
-	d->keyboardCaret = new DocumentCaret();
+	d->keyboardCaret = new Caret();
 	
 	setupScrollBars();
 	setupUi();
@@ -68,7 +68,7 @@ StandardDocumentView::~StandardDocumentView()
 	delete d;
 }
 
-DocumentCaret &StandardDocumentView::keyboardCaret()
+Caret &StandardDocumentView::keyboardCaret()
 {
 	return *d->keyboardCaret;
 }

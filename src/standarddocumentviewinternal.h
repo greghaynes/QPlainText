@@ -34,7 +34,7 @@ namespace QPlainText
 class DocumentView;
 class TextCursor;
 class DocumentPosition;
-class DocumentCaret;
+class Caret;
 
 /**
   * @brief Internal text widget of document view.
@@ -129,7 +129,7 @@ class StandardDocumentViewInternal
 		void setupUi();
 		void setupSignals();
 		void paintLines(QPainter &paint, QPaintEvent &event);
-		void paintCaret(QPainter &paint, DocumentCaret *pos);
+		void paintCaret(QPainter &paint, Caret *pos);
 		int lineAt(int x) const;
 	
 		// This is a hidden class so private members are ok

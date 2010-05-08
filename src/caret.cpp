@@ -17,19 +17,19 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "documentcaret.h"
+#include "caret.h"
 
 namespace QPlainText
 {
 
-DocumentCaret::DocumentCaret(QObject *parent)
+Caret::Caret(QObject *parent)
 	: QObject(parent)
 	, DocumentPosition()
 	, m_visible(true)
 {
 }
 
-DocumentCaret::DocumentCaret(int line,
+Caret::Caret(int line,
 	int column,
 	QObject *parent)
 	: QObject(parent)
@@ -38,12 +38,12 @@ DocumentCaret::DocumentCaret(int line,
 {
 }
 
-bool DocumentCaret::isVisible() const
+bool Caret::isVisible() const
 {
 	return m_visible;
 }
 
-void DocumentCaret::setVisible(bool value)
+void Caret::setVisible(bool value)
 {
 	if(m_visible != value)
 	{
@@ -52,16 +52,16 @@ void DocumentCaret::setVisible(bool value)
 	}
 }
 
-void DocumentCaret::onSetLine(int line)
+void Caret::onSetLine(int line)
 {
 	emit(positionChanged(this));
 }
 
-void DocumentCaret::onSetColumn(int column)
+void Caret::onSetColumn(int column)
 {
 	emit(positionChanged(this));
 }
 
 }
 
-#include "documentcaret.moc"
+#include "caret.moc"

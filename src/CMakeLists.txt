@@ -9,7 +9,7 @@ include(${QT_USE_FILE})
 
 set(QPLAINTEXT_HDRS
 	documentposition.h
-	documentcaret.h
+	caret.h
 	documentrange.h
 	document.h
 	documentview.h
@@ -19,7 +19,7 @@ set(QPLAINTEXT_HDRS
 
 set(QPLAINTEXT_SRCS
 	documentposition.cpp
-	documentcaret.cpp
+	caret.cpp
 	documentrange.cpp
 	document.cpp
 	documentview.cpp

@@ -20,7 +20,7 @@
 #ifndef QPLAINTEXT_DOCUMENT_VIEW_H
 #define QPLAINTEXT_DOCUMENT_VIEW_H
 
-#include "documentcaret.h"
+#include "caret.h"
 
 #include <QWidget>
 
@@ -28,7 +28,7 @@ namespace QPlainText
 {
 
 class Document;
-class DocumentCaret;
+class Caret;
 class KeyboardHandler;
 class DocumentViewPrivate;
 
@@ -60,7 +60,7 @@ class DocumentView
 		/**
 		  * @brief Position of caret for keyboard.
 		  */
-		virtual DocumentCaret &keyboardCaret() = 0;
+		virtual Caret &keyboardCaret() = 0;
 
 		/**
 		  * 0 creates default handler.

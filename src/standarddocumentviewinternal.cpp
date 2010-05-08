@@ -22,7 +22,7 @@
 #include "keyboardhandler.h"
 #include "document.h"
 #include "documentrange.h"
-#include "documentcaret.h"
+#include "caret.h"
 
 #include <QPaintEvent>
 #include <QPainter>
@@ -236,7 +236,7 @@ void StandardDocumentViewInternal::paintLines(QPainter &paint,
 }
 
 void StandardDocumentViewInternal::paintCaret(QPainter &paint,
-	DocumentCaret *pos)
+	Caret *pos)
 {
 	int fontHeight = fontMetrics().height();
 	int caretYStart, caretXStart;

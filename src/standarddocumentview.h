@@ -21,7 +21,7 @@
 #define QPLAINTEXT_STANDARD_DOCUMENT_VIEW_H
 
 #include "documentview.h"
-#include "documentcaret.h"
+#include "caret.h"
 
 class QFont;
 
@@ -55,7 +55,7 @@ class StandardDocumentView
 		  */
 		~StandardDocumentView();
 		
-		DocumentCaret &keyboardCaret();
+		Caret &keyboardCaret();
 		
 	Q_SIGNALS:
 		/**

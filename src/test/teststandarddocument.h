@@ -14,6 +14,7 @@ class TestStandardDocument
 		void innerLineInsert();
 		void seperateTwoLineInsert();
 		void append();
+		void appendNewlineText();
 		void removeText();
 
 };

@@ -3,6 +3,8 @@
 #include "documentrange.h"
 #include "documentposition.h"
 
+#include <iostream>
+
 void TestStandardDocument::singeLineInsert()
 {
 	QPlainText::StandardDocument doc;
@@ -78,6 +80,20 @@ void TestStandardDocument::append()
 			QPlainText::DocumentPosition(0, 0),
 			QPlainText::DocumentPosition(0, -1))),
 		QString("Hello"));
+}
+
+void TestStandardDocument::appendNewlineText()
+{
+	QPlainText::StandardDocument doc;
+	QString str("Hello");
+	QVERIFY(doc.append("Hello"));
+	QVERIFY(doc.append("\n"));
+	QVERIFY(doc.append("World!"));
+	QCOMPARE(doc.lineCount(), 2);
+	QCOMPARE(doc.text(QPlainText::DocumentRange(
+			QPlainText::DocumentPosition(0, 0),
+			QPlainText::DocumentPosition(1, -1))),
+		QString("Hello\nWorld!"));
 }
 
 void TestStandardDocument::removeText()
