@@ -142,15 +142,16 @@ bool StandardDocument::remove(const DocumentRange &range)
 	return ret;
 }
 
+QString StandardDocument::line(int line)
+{
+	return d->lines[line];
+}
+
 bool StandardDocument::tryInsert(const DocumentPosition &position,
 	const QString &insText)
 {
 	// Check insert position
-	if(position.line() < 0
-	   || position.line() > d->lines.size()
-	   || (position.line() < d->lines.size() 
-			&& position.column() > d->lines[position.line()].size())
-	   || (position.line() == d->lines.size() && position.column() != 0))
+	if(!isInsertablePosition(position))
 	{
 		qDebug() << "Attempting to insert text into invalid position: " 
 			<< position.line() << "," << position.column();
@@ -161,7 +162,6 @@ bool StandardDocument::tryInsert(const DocumentPosition &position,
 		return true;
 
 	QStringList insLines = insText.split('\n', QString::KeepEmptyParts);
-	qDebug() << "Inserting " << insLines.size() << " lines.";
 	if(insLines.size() == 1)
 	{
 		if(d->lines.size() > position.line())
@@ -224,6 +224,24 @@ bool StandardDocument::tryRemove(const DocumentRange &range)
 	}
 	else
 		return false;
+}
+
+bool StandardDocument::isInsertablePosition(const DocumentPosition &pos)
+{
+	if(pos.line() < 0 || pos.line() > d->lines.size())
+		return false;
+
+	// special case for lastline + 1
+	if(pos.line() == d->lines.size())
+	{
+		if(pos.column() != 0)
+			return false;
+		return true;
+	}
+
+	if(pos.column() < 0 || pos.column() > line(pos.line()).size())
+		return false;
+	return true;
 }
 
 bool StandardDocument::isValidPosition(const DocumentPosition &pos,

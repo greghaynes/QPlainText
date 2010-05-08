@@ -48,9 +48,11 @@ class StandardDocument
 		bool remove(const DocumentRange &range);
 	
 	private:
+		QString line(int line);
 		bool tryInsert(const DocumentPosition &position,
 			const QString &text);
 		bool tryRemove(const DocumentRange &range);
+		bool isInsertablePosition(const DocumentPosition &pos);
 		bool isValidPosition(const DocumentPosition &pos,
 			bool lines_plus_one = false,
 			bool allow_end_col = false) const;
