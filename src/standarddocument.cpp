@@ -162,34 +162,33 @@ bool StandardDocument::tryInsert(const DocumentPosition &position,
 		return true;
 
 	QStringList insLines = insText.split('\n', QString::KeepEmptyParts);
-	if(insLines.size() == 1)
+
+	// insert first line with position's column
+	insertSingleLine(position, insLines[0]);
+
+	for(int i=1;i < insLines.size();++i)
 	{
-		if(d->lines.size() > position.line())
-			d->lines[position.line()].insert(position.column(), insText);	
-		else
-			d->lines.insert(position.line(), insText);
+		insertSingleLine(DocumentPosition(position.line() + i, 0), insLines[i]);
 	}
-	else if(insLines.size() > 1)
+
+	return true;
+}
+
+/* Assumes text contains no newlines, and position is valid */
+void StandardDocument::insertSingleLine(const DocumentPosition &position,
+	const QString &text)
+{
+	if(position.line() == d->lines.size())
 	{
-		QString chop;
-		if(d->lines.length() > position.line())
-		{
-			int choplen = d->lines[position.line()].length() - position.column();
-			QString chop = d->lines[position.line()].right(choplen);
-			d->lines[position.line()].chop(choplen);
-		}
-		insLines.last().append(chop);
-		if(insLines.last().isEmpty())
-			insLines.removeLast();
-		int i = position.line() + 1;
-		for(i = 0;i < insLines.length();i++)
-		{
-			d->lines.insert(i, insLines[i]);
-		}
+		if(position.column() == 0)
+			d->lines.append(text);
+		else
+			qDebug() << "Appending new line with non zero column";
 	}
 	else
-		return false;
-	return true;
+	{
+		d->lines[position.line()].insert(position.column(), text);
+	}
 }
 
 bool StandardDocument::tryRemove(const DocumentRange &range)
