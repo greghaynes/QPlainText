@@ -93,35 +93,6 @@ void StandardDocumentViewInternal::paintEvent(QPaintEvent *event)
 {
 	QPainter painter(this);
 	paintLines(painter, *event);
-	/*
-	QRect rect = event->rect();
-	
-	unsigned int fontHeight = fontMetrics().height();
-	int lineYStart = (documentOffsetY() % fontHeight);
-	int lineNumStart = lineAt(documentOffsetY());
-	int numLines = (height() / fontHeight) + 2;
-	int i;
-	Document *doc = &m_view->document();
-	// Where do we want to stop painting text
-	int textLines = (numLines + lineYStart) <= doc->lineCount() ? numLines : doc->lineCount();
-	
-	// Paint the text
-	for(i = 0;i < numLines;i++,lineNumStart++)
-	{
-		QRect bound = QRect(0, (i*fontHeight) - lineYStart, rect.width(), fontHeight);
-		paint.fillRect(bound, Qt::white);
-		if(textLines > i)
-		{
-			paint.drawText(bound, doc->text(DocumentRange(
-				DocumentPosition(lineNumStart, 0),
-				DocumentPosition(lineNumStart, -1))));
-		}
-	}
-
-	DocumentCaret *pos;
-	foreach(pos, m_view->carets())
-		paintCaret(paint, pos);
-	*/
 }
 
 void StandardDocumentViewInternal::resizeEvent(QResizeEvent *event)
@@ -141,45 +112,7 @@ void StandardDocumentViewInternal::keyReleaseEvent(QKeyEvent *event)
 
 void StandardDocumentViewInternal::mousePressEvent(QMouseEvent *event)
 {
-	/*
-	int pressLine = (event->y() + documentOffsetY()) / fontMetrics().height();
-	int pressColumn = 0;
-	int lineLength;
-	int letterWidth;
-	QString line;
-	
-	if(pressLine >= m_view->document().lineCount())
-	{
-		pressLine = m_view->document().lineCount()-1;
-	}
-	
-	line = m_view->document().text(
-		DocumentRange(
-			DocumentPosition(pressLine, 0),
-			DocumentPosition(pressLine, -1)));
-	lineLength = line.length();
-	
-	// Find the column were at
-	int i;
-	for(i = 0;i < lineLength;i++)
-	{
-		letterWidth = fontMetrics().width(line[i]);
-		if(event->x() <= (pressColumn + letterWidth / 2))
-		{
-			pressColumn--;
-			break;
-		}
-		else
-			pressColumn += letterWidth;
-	}
-	pressColumn = i;
-	
-	// Set keyboard caret
-	m_view->keyboardCaret()->setLine(pressLine);
-	m_view->keyboardCaret()->setColumn(pressColumn);
-	
-	update();
-	*/
+	// TODO
 }
 
 void StandardDocumentViewInternal::wheelEvent(QWheelEvent *event)
