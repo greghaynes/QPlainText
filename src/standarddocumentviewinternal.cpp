@@ -140,16 +140,22 @@ void StandardDocumentViewInternal::mousePressEvent(QMouseEvent *event)
 	QString line = document().text(DocumentRange(
 		DocumentPosition(lineNum, 0),
 		DocumentPosition(lineNum, -1)));
-	for(selectedCaretColumn = 0; selectedCaretColumn < line.size();++selectedCaretColumn)
+	int lineWidth = 0;
+	int lineCharNum = 0;
+	while(true)
 	{
-		// TODO: Could easily be made faster
-		if(fontMetrics().width(line.left(selectedCaretColumn)) > event->x())
+		if(lineCharNum >= line.size())
 			break;
+		int charWidth = fontMetrics().width(line[lineCharNum]);
+		if((lineWidth + (charWidth / 2)) > event->x())
+			break;
+		lineWidth += charWidth;
+		++lineCharNum;
 	}
 
 	caret = &m_view->keyboardCaret();
 	caret->setLine(lineNum);
-	caret->setColumn(selectedCaretColumn);
+	caret->setColumn(lineCharNum);
 }
 
 void StandardDocumentViewInternal::wheelEvent(QWheelEvent *event)
