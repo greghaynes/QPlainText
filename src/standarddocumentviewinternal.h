@@ -31,6 +31,7 @@ class QResizeEvent;
 namespace QPlainText
 {
 
+class Document;
 class DocumentView;
 class TextCursor;
 class DocumentPosition;
@@ -121,6 +122,8 @@ class StandardDocumentViewInternal
 		  * @brief The widget has been resized.
 		  */
 		void resizeEvent(QResizeEvent *event);
+
+		Document &document();
 	
 	private Q_SLOTS:
 		void documentTextChanged();

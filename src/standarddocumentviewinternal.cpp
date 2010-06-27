@@ -100,6 +100,11 @@ void StandardDocumentViewInternal::resizeEvent(QResizeEvent *event)
 	emit(sizeChanged(event->size().width(), event->size().height()));
 }
 
+Document &StandardDocumentViewInternal::document()
+{
+	return m_view->document();
+}
+
 void StandardDocumentViewInternal::keyPressEvent(QKeyEvent *event)
 {
 	m_view->keyboardHandler().keyPressEvent(event);
@@ -112,7 +117,39 @@ void StandardDocumentViewInternal::keyReleaseEvent(QKeyEvent *event)
 
 void StandardDocumentViewInternal::mousePressEvent(QMouseEvent *event)
 {
-	// TODO
+	int lineNum, selectedCaretColumn;
+	int lineHeight = fontMetrics().height();
+	Caret *caret;
+	
+	if(!event)
+		return;
+
+	// Determine selected line
+	lineNum = (documentOffsetY() + event->y()) / lineHeight;
+	if(lineNum >= (document().lineCount() - 1))
+		lineNum = document().lineCount() - 1;
+	if(lineNum < 0)
+		lineNum = 0;
+
+	qDebug() << "selected line " << lineNum;
+	
+	/* Determine selected caret column
+	   Caret columns occour inbetween characters, starting at 0 infront of the
+	   first charater on the line, and ending at (numchars + 1) after all the
+	   characters on the line. */
+	QString line = document().text(DocumentRange(
+		DocumentPosition(lineNum, 0),
+		DocumentPosition(lineNum, -1)));
+	for(selectedCaretColumn = 0; selectedCaretColumn < line.size();++selectedCaretColumn)
+	{
+		// TODO: Could easily be made faster
+		if(fontMetrics().width(line.left(selectedCaretColumn)) > event->x())
+			break;
+	}
+
+	caret = &m_view->keyboardCaret();
+	caret->setLine(lineNum);
+	caret->setColumn(selectedCaretColumn);
 }
 
 void StandardDocumentViewInternal::wheelEvent(QWheelEvent *event)

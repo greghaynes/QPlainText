@@ -87,8 +87,13 @@ void StandardDocumentView::documentTextInserted(const DocumentPosition &pos,
 {
 	Q_UNUSED(pos)
 	Q_UNUSED(text)
-	resizeScrollbar();
-	d->internalView->update();
+	documentChanged();
+}
+
+void StandardDocumentView::documentTextRemoved(const DocumentRange &range)
+{
+	Q_UNUSED(range)
+	documentChanged();
 }
 
 void StandardDocumentView::slotInternalViewResize(int width, int height)
@@ -104,6 +109,8 @@ void StandardDocumentView::setupSignals()
 		this, SLOT(deleteLater()));
 	connect(&document(), SIGNAL(textInserted(const DocumentPosition&, const QString&)),
 		this, SLOT(documentTextInserted(const DocumentPosition&, const QString &)));
+	connect(&document(), SIGNAL(textRemoved(const DocumentRange&)),
+		this, SLOT(documentTextRemoved(const DocumentRange&)));
 	connect(d->internalView, SIGNAL(sizeChanged(int, int)),
 		this, SLOT(slotInternalViewResize(int, int)));
 	connect(d->vert_scrollBar, SIGNAL(sliderMoved(int)),
@@ -148,6 +155,12 @@ void StandardDocumentView::resizeScrollbar()
 		d->vert_scrollBar->setVisible(true);
 		d->vert_scrollBar->setRange(0, endY);
 	}
+}
+
+void StandardDocumentView::documentChanged()
+{
+	resizeScrollbar();
+	d->internalView->update();
 }
 
 }

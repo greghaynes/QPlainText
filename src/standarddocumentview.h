@@ -31,6 +31,7 @@ namespace QPlainText
 class Document;
 class Renderer;
 class DocumentPosition;
+class DocumentRange;
 class DocumentController;
 class StandardDocumentViewPrivate;
 
@@ -79,6 +80,7 @@ class StandardDocumentView
 	private Q_SLOTS:
 		void documentTextInserted(const DocumentPosition &position,
 			const QString &text);
+		void documentTextRemoved(const DocumentRange &range);
 		void slotInternalViewResize(int width, int height);
 	
 	private:
@@ -87,6 +89,7 @@ class StandardDocumentView
 		unsigned int longestLine();
 		void setupUi();
 		void resizeScrollbar();
+		void documentChanged();
 	
 		StandardDocumentViewPrivate *d;
 
