@@ -49,7 +49,7 @@ StandardDocument::~StandardDocument()
 
 QString StandardDocument::text(const DocumentRange &range) const
 {
-	QString ret = 0;
+	QString ret;
 	int i, startline, startcol, endline, endcol;
 	if(isValidPosition(range.start()) && isValidPosition(range.end(), false, true))
 	{
