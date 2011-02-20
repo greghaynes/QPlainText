@@ -16,6 +16,7 @@ class TestStandardDocument
 		void append();
 		void appendNewlineText();
 		void removeText();
+		void insertInternalNewline();
 
 };
 

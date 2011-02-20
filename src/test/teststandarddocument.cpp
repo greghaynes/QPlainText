@@ -113,6 +113,29 @@ void TestStandardDocument::removeText()
 	QCOMPARE(text, str);
 }
 
+void TestStandardDocument::insertInternalNewline()
+{
+	QPlainText::StandardDocument doc;
+	QString str("Hello, there.");
+	QVERIFY(doc.insert(QPlainText::DocumentPosition(), str));
+	QVERIFY(doc.insert(QPlainText::DocumentPosition(0, 5), "\n"));
+
+	QString text = doc.text(
+		QPlainText::DocumentRange(
+			QPlainText::DocumentPosition(),
+			QPlainText::DocumentPosition(0, -1)));
+	str = "Hello";
+	QCOMPARE(text, str);
+	
+	text = doc.text(
+		QPlainText::DocumentRange(
+			QPlainText::DocumentPosition(),
+			QPlainText::DocumentPosition(1, -1)));
+
+	str = ", there.";
+	QCOMPARE(text, str);
+}
+
 QTEST_MAIN(TestStandardDocument)
 #include "teststandarddocument.moc"
 
