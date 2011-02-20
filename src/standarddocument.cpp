@@ -121,7 +121,7 @@ DocumentPosition StandardDocument::end() const
 	if (d->lines.last().size() == 0)
 		column = 0;
 	else
-		column = d->lines.last().size()-1;
+		column = d->lines.last().size();
 	return DocumentPosition(line, column);
 }
 
@@ -150,6 +150,9 @@ QString StandardDocument::line(int line)
 bool StandardDocument::tryInsert(const DocumentPosition &position,
 	const QString &insText)
 {
+	QStringList insLines;
+	QString tailTxt;
+
 	// Check insert position
 	if(!isInsertablePosition(position))
 	{
@@ -161,15 +164,24 @@ bool StandardDocument::tryInsert(const DocumentPosition &position,
 	if(insText.size() <= 0)
 		return true;
 
-	QStringList insLines = insText.split('\n', QString::KeepEmptyParts);
+	insLines = insText.split('\n', QString::KeepEmptyParts);
+
+	qDebug() << "Inserting " << insLines.size() << " lines";
 
 	// insert first line with position's column
 	insertSingleLine(position, insLines[0]);
 
-	for(int i=1;i < insLines.size();++i)
+	if(insLines.size() > 1)
 	{
-		insertSingleLine(DocumentPosition(position.line() + i, 0), insLines[i]);
+		// We have to append line text to last line
+		tailTxt = d->lines[position.line()].right(
+			d->lines[position.line()].size() - position.column() - insLines[0].length());
+		insLines[insLines.size() - 1].append(tailTxt);
+		d->lines[position.line()] = d->lines[position.line()].left(position.column() + insLines[0].length());
 	}
+
+	for(int i=1;i < insLines.size();i++)
+		d->lines.insert(position.line() + i, insLines[i]);
 
 	return true;
 }

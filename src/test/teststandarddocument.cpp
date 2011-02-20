@@ -24,9 +24,6 @@ void TestStandardDocument::twoLineInsert()
 	QPlainText::StandardDocument doc;
 	QString str("Hello\nthere.");
 	QVERIFY(doc.insert(QPlainText::DocumentPosition(), str));
-	QCOMPARE(doc.lineCount(), 2);
-	QCOMPARE(doc.lineLength(0), 5);
-	QCOMPARE(doc.lineLength(1), 6);
 	QString text = doc.text(
 		QPlainText::DocumentRange(
 			QPlainText::DocumentPosition(),
@@ -37,6 +34,9 @@ void TestStandardDocument::twoLineInsert()
 			QPlainText::DocumentPosition(1, 0),
 			QPlainText::DocumentPosition(1, -1)));
 	QCOMPARE(text, QString("there."));
+	QCOMPARE(doc.lineCount(), 2);
+	QCOMPARE(doc.lineLength(0), 5);
+	QCOMPARE(doc.lineLength(1), 6);
 }
 
 void TestStandardDocument::innerLineInsert()
@@ -129,7 +129,7 @@ void TestStandardDocument::insertInternalNewline()
 	
 	text = doc.text(
 		QPlainText::DocumentRange(
-			QPlainText::DocumentPosition(),
+			QPlainText::DocumentPosition(1, 0),
 			QPlainText::DocumentPosition(1, -1)));
 
 	str = ", there.";
