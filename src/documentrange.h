@@ -33,10 +33,13 @@ class DocumentRange
 		DocumentRange(const DocumentPosition &start,
 			const DocumentPosition &end);
 		
+		DocumentPosition &start();
+		DocumentPosition &end();
 		const DocumentPosition &start() const;
 		const DocumentPosition &end() const;
 		void setStart(const DocumentPosition &start);
 		void setEnd(const DocumentPosition &end);
+		bool isEmpty(void) const;
 		
 	private:
 		DocumentPosition m_start;

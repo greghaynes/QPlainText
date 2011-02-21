@@ -77,6 +77,13 @@ void KeyboardHandler::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Shift:
 			m_shiftPressed = true;
 			break;
+		case Qt::Key_Backspace:
+			remove.start().setLine(caretline);
+			remove.start().setColumn(caretcolumn -1);
+			remove.end().setLine(caretline);
+			remove.end().setColumn(caretcolumn);
+			caretcolumn--;
+			break;
 		default:
 			insert = event->text();
 			caretcolumn++;
@@ -84,6 +91,8 @@ void KeyboardHandler::keyPressEvent(QKeyEvent *event)
 
 	if(!insert.isEmpty())
 		view().document().insert(view().keyboardCaret(), insert);
+	if(!remove.isEmpty())
+		view().document().remove(remove);
 	view().keyboardCaret().setLine(caretline);
 	view().keyboardCaret().setColumn(caretcolumn);
 }

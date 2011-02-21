@@ -33,6 +33,16 @@ DocumentRange::DocumentRange(const DocumentPosition &start,
 {
 }
 
+DocumentPosition &DocumentRange::start()
+{
+	return m_start;
+}
+
+DocumentPosition &DocumentRange::end()
+{
+	return m_end;
+}
+
 const DocumentPosition &DocumentRange::start() const
 {
 	return m_start;
@@ -51,6 +61,11 @@ void DocumentRange::setStart(const DocumentPosition &start)
 void DocumentRange::setEnd(const DocumentPosition &end)
 {
 	m_end = end;
+}
+
+bool DocumentRange::isEmpty(void) const
+{
+	return m_start >= m_end;
 }
 
 }

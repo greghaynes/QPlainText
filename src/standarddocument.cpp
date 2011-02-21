@@ -209,12 +209,20 @@ bool StandardDocument::tryRemove(const DocumentRange &range)
 	int startcol, endcol;
 	int i;
 
+	qDebug() << "Trying to remove (" << range.start().line() << ", "
+			<< range.start().column() << "), ("
+			<< range.end().line() << ", " << range.end().column() << ")";
+
 	if(isValidPosition(range.start()) && isValidPosition(range.end(), false, true))
 	{
 		startline = range.start().line();
 		startcol = range.start().column();
 		endline = range.end().line();
 		endcol = range.end().column();
+
+		qDebug() << "Removing (" << startline << ", " << startcol << "), ("
+			<< endline << ", " << endcol << ")";
+
 		if(startline == endline)
 		{
 			if(endcol == -1)
@@ -282,7 +290,7 @@ bool StandardDocument::isValidPosition(const DocumentPosition &pos,
 				return true;
 			else
 				return pos.column() > 0
-					&& pos.column() < d->lines[pos.line()].size();
+					&& pos.column() <= d->lines[pos.line()].size();
 		}
 	}
 	return false;
