@@ -78,11 +78,25 @@ void KeyboardHandler::keyPressEvent(QKeyEvent *event)
 			m_shiftPressed = true;
 			break;
 		case Qt::Key_Backspace:
-			remove.start().setLine(caretline);
-			remove.start().setColumn(caretcolumn -1);
-			remove.end().setLine(caretline);
-			remove.end().setColumn(caretcolumn);
-			caretcolumn--;
+			if(caretcolumn <= 0)
+			{
+				if(caretline == 0)
+					break;
+				remove.start().setLine(caretline - 1);
+				remove.start().setColumn(-1);
+				remove.end().setLine(caretline);
+				remove.end().setColumn(caretcolumn);
+				caretline--;
+				caretcolumn;
+			}
+			else
+			{
+				remove.start().setLine(caretline);
+				remove.start().setColumn(caretcolumn -1);
+				remove.end().setLine(caretline);
+				remove.end().setColumn(caretcolumn);
+				caretcolumn--;
+			}
 			break;
 		default:
 			insert = event->text();

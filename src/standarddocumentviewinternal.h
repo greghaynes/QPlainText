@@ -127,12 +127,14 @@ class StandardDocumentViewInternal
 	
 	private Q_SLOTS:
 		void documentTextChanged();
+		void caretVisibilityChanged(Caret *self,
+			bool visible);
 	
 	private:
 		void setupUi();
 		void setupSignals();
 		void paintLines(QPainter &paint, QPaintEvent &event);
-		void paintCaret(QPainter &paint, Caret *pos);
+		void paintCaret(QPainter &paint);
 		int lineAt(int x) const;
 	
 		// This is a hidden class so private members are ok

@@ -50,10 +50,10 @@ StandardDocumentView::StandardDocumentView(Document &document)
 	: DocumentView(document)
 	, d(new StandardDocumentViewPrivate)
 {
+	d->keyboardCaret = new Caret();
 	d->internalView = new StandardDocumentViewInternal(*this);
 	
 	// Create keyboard caret
-	d->keyboardCaret = new Caret();
 	
 	setupScrollBars();
 	setupUi();

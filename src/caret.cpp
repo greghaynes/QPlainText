@@ -19,13 +19,18 @@
 
 #include "caret.h"
 
+#include <QTimer>
+
 namespace QPlainText
 {
 
 Caret::Caret(QObject *parent)
 	: QObject(parent)
 	, DocumentPosition()
+	, m_blinkTimer(0)
 	, m_visible(true)
+	, m_blinking(false)
+	, m_blink_msecs(400)
 {
 }
 
@@ -34,7 +39,10 @@ Caret::Caret(int line,
 	QObject *parent)
 	: QObject(parent)
 	, DocumentPosition(line, column)
+	, m_blinkTimer(0)
 	, m_visible(true)
+	, m_blinking(false)
+	, m_blink_msecs(400)
 {
 }
 
@@ -47,9 +55,39 @@ void Caret::setVisible(bool value)
 {
 	if(m_visible != value)
 	{
-		emit(visibilityChanged(this, value));
+		//emit(visibilityChanged(this, value));
 		m_visible = value;
 	}
+}
+
+bool Caret::isBlinking(void) const
+{
+	return m_blinking;
+}
+
+void Caret::setBlinking(bool val)
+{
+	if(isBlinking() == val)
+		return;
+
+	if(!m_blinkTimer)
+	{
+		m_blinkTimer = new QTimer(this);
+		m_blinkTimer->setSingleShot(false);
+		connect(m_blinkTimer, SIGNAL(timeout()),
+			this, SLOT(blinkTimeout(void)));
+	}
+
+	m_blinking = val;
+	if(m_blinking)
+		m_blinkTimer->start(m_blink_msecs);
+	else
+		m_blinkTimer->stop();
+}
+
+int Caret::blinkMsecs(void) const
+{
+	return m_blink_msecs;
 }
 
 void Caret::onSetLine(int line)
@@ -60,6 +98,12 @@ void Caret::onSetLine(int line)
 void Caret::onSetColumn(int column)
 {
 	emit(positionChanged(this));
+}
+
+void Caret::blinkTimeout(void)
+{
+	m_visible = !m_visible;
+	emit(visibilityChanged(this, m_visible));
 }
 
 }

@@ -24,6 +24,8 @@
 
 #include <QObject>
 
+class QTimer;
+
 namespace QPlainText
 {
 
@@ -58,7 +60,22 @@ class Caret
 		  * @brief Make caret invisible.
 		  */
 		void setVisible(bool val);
-	
+
+		/**
+		  * @brief Is the caret currently blinking.
+		  */
+		bool isBlinking(void) const;
+
+		/**
+		  * @brief Turn blinking on/off.
+		  */
+		void setBlinking(bool val);
+
+		/**
+		  * @brief Miliseconds for complete blink interval.
+		  */
+		int blinkMsecs(void) const;
+
 	Q_SIGNALS:
 		/**
 		  * @brief The position of the caret has changed.
@@ -74,9 +91,15 @@ class Caret
 	protected:
 		void onSetLine(int line);
 		void onSetColumn(int line);
+
+	private Q_SLOTS:
+		void blinkTimeout(void);
 	
 	private:
+		QTimer *m_blinkTimer;
 		bool m_visible;
+		bool m_blinking;
+		int m_blink_msecs;
 
 };
 

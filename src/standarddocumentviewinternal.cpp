@@ -93,6 +93,7 @@ void StandardDocumentViewInternal::paintEvent(QPaintEvent *event)
 {
 	QPainter painter(this);
 	paintLines(painter, *event);
+	paintCaret(painter);
 }
 
 void StandardDocumentViewInternal::resizeEvent(QResizeEvent *event)
@@ -156,6 +157,7 @@ void StandardDocumentViewInternal::mousePressEvent(QMouseEvent *event)
 	caret = &m_view->keyboardCaret();
 	caret->setLine(lineNum);
 	caret->setColumn(lineCharNum);
+	update();
 }
 
 void StandardDocumentViewInternal::wheelEvent(QWheelEvent *event)
@@ -172,12 +174,16 @@ void StandardDocumentViewInternal::setupUi()
 	setAttribute(Qt::WA_OpaquePaintEvent);
 	setFocusPolicy(Qt::ClickFocus);
 	setCursor(Qt::IBeamCursor);
+
+	m_view->keyboardCaret().setBlinking(true);
 }
 
 void StandardDocumentViewInternal::setupSignals()
 {
 	connect(&m_view->document(), SIGNAL(textChanged()),
 			this, SLOT(documentTextChanged()));
+	connect(&m_view->keyboardCaret(), SIGNAL(visibilityChanged(Caret*, bool)),
+		this, SLOT(caretVisibilityChanged(Caret*, bool)));
 }
 
 void StandardDocumentViewInternal::paintLines(QPainter &paint,
@@ -211,13 +217,13 @@ void StandardDocumentViewInternal::paintLines(QPainter &paint,
 	}
 }
 
-void StandardDocumentViewInternal::paintCaret(QPainter &paint,
-	Caret *pos)
+void StandardDocumentViewInternal::paintCaret(QPainter &paint)
 {
 	int fontHeight = fontMetrics().height();
 	int caretYStart, caretXStart;
 	QString prevText;
 	QRect bound;
+	Caret *pos = &m_view->keyboardCaret();
 	
 	if(pos->isVisible() && hasFocus())
 	{
@@ -230,10 +236,17 @@ void StandardDocumentViewInternal::paintCaret(QPainter &paint,
 		
 		bound = QRect(caretXStart, caretYStart, 1, fontMetrics().height());
 		paint.fillRect(bound, Qt::black);
+		//qDebug() << "Painting caret";
 	}
 }
 
 void StandardDocumentViewInternal::documentTextChanged()
+{
+	update();
+}
+
+void StandardDocumentViewInternal::caretVisibilityChanged(Caret *self,
+	bool visible)
 {
 	update();
 }
