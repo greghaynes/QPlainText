@@ -51,6 +51,7 @@ void KeyboardHandler::keyPressEvent(QKeyEvent *event)
 	int caretline = view().keyboardCaret().line();
 	int caretcolumn = view().keyboardCaret().column();
 	DocumentPosition pos;
+	Document *doc = &view().document();
 	
 	switch(event->key())
 	{
@@ -65,14 +66,16 @@ void KeyboardHandler::keyPressEvent(QKeyEvent *event)
 				caretline--;
 			break;
 		case Qt::Key_Down:
-			caretline++;
+			if(caretline < (doc->lineCount() - 1))
+				caretline++;
 			break;
 		case Qt::Key_Left:
 			if(caretcolumn)
 				caretcolumn--;
 			break;
 		case Qt::Key_Right:
-			caretcolumn++;
+			if(caretcolumn < doc->lineLength(caretline))
+				caretcolumn++;
 			break;
 		case Qt::Key_Shift:
 			m_shiftPressed = true;
