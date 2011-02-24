@@ -18,7 +18,6 @@
  */
 
 #include "document.h"
-#include "documentviewfactory.h"
 #include "documentposition.h"
 
 #include <QList>

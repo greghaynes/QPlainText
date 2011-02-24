@@ -22,7 +22,6 @@
 #include "keyboardhandler.h"
 #include "caret.h"
 #include "document.h"
-#include "numberedlistwidget.h"
 
 #include <QHBoxLayout>
 #include <QTextEdit>
@@ -39,8 +38,6 @@ class StandardDocumentViewPrivate
 	public:
 		StandardDocumentViewInternal *internalView;
 		Caret *keyboardCaret;
-		//NumberedListWidget *horiz_numbers;
-		//NumberedListWidget *vert_numbers;
 		QScrollBar *horiz_scrollBar;
 		QScrollBar *vert_scrollBar;
 
