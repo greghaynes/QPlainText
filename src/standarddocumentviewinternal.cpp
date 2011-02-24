@@ -109,6 +109,8 @@ Document &StandardDocumentViewInternal::document()
 void StandardDocumentViewInternal::keyPressEvent(QKeyEvent *event)
 {
 	m_view->keyboardHandler().keyPressEvent(event);
+	m_view->keyboardCaret().resetBlinking();
+	update();
 }
 
 void StandardDocumentViewInternal::keyReleaseEvent(QKeyEvent *event)

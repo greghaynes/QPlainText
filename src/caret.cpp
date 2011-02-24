@@ -90,6 +90,16 @@ int Caret::blinkMsecs(void) const
 	return m_blink_msecs;
 }
 
+void Caret::resetBlinking(void)
+{
+	if(!isBlinking())
+		return;
+
+	setBlinking(false);
+	setVisible(true);
+	setBlinking(true);
+}
+
 void Caret::onSetLine(int line)
 {
 	emit(positionChanged(this));

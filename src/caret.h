@@ -76,6 +76,11 @@ class Caret
 		  */
 		int blinkMsecs(void) const;
 
+		/**
+		  * @brief If currently blinking, resets blink cycle
+		  */
+		void resetBlinking(void);
+
 	Q_SIGNALS:
 		/**
 		  * @brief The position of the caret has changed.
