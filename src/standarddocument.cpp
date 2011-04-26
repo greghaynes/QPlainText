@@ -51,7 +51,7 @@ QString StandardDocument::text(const DocumentRange &range) const
 {
 	QString ret;
 	int i, startline, startcol, endline, endcol;
-	if(isValidPosition(range.start()) && isValidPosition(range.end(), false, true))
+	if(isRetrievableRange(range))
 	{
 		startline = range.start().line();
 		startcol = range.start().column();
@@ -142,7 +142,7 @@ bool StandardDocument::remove(const DocumentRange &range)
 	return ret;
 }
 
-QString StandardDocument::line(int line)
+QString StandardDocument::line(int line) const
 {
 	return d->lines[line];
 }
@@ -213,7 +213,7 @@ bool StandardDocument::tryRemove(const DocumentRange &range)
 			<< range.start().column() << "), ("
 			<< range.end().line() << ", " << range.end().column() << ")";
 
-	if(isValidPosition(range.start()) && isValidPosition(range.end(), false, true))
+	if(isRemovableRange(range))
 	{
 		startline = range.start().line();
 		startcol = range.start().column();
@@ -242,10 +242,21 @@ bool StandardDocument::tryRemove(const DocumentRange &range)
 		return true;
 	}
 	else
+	{
+		qDebug() << "Attempting to remove from invalid range (" << range.start().line() << ", "
+		         << range.start().column() << "), ("
+		         << range.end().line() << ", " << range.end().column() << ")";
 		return false;
+	}
 }
 
-bool StandardDocument::isInsertablePosition(const DocumentPosition &pos)
+bool StandardDocument::isRetrievableRange(const DocumentRange &range) const
+{
+	DocumentRange t_range(range);
+	autoexpandRange(t_range);
+}
+
+bool StandardDocument::isInsertablePosition(const DocumentPosition &pos) const
 {
 	if(pos.line() < 0 || pos.line() > d->lines.size())
 		return false;
@@ -263,42 +274,45 @@ bool StandardDocument::isInsertablePosition(const DocumentPosition &pos)
 	return true;
 }
 
-bool StandardDocument::isValidPosition(const DocumentPosition &pos,
-	bool lines_plus_one,
-	bool allow_end_col) const
+bool StandardDocument::isRemovableRange(const DocumentRange &range) const
 {
-	if(lines_plus_one)
-	{
-		if(pos.line() >= 0 && pos.line() <= d->lines.size())
-		{
-			if(allow_end_col && pos.column() == -1)
-				return true;
-			else if(pos.column() == 0)
-				return true;
-			else
-				return pos.column() > 0
-					&& pos.column() < d->lines[pos.line()].size();
-		}
-	}
-	else
-	{
-		if(pos.line() >= 0 && pos.line() < d->lines.size())
-		{
-			if(allow_end_col && pos.column() == -1)
-				return true;
-			else if(pos.column() == 0)
-				return true;
-			else
-				return pos.column() > 0
-					&& pos.column() <= d->lines[pos.line()].size();
-		}
-	}
 	return false;
 }
 
 bool StandardDocument::isNewline(QChar ch) const
 {
 	return ch == '\n';
+}
+
+void StandardDocument::autoexpandRange(DocumentRange &range) const
+{
+	autoexpandPosition(range.start());
+	autoexpandPosition(range.end());
+}
+
+void StandardDocument::autoexpandPosition(DocumentPosition &pos) const
+{
+	if(pos.line() == -1)
+		pos.setLine(lineAutoexpandVal());
+	if(pos.column() == -1)
+		pos.setColumn(columnAutoexpandVal(pos.line()));
+}
+
+int StandardDocument::lineAutoexpandVal(void) const
+{
+	if(lineCount() == 0)
+		return 0;
+	return lineCount() - 1;
+}
+
+int StandardDocument::columnAutoexpandVal(int line) const
+{
+	if(line == -1)
+		line = lineAutoexpandVal();
+
+	if(line <= lineCount())
+		return 0;
+	return lineLength(line) - 1;
 }
 
 }

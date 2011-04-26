@@ -48,17 +48,26 @@ class StandardDocument
 		bool remove(const DocumentRange &range);
 	
 	private:
-		QString line(int line);
+		QString line(int line) const;
 		bool tryInsert(const DocumentPosition &position,
 			const QString &text);
 		bool tryRemove(const DocumentRange &range);
 		void insertSingleLine(const DocumentPosition &position,
 			const QString &text);
-		bool isInsertablePosition(const DocumentPosition &pos);
-		bool isValidPosition(const DocumentPosition &pos,
-			bool lines_plus_one = false,
-			bool allow_end_col = false) const;
 		bool isNewline(QChar ch) const;
+
+		/* These check the validity of a position for specific
+		   operations */
+		bool isRetrievableRange(const DocumentRange &range) const;
+		bool isInsertablePosition(const DocumentPosition &pos) const;
+		bool isRemovableRange(const DocumentRange &range) const;
+
+		/* These expand -1's to their actual value
+		   do not use them for error checking */
+		void autoexpandRange(DocumentRange &range) const;
+		void autoexpandPosition(DocumentPosition &pos) const;
+		int lineAutoexpandVal(void) const;
+		int columnAutoexpandVal(int line) const;
 
 		StandardDocumentPrivate *d;
 
