@@ -57,6 +57,11 @@ bool DocumentPosition::operator==(const DocumentPosition &other) const
 	return line() == other.line() && column() == other.column();
 }
 
+bool DocumentPosition::operator!=(const DocumentPosition &other) const
+{
+	return !(*this == other);
+}
+
 bool DocumentPosition::operator<(const DocumentPosition &other) const
 {
 	if(other.line() == line())

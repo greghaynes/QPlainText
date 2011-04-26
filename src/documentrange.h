@@ -40,6 +40,7 @@ class DocumentRange
 		void setStart(const DocumentPosition &start);
 		void setEnd(const DocumentPosition &end);
 		bool isEmpty(void) const;
+		bool isValid(void) const;
 		
 	private:
 		DocumentPosition m_start;

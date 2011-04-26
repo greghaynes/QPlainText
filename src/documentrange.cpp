@@ -68,4 +68,9 @@ bool DocumentRange::isEmpty(void) const
 	return m_start >= m_end;
 }
 
+bool DocumentRange::isValid(void) const
+{
+	return !isEmpty() || (m_start == m_end);
+}
+
 }

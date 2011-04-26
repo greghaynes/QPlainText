@@ -254,6 +254,21 @@ bool StandardDocument::isRetrievableRange(const DocumentRange &range) const
 {
 	DocumentRange t_range(range);
 	autoexpandRange(t_range);
+
+	if(!t_range.isValid())
+		return false;
+
+	if(t_range.end().line() > lineCount())
+	{
+		if(!(t_range.end().line() == lineCount() &&
+		   t_range.end().column() != 0))
+			return false;
+	}
+
+	if(t_range.end().column() > lineLength(t_range.end().line()))
+		return false;
+
+	return true;
 }
 
 bool StandardDocument::isInsertablePosition(const DocumentPosition &pos) const
@@ -310,7 +325,10 @@ int StandardDocument::columnAutoexpandVal(int line) const
 	if(line == -1)
 		line = lineAutoexpandVal();
 
-	if(line <= lineCount())
+	if(line >= lineCount())
+		return 0;
+
+	if(lineLength(line) == 0)
 		return 0;
 	return lineLength(line) - 1;
 }

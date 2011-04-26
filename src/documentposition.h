@@ -64,6 +64,11 @@ class DocumentPosition
 		  * @brief Does position point to same location as other position.
 		  */
 		bool operator==(const DocumentPosition &other) const;
+
+		/**
+		  * @brief Does position not point to same location as other position.
+		  */
+		bool operator!=(const DocumentPosition &other) const;
 		
 		/**
 		  * @brief Is position pointing to location infront of other position.
