@@ -64,10 +64,18 @@ void KeyboardHandler::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Up:
 			if(caretline)
 				caretline--;
+			if(caretcolumn >= doc->lineLength(caretline))
+				caretcolumn = doc->lineLength(caretline) - 1;
+			if(caretcolumn < 0)
+				caretcolumn = 0;
 			break;
 		case Qt::Key_Down:
 			if(caretline < (doc->lineCount() - 1))
 				caretline++;
+			if(caretcolumn >= doc->lineLength(caretline))
+				caretcolumn = doc->lineLength(caretline) - 1;
+			if(caretcolumn < 0)
+				caretcolumn = 0;
 			break;
 		case Qt::Key_Left:
 			if(caretcolumn)
