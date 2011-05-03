@@ -1,20 +1,19 @@
 /*
- *   Copyright (C) 2009 Gregory Haynes <greg@greghaynes.net>
+ * Copyright (C) 2009-2011 Gregory Haynes <greg@greghaynes.net>
  *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the
- *   Free Software Foundation, Inc.,
- *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "standarddocument.h"
@@ -205,49 +204,14 @@ void StandardDocument::insertSingleLine(const DocumentPosition &position,
 
 bool StandardDocument::tryRemove(const DocumentRange &range)
 {
-	int startline, endline;
-	int startcol, endcol;
-	int i;
+	DocumentRange t_range(range);
+	autoexpandRange(t_range);
 
-	qDebug() << "Trying to remove (" << range.start().line() << ", "
-			<< range.start().column() << "), ("
-			<< range.end().line() << ", " << range.end().column() << ")";
-
-	if(isRemovableRange(range))
-	{
-		startline = range.start().line();
-		startcol = range.start().column();
-		endline = range.end().line();
-		endcol = range.end().column();
-
-		qDebug() << "Removing (" << startline << ", " << startcol << "), ("
-			<< endline << ", " << endcol << ")";
-
-		if(startline == endline)
-		{
-			if(endcol == -1)
-				d->lines[startline].remove(startcol, d->lines[startline].length() - startcol);
-			else
-				d->lines[startline].remove(startcol, endcol - startcol);
-		}
-		else
-		{
-			d->lines[startline].remove(startcol, endcol - startcol);
-			startline += 1;
-			for(i = startline;i < endline;i++)
-				d->lines.removeAt(startline);
-			d->lines[startline-1].append(d->lines[startline].right(d->lines[startline].length() - endcol));
-			d->lines.removeAt(startline);
-		}
-		return true;
-	}
-	else
-	{
-		qDebug() << "Attempting to remove from invalid range (" << range.start().line() << ", "
-		         << range.start().column() << "), ("
-		         << range.end().line() << ", " << range.end().column() << ")";
+	if(!isRemovableRange(t_range)) {
 		return false;
 	}
+
+	return true;
 }
 
 bool StandardDocument::isRetrievableRange(const DocumentRange &range) const
@@ -291,7 +255,22 @@ bool StandardDocument::isInsertablePosition(const DocumentPosition &pos) const
 
 bool StandardDocument::isRemovableRange(const DocumentRange &range) const
 {
-	return false;
+	if(range.isEmpty())
+		return false;
+
+	if(range.start().line() < 0 || (range.end().line() >= lineCount()))
+		return false;
+
+	if(range.start().column() < 0 || (range.end().column() < 0))
+		return false;
+
+	if(range.start().column() >= lineLength(range.start().line()))
+		return false;
+
+	if(range.start().column() >= lineLength(range.end().line()))
+		return false;
+
+	return true;
 }
 
 bool StandardDocument::isNewline(QChar ch) const
