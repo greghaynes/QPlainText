@@ -165,8 +165,6 @@ bool StandardDocument::tryInsert(const DocumentPosition &position,
 
 	insLines = insText.split('\n', QString::KeepEmptyParts);
 
-	qDebug() << "Inserting " << insLines.size() << " lines";
-
 	// insert first line with position's column
 	insertSingleLine(position, insLines[0]);
 
