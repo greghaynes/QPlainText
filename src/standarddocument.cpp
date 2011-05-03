@@ -211,6 +211,12 @@ bool StandardDocument::tryRemove(const DocumentRange &range)
 		return false;
 	}
 
+	if(t_range.start().line() == t_range.end().line())
+	{
+		d->lines[t_range.start().line()] = d->lines[t_range.start().line()].remove(
+			t_range.start().column(), t_range.end().column() - t_range.start().column());
+	}
+
 	return true;
 }
 
