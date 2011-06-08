@@ -128,16 +128,20 @@ bool StandardDocument::insert(const DocumentPosition &position,
 	const QString &text)
 {
 	bool ret;
-	if((ret = tryInsert(position, text)))
+	if((ret = tryInsert(position, text))) {
 		emit(textInserted(position, text));
+		emit(textChanged());
+	}
 	return ret;
 }
 
 bool StandardDocument::remove(const DocumentRange &range)
 {
 	bool ret;
-	if((ret = tryRemove(range)))
+	if((ret = tryRemove(range))) {
 		emit(textRemoved(range));
+		emit(textChanged());
+	}
 	return ret;
 }
 

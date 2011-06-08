@@ -113,7 +113,8 @@ class Document
 		  * including endpoints.
 		  */
 		bool textRemoved(const DocumentRange &range);
-	
+
+		void textChanged(void);
 };
 
 }
