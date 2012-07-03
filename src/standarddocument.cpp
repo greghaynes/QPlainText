@@ -220,6 +220,22 @@ bool StandardDocument::tryRemove(const DocumentRange &range)
 		d->lines[t_range.start().line()] = d->lines[t_range.start().line()].remove(
 			t_range.start().column(), t_range.end().column() - t_range.start().column());
 	}
+	else if(t_range.start().line() < t_range.end().line())
+	{
+		d->lines[t_range.start().line()] = d->lines[t_range.start().line()].left(t_range.start().column()+1);
+		int i = t_range.start().line() + 1;
+		int j = i;
+		while(j < t_range.end().line()) {
+			d->lines.removeAt(i);
+			j++;
+		}
+		QString endline = d->lines[t_range.end().line()];
+		d->lines[t_range.end().line()] = endline.left(endline.length() - t_range.end().column());
+		d->lines[t_range.start().line()].append(d->lines[t_range.end().line()]);
+		//d->lines.removeAt(t_range.end().line());
+	}
+	else
+		return false;
 
 	return true;
 }
