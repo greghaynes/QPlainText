@@ -56,6 +56,8 @@ QString StandardDocument::text(const DocumentRange &range) const
 		startcol = range.start().column();
 		endline = range.end().line();
 		endcol = range.end().column();
+		if(endline == -1)
+			endline = d->lines.length() - 1;
 		if(endcol == -1)
 			endcol = d->lines[endline].length();
 		if(startline == endline)

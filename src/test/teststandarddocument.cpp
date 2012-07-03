@@ -125,7 +125,7 @@ void TestStandardDocument::removeMultilineText()
 
 	QString text = doc.text(QPlainText::DocumentRange(
 		QPlainText::DocumentPosition(0, 0),
-		QPlainText::DocumentPosition(0, -1)));
+		QPlainText::DocumentPosition(-1, -1)));
 	str = "Hello,there";
 	QCOMPARE(text, str);
 }
