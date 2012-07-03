@@ -1,3 +1,11 @@
 tags
 *.swp
 docs
+*.so.*
+*.so
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+*.moc
+editor/editor
