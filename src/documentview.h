@@ -19,8 +19,6 @@
 #ifndef QPLAINTEXT_DOCUMENT_VIEW_H
 #define QPLAINTEXT_DOCUMENT_VIEW_H
 
-#include "caret.h"
-
 #include <QWidget>
 
 namespace QPlainText
@@ -28,6 +26,7 @@ namespace QPlainText
 
 class Document;
 class Caret;
+class SelectedRange;
 class KeyboardHandler;
 class DocumentViewPrivate;
 
@@ -60,6 +59,12 @@ class DocumentView
 		  * @brief Position of caret for keyboard.
 		  */
 		virtual Caret &keyboardCaret() = 0;
+
+
+		/**
+		  * @brief Currently Selected range
+		  */
+		virtual SelectedRange &selectedRange() = 0;
 
 		/**
 		  * 0 creates default handler.
