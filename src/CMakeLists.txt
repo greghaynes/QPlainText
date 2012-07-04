@@ -18,7 +18,8 @@ set(QPLAINTEXT_HDRS
 	standarddocumentview.h
 	keyboardhandler.h
 	standarddocument.h
-	positionalmarker.h)
+	positionalmarker.h
+	selectedrange.h)
 
 set(QPLAINTEXT_SRCS
 	documentposition.cpp
@@ -30,7 +31,8 @@ set(QPLAINTEXT_SRCS
 	standarddocumentviewinternal.cpp
 	keyboardhandler.cpp
 	standarddocument.cpp
-	positionalmarker.cpp)
+	positionalmarker.cpp
+	selectedrange.cpp)
 
 QT4_AUTOMOC(${QPLAINTEXT_SRCS})
 

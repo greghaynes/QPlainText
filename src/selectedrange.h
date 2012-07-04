@@ -20,6 +20,7 @@
 #define QPLAINEXT_SELECTED_RANGE_H
 
 #include "positionalmarker.h"
+#include "documentrange.h"
 
 #include <QObject>
 
@@ -28,12 +29,13 @@ namespace QPlainText
 
 class SelectedRange
 	: public PositionalMarker
+	, public DocumentRange
 {
 	public:
 		SelectedRange(QObject *parent = 0);
 
 		SelectedRange(const DocumentPosition &start,
-			const DocumentRange &end,
+			const DocumentPosition &end,
 			QObject *parent = 0);
 
 };

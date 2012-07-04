@@ -55,11 +55,13 @@ const DocumentPosition &DocumentRange::end() const
 void DocumentRange::setStart(const DocumentPosition &start)
 {
 	m_start = start;
+	onSetStart();
 }
 
 void DocumentRange::setEnd(const DocumentPosition &end)
 {
 	m_end = end;
+	onSetEnd();
 }
 
 bool DocumentRange::isEmpty(void) const

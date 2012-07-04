@@ -16,4 +16,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "selectedrange.h"
+
+namespace QPlainText
+{
+
+SelectedRange::SelectedRange(QObject *parent)
+	: PositionalMarker(parent)
+	, DocumentRange()
+{
+}
+
+SelectedRange::SelectedRange(const DocumentPosition &start,
+	const DocumentPosition &end,
+	QObject *parent)
+	: PositionalMarker(parent)
+	, DocumentRange(start, end)
+{
+}
+
+}
 

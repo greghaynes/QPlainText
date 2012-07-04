@@ -28,18 +28,22 @@ class DocumentRange
 {
 
 	public:
-		DocumentRange();
+		DocumentRange(void);
 		DocumentRange(const DocumentPosition &start,
 			const DocumentPosition &end);
 		
-		DocumentPosition &start();
-		DocumentPosition &end();
-		const DocumentPosition &start() const;
-		const DocumentPosition &end() const;
+		DocumentPosition &start(void);
+		DocumentPosition &end(void);
+		const DocumentPosition &start(void) const;
+		const DocumentPosition &end(void) const;
 		void setStart(const DocumentPosition &start);
 		void setEnd(const DocumentPosition &end);
 		bool isEmpty(void) const;
 		bool isValid(void) const;
+
+	protected:
+		void onSetStart(void) {}
+		void onSetEnd(void) {}
 		
 	private:
 		DocumentPosition m_start;
