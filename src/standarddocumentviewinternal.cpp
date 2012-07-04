@@ -183,8 +183,8 @@ void StandardDocumentViewInternal::setupSignals()
 {
 	connect(&m_view->document(), SIGNAL(textChanged()),
 			this, SLOT(documentTextChanged()));
-	connect(&m_view->keyboardCaret(), SIGNAL(visibilityChanged(Caret*, bool)),
-		this, SLOT(caretVisibilityChanged(Caret*, bool)));
+	connect(&m_view->keyboardCaret(), SIGNAL(visibilityChanged(bool)),
+		this, SLOT(caretVisibilityChanged(bool)));
 }
 
 void StandardDocumentViewInternal::paintLines(QPainter &paint,
@@ -246,8 +246,7 @@ void StandardDocumentViewInternal::documentTextChanged()
 	update();
 }
 
-void StandardDocumentViewInternal::caretVisibilityChanged(Caret *self,
-	bool visible)
+void StandardDocumentViewInternal::caretVisibilityChanged(bool visible)
 {
 	update();
 }

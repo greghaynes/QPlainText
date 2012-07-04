@@ -126,8 +126,7 @@ class StandardDocumentViewInternal
 	
 	private Q_SLOTS:
 		void documentTextChanged();
-		void caretVisibilityChanged(Caret *self,
-			bool visible);
+		void caretVisibilityChanged(bool visible);
 	
 	private:
 		void setupUi();
