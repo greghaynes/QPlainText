@@ -20,13 +20,14 @@
 #define QPLAINTEXT_STANDARD_DOCUMENT_VIEW_H
 
 #include "documentview.h"
-#include "caret.h"
 
 class QFont;
 
 namespace QPlainText
 {
 
+class Caret;
+class SelectedRange;
 class Document;
 class Renderer;
 class DocumentPosition;
@@ -56,6 +57,8 @@ class StandardDocumentView
 		~StandardDocumentView();
 		
 		Caret &keyboardCaret();
+
+		SelectedRange &selectedRange();
 		
 	Q_SIGNALS:
 		/**

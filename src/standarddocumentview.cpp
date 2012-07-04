@@ -20,7 +20,7 @@
 #include "standarddocumentviewinternal.h"
 #include "keyboardhandler.h"
 #include "caret.h"
-#include "documentrange.h"
+#include "selectedrange.h"
 #include "document.h"
 
 #include <QHBoxLayout>
@@ -38,7 +38,7 @@ class StandardDocumentViewPrivate
 	public:
 		StandardDocumentViewInternal *internalView;
 		Caret *keyboardCaret;
-		DocumentRange *selectedRange;
+		SelectedRange *selectedRange;
 		QScrollBar *horiz_scrollBar;
 		QScrollBar *vert_scrollBar;
 
@@ -49,7 +49,7 @@ StandardDocumentView::StandardDocumentView(Document &document)
 	, d(new StandardDocumentViewPrivate)
 {
 	d->keyboardCaret = new Caret();
-	d->selectedRange = new DocumentRange();
+	d->selectedRange = new SelectedRange();
 	d->internalView = new StandardDocumentViewInternal(*this);
 	
 	// Create keyboard caret
@@ -70,6 +70,11 @@ StandardDocumentView::~StandardDocumentView()
 Caret &StandardDocumentView::keyboardCaret()
 {
 	return *d->keyboardCaret;
+}
+
+SelectedRange &StandardDocumentView::selectedRange()
+{
+	return *d->selectedRange;
 }
 
 void StandardDocumentView::setInternalFont(const QFont &font)
