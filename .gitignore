@@ -9,3 +9,6 @@ Makefile
 cmake_install.cmake
 *.moc
 editor/editor
+src/teststandarddocument
+src/testdocumentview
+*qrc*

@@ -24,10 +24,9 @@ namespace QPlainText
 {
 
 Caret::Caret(QObject *parent)
-	: QObject(parent)
+	: PositionalMarker(parent)
 	, DocumentPosition()
 	, m_blinkTimer(0)
-	, m_visible(true)
 	, m_blinking(false)
 	, m_blink_msecs(400)
 {
@@ -36,27 +35,12 @@ Caret::Caret(QObject *parent)
 Caret::Caret(int line,
 	int column,
 	QObject *parent)
-	: QObject(parent)
+	: PositionalMarker(parent)
 	, DocumentPosition(line, column)
 	, m_blinkTimer(0)
-	, m_visible(true)
 	, m_blinking(false)
 	, m_blink_msecs(400)
 {
-}
-
-bool Caret::isVisible() const
-{
-	return m_visible;
-}
-
-void Caret::setVisible(bool value)
-{
-	if(m_visible != value)
-	{
-		//emit(visibilityChanged(this, value));
-		m_visible = value;
-	}
 }
 
 bool Caret::isBlinking(void) const
@@ -111,8 +95,7 @@ void Caret::onSetColumn(int column)
 
 void Caret::blinkTimeout(void)
 {
-	m_visible = !m_visible;
-	emit(visibilityChanged(this, m_visible));
+	setVisible(!isVisible());
 }
 
 }

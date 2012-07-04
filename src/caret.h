@@ -19,6 +19,7 @@
 #ifndef QPLAINTEXT_DOCUMENT_CARET_H
 #define QPLAINTEXT_DOCUMENT_CARET_H
 
+#include "positionalmarker.h"
 #include "documentposition.h"
 
 #include <QObject>
@@ -32,7 +33,7 @@ namespace QPlainText
   * @brief Represents a caret in a document view.
   */
 class Caret
-	: public QObject
+	: public PositionalMarker
 	, public DocumentPosition
 {
 	Q_OBJECT
@@ -50,16 +51,6 @@ class Caret
 			int column,
 			QObject *parent);
 		
-		/**
-		  * @brief Is the caret visible.
-		  */
-		bool isVisible() const;
-		
-		/**
-		  * @brief Make caret invisible.
-		  */
-		void setVisible(bool val);
-
 		/**
 		  * @brief Is the caret currently blinking.
 		  */
@@ -81,17 +72,8 @@ class Caret
 		void resetBlinking(void);
 
 	Q_SIGNALS:
-		/**
-		  * @brief The position of the caret has changed.
-		  */
-		void positionChanged(Caret *self);
-		
-		/**
-		  * @brief The visibility of the caret has changed.
-		  */
-		void visibilityChanged(Caret *self,
-			bool visible);
-	
+		void positionChanged(const Caret *);
+
 	protected:
 		void onSetLine(int line);
 		void onSetColumn(int line);
@@ -101,7 +83,6 @@ class Caret
 	
 	private:
 		QTimer *m_blinkTimer;
-		bool m_visible;
 		bool m_blinking;
 		int m_blink_msecs;
 
